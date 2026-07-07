@@ -1,0 +1,6 @@
+{
+    "User": true,
+    "Auth": true,
+    "Vendor": true,
+    "Fleet": true
+}

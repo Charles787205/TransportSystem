@@ -1,0 +1,120 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+    --font-sans:
+        'Instrument Sans', ui-sans-serif, system-ui, sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
+
+    --radius-lg: var(--radius);
+    --radius-md: calc(var(--radius) - 2px);
+    --radius-sm: calc(var(--radius) - 4px);
+
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-card: var(--card);
+    --color-card-foreground: var(--card-foreground);
+    --color-popover: var(--popover);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-primary: var(--primary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-secondary: var(--secondary);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-muted: var(--muted);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-accent: var(--accent);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-border: var(--border);
+    --color-input: var(--input);
+    --color-ring: var(--ring);
+    --color-chart-1: var(--chart-1);
+    --color-chart-2: var(--chart-2);
+    --color-chart-3: var(--chart-3);
+    --color-chart-4: var(--chart-4);
+    --color-chart-5: var(--chart-5);
+    --color-sidebar: var(--sidebar);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+    /* === LM Dashboard Theme === */
+
+    /* Blue-800 as primary (#1e40af in oklch) */
+    --primary: oklch(0.379 0.146 264.05);
+    --primary-foreground: oklch(1 0 0);
+
+    /* Focus rings follow primary */
+    --ring: oklch(0.379 0.146 264.05);
+
+    /* Surfaces */
+    --background: oklch(0.97 0.003 247); /* slate-100 equivalent */
+    --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+
+    /* Secondary / muted — keep neutral */
+    --secondary: oklch(0.967 0.003 247);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.967 0.003 247);
+    --muted-foreground: oklch(0.556 0 0);
+
+    /* Accent for hover states */
+    --accent: oklch(0.94 0.01 264);
+    --accent-foreground: oklch(0.379 0.146 264.05);
+
+    /* Destructive unchanged */
+    --destructive: oklch(0.577 0.245 27.325);
+    --destructive-foreground: oklch(0.577 0.245 27.325);
+
+    /* Borders + inputs */
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+
+    /* Border radius */
+    --radius: 0.625rem;
+
+    /* Sidebar — blue tinted */
+    --sidebar: oklch(0.245 0.08 264); /* dark blue sidebar bg */
+    --sidebar-foreground: oklch(0.92 0.01 264);
+    --sidebar-primary: oklch(1 0 0);
+    --sidebar-primary-foreground: oklch(0.379 0.146 264.05);
+    --sidebar-accent: oklch(0.32 0.1 264);
+    --sidebar-accent-foreground: oklch(0.95 0 0);
+    --sidebar-border: oklch(0.3 0.08 264);
+    --sidebar-ring: oklch(0.379 0.146 264.05);
+
+    /* Charts */
+    --chart-1: oklch(0.379 0.146 264.05);
+    --chart-2: oklch(0.6 0.118 184.704);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+}
+
+/* No dark mode — intentionally omitted */
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+
+    body {
+        @apply bg-background text-foreground;
+    }
+}
