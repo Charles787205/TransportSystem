@@ -5,8 +5,10 @@ namespace Modules\Vendor\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-
-
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\Models\Concerns\LogsActivity;
+use Spatie\Activitylog\Support\LogOptions;
 
 #[Fillable([
     'vendor_id',
@@ -18,24 +20,39 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
     'year_model',
     'owners_name',
     'registered_address',
-    'is_active'
+    'is_active',
+    'driver_id'
 ])]
 class Vehicle extends Model
 {
     use HasFactory;
+    use LogsActivity;
 
     /**
      * The attributes that are mass assignable.
      */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logFillable()
+            ->logOnlyDirty();
+    }
     protected $fillable = [];
 
-    public function vendor() {
+    public function vendor(): BelongsTo
+     {
         return $this->belongsTo(Vendor::class);
     }
-    public function insurances(){
+    public function insurances(): HasMany
+    {
         return $this->hasMany(Insurance::class);
     }
-    public function registrations() {
+    public function registrations() : HasMany
+     {
         return $this->hasMany(Registration::class);
+    }
+    public function driver() : BelongsTo
+    {
+        return $this->belongsTo(Driver::class);
     }
 }

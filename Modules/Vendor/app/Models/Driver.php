@@ -51,5 +51,9 @@ class Driver extends Model
     public function emergencyContact(){
         return $this->hasOne(EmergencyContact::class);
     }
+
+    public function vehicles(){
+        return $this->hasMany(Vehicle::class);
+    }
     
 }

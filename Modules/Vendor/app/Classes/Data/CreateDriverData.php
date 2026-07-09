@@ -71,14 +71,15 @@ class CreateDriverData extends Data
             'birthday' => $this->birthday,
             'phone_number' => $this->phoneNumber,
             'address' => $this->address,
-            'license_expiry' => $this->licenseExpiry,
+            'license_expiry_date' => $this->licenseExpiry,
             'license_number' => $this->licenseNumber,
         ];
     }
 
     public function emergencyContactAttributes(){
         return [
-           'emergency_contact_full_name' => $this->emergencyContactFullName
+           'full_name' => $this->emergencyContactFullName,
+           'phone_number' => $this->emergencyContactPhoneNumber
         ];
     }
 }

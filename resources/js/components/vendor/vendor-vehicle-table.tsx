@@ -7,6 +7,7 @@ import {
     TableCell,
     TableRow,
 } from '../ui/table';
+import { Badge } from '../ui/badge';
 const VendorVehiclesTable = ({
     vehicles,
 }: {
@@ -19,11 +20,25 @@ const VendorVehiclesTable = ({
                     <TableHead>Plate Number</TableHead>
                     <TableHead>Type</TableHead>
                     <TableHead>Make</TableHead>
-                    <TableHead>Owner</TableHead>
-                    <TableHead>Address</TableHead>
                     <TableHead>Status</TableHead>
                 </TableRow>
             </TableHeader>
+            <TableBody>
+                {vehicles.map((vehicle, index) => (
+                    <TableRow key={index}>
+                        <TableCell>{vehicle.plateNumber}</TableCell>
+                        <TableCell>{vehicle.type}</TableCell>
+                        <TableCell>{vehicle.make}</TableCell>
+                        <TableCell>
+                            <Badge
+                                className={`${vehicle.isActive ? 'bg-green-500' : 'bg-red-500'}`}
+                            >
+                                {vehicle.isActive ? 'active' : 'in active'}
+                            </Badge>
+                        </TableCell>
+                    </TableRow>
+                ))}
+            </TableBody>
         </Table>
     );
 };

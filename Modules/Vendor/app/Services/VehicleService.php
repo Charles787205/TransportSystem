@@ -6,10 +6,17 @@ use Modules\Vendor\Classes\Data\CreateVehicleData;
 use Modules\Vendor\Repositories\VehicleRepository;
 use Modules\Vendor\Classes\Data\VehicleData;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Modules\Vendor\Classes\Data\VehicleDriverHistory;
+use Modules\Vendor\Models\Vehicle;
+use Modules\Vendor\Repositories\DriverRepository;
+use Spatie\Activitylog\Models\Activity;
+use Modules\Vendor\Models\Driver;
+
 class VehicleService
 {
 
-    public function __construct(protected VehicleRepository $vehicleRepo)
+    public function __construct(protected VehicleRepository $vehicleRepo, protected DriverRepository $driverRepo)
     {}
     public function getPaginated(int $vendorId, int $pageSize = 20)
     {
@@ -30,5 +37,45 @@ class VehicleService
             );
             return $vehicle->load(['insurances', 'registrations']);
         });
+    }
+
+    public function getVehicleWithInsurancesAndRegistration(int $vehicleId){
+        $vehicle = VehicleData::from($this->vehicleRepo->getVehicleWithInsurancesAndRegistrations($vehicleId));
+        if (!$vehicle) {
+            throw new ModelNotFoundException("Vehicle not found.");
+        }
+        return VehicleData::from($vehicle);
+    }
+
+    public function getDriverHistory(int $vehicleId)
+    {
+        $activities = $this->vehicleRepo->getDriverHistory($vehicleId);
+
+        $driverIds = $activities
+            ->flatMap(fn ($activity) => [
+                data_get($activity->attribute_changes, 'old.driver_id'),
+                data_get($activity->attribute_changes, 'attributes.driver_id'),
+            ])
+            ->filter()
+            ->unique();
+
+        $drivers = $this->driverRepo->findByIds($driverIds);
+        
+        return $activities->map(function ($activity) use ($drivers) {
+            $oldId = data_get($activity->attribute_changes, 'old.driver_id');
+            $newId = data_get($activity->attribute_changes, 'attributes.driver_id');
+            
+            return VehicleDriverHistory::from([
+                'changed_at' => $activity->created_at,
+                'changed_by' => $activity->causer?->name,
+                'old_driver' => $drivers[$oldId]?->full_name,
+                'new_driver' => $drivers[$newId]?->full_name,
+            ]);
+        });
+    }
+
+    public function attachDriver(int $vehicleId, int $driverId){
+      
+        $this->vehicleRepo->attachDriver(vehicleId: $vehicleId, driverId: $driverId);
     }
 }

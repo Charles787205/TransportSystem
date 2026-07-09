@@ -1,5 +1,9 @@
 export type { DriverData } from './DriverData';
+export type { InsuranceData } from './InsuranceData';
+export type { RegistrationData } from './RegistrationData';
 export type { VehicleData } from './VehicleData';
+export type { VehicleDriverData } from './VehicleDriverData';
+export type { VehicleDriverHistory } from './VehicleDriverHistory';
 export type { VendorVehicleData } from './VendorVehicleData';
 export type { VendorWithDriversAndVehiclesData } from './VendorWithDriversAndVehiclesData';
 export type { VendorWithVehicleCountData } from './VendorWithVehicleCountData';

@@ -13,7 +13,8 @@ import { Input } from '@/components/ui/input';
 import { Dispatch, SetStateAction } from 'react';
 import { Button } from '../ui/button';
 import DatePicker from '../datepicker';
-import { store } from '@/routes/drivers';
+import { store } from '@/routes/vendor/driver';
+
 import { Separator } from '../ui/separator';
 import { Form } from '@inertiajs/react';
 import InputError from '../input-error';
@@ -44,7 +45,7 @@ const VendorAddDriver = ({
                         Add Driver Details here
                     </DialogDescription>
                 </DialogHeader>
-                <Form {...store.form()}>
+                <Form {...store.form(vendorId)}>
                     {({ processing, errors }) => (
                         <>
                             <FieldGroup className="grid grid-cols-2">

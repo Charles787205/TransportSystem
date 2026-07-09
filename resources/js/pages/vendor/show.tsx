@@ -20,12 +20,13 @@ import VendorVehiclesTable from '@/components/vendor/vendor-vehicle-table';
 import { Plus, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
 
-import { index as vehiclesIndex } from '@/routes/vendors/vehicles';
+import { index as vehiclesIndex } from '@/routes/vendor/vehicle';
 
 const Show = ({ vendor }: { vendor: VendorWithDriversAndVehiclesData }) => {
     const [openAddDriverModal, setOpenAddDriverModal] = useState(false);
     const [openAddTruckModal, setOpenAddTruckModal] = useState(false);
-
+    console.log(vendor.drivers);
+    console.log(vendor);
     return (
         <div className="flex flex-col gap-6 p-6">
             <Head title={vendor.name} />

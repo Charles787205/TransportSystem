@@ -18,15 +18,12 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { MoreHorizontal, Plus, Search } from 'lucide-react';
-import {
-    edit,
-    show,
-    destroy,
-    create,
-} from '@/actions/Modules/Vendor/Http/Controllers/VendorVehicleController';
+
+import { show, destroy, create, edit } from '@/routes/vendor/vehicle';
 import { ArrowLeft } from 'lucide-react';
 import { show as vendorShow } from '@/routes/vendor';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
+
 interface PaginatedVehicles {
     data: VehicleData[];
     current_page: number;
@@ -47,7 +44,13 @@ const Index = ({ data, vendorId }: IndexProps) => {
 
     const handleDelete = (id: number) => {
         if (!confirm('Delete this vehicle? This cannot be undone.')) return;
-        router.delete(destroy(id).url, { preserveScroll: true });
+        router.delete(
+            destroy({
+                vendor: vendorId,
+                vehicle: id,
+            }).url,
+            { preserveScroll: true },
+        );
     };
 
     return (
@@ -170,18 +173,22 @@ const Index = ({ data, vendorId }: IndexProps) => {
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuItem asChild>
                                                         <Link
-                                                            href={show.url(
-                                                                vehicle.vendorId,
-                                                            )}
+                                                            href={show.url({
+                                                                vendor: vendorId,
+                                                                vehicle:
+                                                                    vehicle.id,
+                                                            })}
                                                         >
                                                             View
                                                         </Link>
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem asChild>
                                                         <Link
-                                                            href={edit.url(
-                                                                vehicle.vendorId,
-                                                            )}
+                                                            href={edit.url({
+                                                                vendor: vendorId,
+                                                                vehicle:
+                                                                    vehicle.id,
+                                                            })}
                                                         >
                                                             Edit
                                                         </Link>

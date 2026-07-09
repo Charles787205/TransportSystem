@@ -2,5 +2,6 @@
     "User": true,
     "Auth": true,
     "Vendor": true,
-    "Fleet": true
+    "Fleet": true,
+    "VehicleDriverData": true
 }

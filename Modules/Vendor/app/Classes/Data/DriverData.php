@@ -20,7 +20,7 @@ class DriverData extends Data
         #[MapInputName('status')]
         public readonly string $status,
         #[MapInputName('license_expiry_date')]
-        public readonly string $licenseExpiry,
+        public readonly ?string $licenseExpiry,
         #[MapInputName('driver_id_number')]
         public readonly ?string $driverIdNumber,
         #[MapInputName('license_number')]

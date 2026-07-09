@@ -10,11 +10,11 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 class VendorVehicleData extends Data
 {
     public function __construct(
-        #[MapName('plate_number')]
+
         public readonly string $plateNumber,
         public readonly string $type,
         public readonly string $make,
-        #[MapName('is_active')]
+      
         public readonly string $isActive
     ) {}
 }
