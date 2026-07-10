@@ -6,8 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 // use Modules\Vendor\Database\Factories\InsuranceFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Modules\Vendor\Enums\InsuranceTypeEnum;
+#[Fillable(['vehicle_id', 'provider_name', 'policy_number', 'start_date', 'end_date', 'type'])]
 
-#[Fillable(['vehicle_id', 'provider_name', 'policy_number', 'start_date', 'end_date'])]
 class Insurance extends Model
 {
     use HasFactory;
@@ -16,6 +17,9 @@ class Insurance extends Model
      * The attributes that are mass assignable.
      */
     protected $fillable = [];
+    protected $cast = [
+        'type' => InsuranceTypeEnum::class,
+    ];
 
     // protected static function newFactory(): InsuranceFactory
     // {

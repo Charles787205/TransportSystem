@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('vendor_id')->constrained()->cascadeOnDelete();
             $table->string('driver_id_number')->nullable();
             $table->string("full_name")->unique();
-            $table->date("birthday");
+            $table->date("birthday")->nullable();
             $table->enum('gender', ["Male", "Female"]);
             $table->string("phone_number", 13);
             $table->string("address");

@@ -29,9 +29,9 @@ class CreateDriverData extends Data
         #[Enum(GenderEnum::class)]
         public string $gender,
 
-        #[Required]
+        
         #[Date]
-        public string $birthday,
+        public ?string $birthday,
 
         #[Required]
         #[Digits(11)]

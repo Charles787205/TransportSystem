@@ -28,6 +28,10 @@ class Vehicle extends Model
     use HasFactory;
     use LogsActivity;
 
+    protected $cast = [
+        'is_active' => 'boolean',
+        'type' => \Modules\Vendor\Enums\VehicleTypeEnum::class,
+    ];
     /**
      * The attributes that are mass assignable.
      */

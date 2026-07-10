@@ -68,8 +68,8 @@ class VehicleService
             return VehicleDriverHistory::from([
                 'changed_at' => $activity->created_at,
                 'changed_by' => $activity->causer?->name,
-                'old_driver' => $drivers[$oldId]?->full_name,
-                'new_driver' => $drivers[$newId]?->full_name,
+                'old_driver' => $drivers->get($oldId)?->full_name ?? "None", 
+                'new_driver' => $drivers->get($newId)?->full_name, 
             ]);
         });
     }
