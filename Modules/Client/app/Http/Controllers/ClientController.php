@@ -4,15 +4,18 @@ namespace Modules\Client\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Modules\Client\Services\ClientService;
 
 class ClientController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public function __construct(private ClientService $clientService){}
     public function index()
     {
-        return view('client::index');
+        return Inertia::render(
+            'client/index',
+            ['clients' => $this->clientService->getClients()]
+        );
     }
 
     /**
@@ -20,7 +23,9 @@ class ClientController extends Controller
      */
     public function create()
     {
-        return view('client::create');
+        return Inertia::render(
+            'client/create'
+        );
     }
 
     /**

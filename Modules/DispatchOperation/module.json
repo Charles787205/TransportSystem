@@ -1,0 +1,11 @@
+{
+    "name": "DispatchOperation",
+    "alias": "dispatchoperation",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\DispatchOperation\\Providers\\DispatchOperationServiceProvider"
+    ],
+    "files": []
+}

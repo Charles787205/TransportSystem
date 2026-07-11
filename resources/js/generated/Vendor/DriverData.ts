@@ -1,6 +1,6 @@
 export type DriverData = {
     readonly fullName: string;
-    readonly birthday: string;
+    readonly birthday: string | null;
     readonly gender: string;
     readonly phoneNumber: string;
     readonly address: string;

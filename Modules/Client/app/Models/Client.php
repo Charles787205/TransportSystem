@@ -16,8 +16,7 @@ class Client extends Model
      */
     protected $fillable = [];
 
-    // protected static function newFactory(): ClientFactory
-    // {
-    //     // return ClientFactory::new();
-    // }
+    public function businessUnits() {
+        return $this->hasMany(\Modules\Client\Models\BusinessUnit::class);
+    }
 }

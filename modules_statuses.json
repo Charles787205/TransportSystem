@@ -1,8 +1,0 @@
-{
-    "User": true,
-    "Auth": true,
-    "Vendor": true,
-    "Fleet": true,
-    "VehicleDriverData": true,
-    "Client": true
-}
