@@ -1,0 +1,10 @@
+{
+    "User": true,
+    "Auth": true,
+    "Vendor": true,
+    "Fleet": true,
+    "VehicleDriverData": true,
+    "Client": true,
+    "Planning": true,
+    "DispatchOperation": true
+}
