@@ -1,5 +1,17 @@
 import { Link, router } from '@inertiajs/react';
-import { VehicleData } from '@/generated/Vendor';
+import { MoreHorizontal, Plus, Search } from 'lucide-react';
+
+import { ArrowLeft } from 'lucide-react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
 import {
     Table,
     TableBody,
@@ -8,21 +20,9 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
-import { MoreHorizontal, Plus, Search } from 'lucide-react';
-
-import { show, destroy, create, edit } from '@/routes/vendor/vehicle';
-import { ArrowLeft } from 'lucide-react';
+import type { VehicleData } from '@/generated/Vendor';
 import { show as vendorShow } from '@/routes/vendor';
-import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
+import { show, destroy, create, edit } from '@/routes/vendor/vehicle';
 
 interface PaginatedVehicles {
     data: VehicleData[];
@@ -43,7 +43,10 @@ const Index = ({ data, vendorId }: IndexProps) => {
     const vehicles = data.data;
 
     const handleDelete = (id: number) => {
-        if (!confirm('Delete this vehicle? This cannot be undone.')) return;
+        if (!confirm('Delete this vehicle? This cannot be undone.')) {
+return;
+}
+
         router.delete(
             destroy({
                 vendor: vendorId,

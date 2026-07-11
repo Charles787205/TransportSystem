@@ -8,17 +8,17 @@ import {
     CircleCheck,
     CircleX,
 } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
-import { VendorWithDriversAndVehiclesData } from '@/generated/Vendor';
-import { Button } from '@/components/ui/button';
-import { index } from '@/routes/vendor';
-import VendorDriverTable from '@/components/vendor/vendor-driver-table';
-import VendorAddDriver from '@/components/vendor/vendor-add-driver';
-import VendorVehiclesTable from '@/components/vendor/vendor-vehicle-table';
 import { Plus, ArrowRight } from 'lucide-react';
 import { useState } from 'react';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
+import VendorAddDriver from '@/components/vendor/vendor-add-driver';
+import VendorDriverTable from '@/components/vendor/vendor-driver-table';
+import VendorVehiclesTable from '@/components/vendor/vendor-vehicle-table';
+import type { VendorWithDriversAndVehiclesData } from '@/generated/Vendor';
+import { index } from '@/routes/vendor';
 
 import { index as vehiclesIndex } from '@/routes/vendor/vehicle';
 
@@ -27,6 +27,7 @@ const Show = ({ vendor }: { vendor: VendorWithDriversAndVehiclesData }) => {
     const [openAddTruckModal, setOpenAddTruckModal] = useState(false);
     console.log(vendor.drivers);
     console.log(vendor);
+
     return (
         <div className="flex flex-col gap-6 p-6">
             <Head title={vendor.name} />

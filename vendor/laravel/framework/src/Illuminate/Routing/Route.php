@@ -766,7 +766,7 @@ class Route
      * Get or set the domain for the route.
      *
      * @param  \BackedEnum|string|null  $domain
-     * @return $this|string|null
+     * @return ($domain is null ? string|null : $this)
      *
      * @throws \InvalidArgumentException
      */
@@ -922,13 +922,7 @@ class Route
             return false;
         }
 
-        foreach ($patterns as $pattern) {
-            if (Str::is($pattern, $routeName)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($patterns, fn ($pattern) => Str::is($pattern, $routeName));
     }
 
     /**
@@ -1355,7 +1349,7 @@ class Route
      *
      * @param  string|null  $key
      * @param  mixed  $default
-     * @return mixed
+     * @return ($key is null ? array<array-key, mixed> : mixed)
      */
     public function getMetadata($key = null, $default = null)
     {

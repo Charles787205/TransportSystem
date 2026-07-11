@@ -1,18 +1,19 @@
+import { Link } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import { Plus, Search, Mail, Phone, MoreHorizontal } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import type { VendorWithVehicleCountData } from '@/generated/Vendor';
 import { create } from '@/routes/vendor';
-import { Link } from '@inertiajs/react';
-import { VendorWithVehicleCountData } from '@/generated/Vendor';
 import { show } from '@/routes/vendor';
-import { router } from '@inertiajs/react';
 export default function VendorsPage({
     vendors,
 }: {
     vendors: VendorWithVehicleCountData[];
 }) {
     console.log(vendors);
+
     return (
         <div className="flex flex-col gap-6 p-6">
             <div className="flex items-center justify-between">

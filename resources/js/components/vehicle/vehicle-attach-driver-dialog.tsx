@@ -1,5 +1,20 @@
-import { VehicleData, VehicleDriverData } from '@/generated/Vendor';
 import { usePage } from '@inertiajs/react';
+import { Form } from '@inertiajs/react';
+import type { SetStateAction } from 'react';
+import type { Dispatch } from 'react';
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import type { VehicleData, VehicleDriverData } from '@/generated/Vendor';
+import driver from '@/routes/vendor/driver';
+import { attachVehicleToDriver } from '@/routes/vendors';
+import { Button } from '../ui/button';
+import { Card, CardContent } from '../ui/card';
 import {
     Dialog,
     DialogHeader,
@@ -9,23 +24,8 @@ import {
     DialogFooter,
     DialogClose,
 } from '../ui/dialog';
-import { Dispatch } from 'react';
-import { SetStateAction } from 'react';
-import { ScrollArea } from '../ui/scroll-area';
-import { Card, CardContent } from '../ui/card';
-import { attachVehicleToDriver } from '@/routes/vendors';
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import { Form } from '@inertiajs/react';
-import driver from '@/routes/vendor/driver';
 import { Field } from '../ui/field';
-import { Button } from '../ui/button';
+import { ScrollArea } from '../ui/scroll-area';
 const VehicleAttachDriverDialog = ({
     isOpen,
     setIsOpen,

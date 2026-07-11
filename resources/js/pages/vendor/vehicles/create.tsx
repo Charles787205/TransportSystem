@@ -1,4 +1,10 @@
 import { Form, Head, Link } from '@inertiajs/react';
+import { Loader2, ArrowLeft } from 'lucide-react';
+import {
+    store,
+    index,
+} from '@/actions/Modules/Vendor/Http/Controllers/VendorVehicleController';
+import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
@@ -6,15 +12,6 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 import {
     Field,
     FieldError,
@@ -23,11 +20,14 @@ import {
     FieldSet,
     FieldSeparator,
 } from '@/components/ui/field';
-import { Loader2, ArrowLeft } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import {
-    store,
-    index,
-} from '@/actions/Modules/Vendor/Http/Controllers/VendorVehicleController';
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 
 interface CreateProps {
     vendorId: number;

@@ -7,13 +7,14 @@ import {
     TableHeader,
     TableBody,
 } from '@/components/ui/table';
+import type { DriverData } from '@/generated/Vendor';
 import { Badge } from '../ui/badge';
-import { DriverData } from '@/generated/Vendor';
 
 const VendorDriverTable = ({ drivers }: { drivers: DriverData[] }) => {
     if (drivers.length == 0) {
         return <p className="text-gray-500">No Drivers added yet</p>;
     }
+
     return (
         <Table>
             <TableHeader>

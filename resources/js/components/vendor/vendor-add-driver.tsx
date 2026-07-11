@@ -1,3 +1,5 @@
+import { Form } from '@inertiajs/react';
+import type { Dispatch, SetStateAction } from 'react';
 import {
     Dialog,
     DialogContent,
@@ -10,14 +12,11 @@ import {
 import { Field, FieldGroup, FieldLabel } from '@/components/ui/field';
 
 import { Input } from '@/components/ui/input';
-import { Dispatch, SetStateAction } from 'react';
-import { Button } from '../ui/button';
-import DatePicker from '../datepicker';
 import { store } from '@/routes/vendor/driver';
-
-import { Separator } from '../ui/separator';
-import { Form } from '@inertiajs/react';
+import DatePicker from '../datepicker';
 import InputError from '../input-error';
+import { Button } from '../ui/button';
+
 import {
     Select,
     SelectTrigger,
@@ -26,6 +25,7 @@ import {
     SelectGroup,
     SelectItem,
 } from '../ui/select';
+import { Separator } from '../ui/separator';
 
 const VendorAddDriver = ({
     vendorId,

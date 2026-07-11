@@ -1,4 +1,5 @@
-import { VendorVehicleData } from '@/generated/Vendor';
+import type { VendorVehicleData } from '@/generated/Vendor';
+import { Badge } from '../ui/badge';
 import {
     Table,
     TableHead,
@@ -7,7 +8,6 @@ import {
     TableCell,
     TableRow,
 } from '../ui/table';
-import { Badge } from '../ui/badge';
 const VendorVehiclesTable = ({
     vehicles,
 }: {

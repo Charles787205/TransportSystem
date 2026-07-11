@@ -1,9 +1,9 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \Modules\Auth\Http\Controllers\AuthController::index
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:13
-* @route '/api/v1/auths'
-*/
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:13
+ * @route '/api/v1/auths'
+ */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
     method: 'get',
@@ -16,75 +16,72 @@ index.definition = {
 
 /**
 * @see \Modules\Auth\Http\Controllers\AuthController::index
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:13
-* @route '/api/v1/auths'
-*/
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:13
+ * @route '/api/v1/auths'
+ */
 index.url = (options?: RouteQueryOptions) => {
     return index.definition.url + queryParams(options)
 }
 
 /**
 * @see \Modules\Auth\Http\Controllers\AuthController::index
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:13
-* @route '/api/v1/auths'
-*/
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:13
+ * @route '/api/v1/auths'
+ */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: index.url(options),
     method: 'get',
 })
-
 /**
 * @see \Modules\Auth\Http\Controllers\AuthController::index
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:13
-* @route '/api/v1/auths'
-*/
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:13
+ * @route '/api/v1/auths'
+ */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: index.url(options),
     method: 'head',
 })
 
-/**
+    /**
 * @see \Modules\Auth\Http\Controllers\AuthController::index
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:13
-* @route '/api/v1/auths'
-*/
-const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: index.url(options),
-    method: 'get',
-})
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:13
+ * @route '/api/v1/auths'
+ */
+    const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: index.url(options),
+        method: 'get',
+    })
 
-/**
+            /**
 * @see \Modules\Auth\Http\Controllers\AuthController::index
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:13
-* @route '/api/v1/auths'
-*/
-indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: index.url(options),
-    method: 'get',
-})
-
-/**
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:13
+ * @route '/api/v1/auths'
+ */
+        indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url(options),
+            method: 'get',
+        })
+            /**
 * @see \Modules\Auth\Http\Controllers\AuthController::index
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:13
-* @route '/api/v1/auths'
-*/
-indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: index.url({
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-index.form = indexForm
-
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:13
+ * @route '/api/v1/auths'
+ */
+        indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: index.url({
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    index.form = indexForm
 /**
 * @see \Modules\Auth\Http\Controllers\AuthController::store
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:27
-* @route '/api/v1/auths'
-*/
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:27
+ * @route '/api/v1/auths'
+ */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
     method: 'post',
@@ -97,50 +94,49 @@ store.definition = {
 
 /**
 * @see \Modules\Auth\Http\Controllers\AuthController::store
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:27
-* @route '/api/v1/auths'
-*/
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:27
+ * @route '/api/v1/auths'
+ */
 store.url = (options?: RouteQueryOptions) => {
     return store.definition.url + queryParams(options)
 }
 
 /**
 * @see \Modules\Auth\Http\Controllers\AuthController::store
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:27
-* @route '/api/v1/auths'
-*/
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:27
+ * @route '/api/v1/auths'
+ */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     url: store.url(options),
     method: 'post',
 })
 
-/**
+    /**
 * @see \Modules\Auth\Http\Controllers\AuthController::store
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:27
-* @route '/api/v1/auths'
-*/
-const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: store.url(options),
-    method: 'post',
-})
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:27
+ * @route '/api/v1/auths'
+ */
+    const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: store.url(options),
+        method: 'post',
+    })
 
-/**
+            /**
 * @see \Modules\Auth\Http\Controllers\AuthController::store
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:27
-* @route '/api/v1/auths'
-*/
-storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: store.url(options),
-    method: 'post',
-})
-
-store.form = storeForm
-
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:27
+ * @route '/api/v1/auths'
+ */
+        storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: store.url(options),
+            method: 'post',
+        })
+    
+    store.form = storeForm
 /**
 * @see \Modules\Auth\Http\Controllers\AuthController::show
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:32
-* @route '/api/v1/auths/{auth}'
-*/
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:32
+ * @route '/api/v1/auths/{auth}'
+ */
 export const show = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
@@ -153,25 +149,26 @@ show.definition = {
 
 /**
 * @see \Modules\Auth\Http\Controllers\AuthController::show
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:32
-* @route '/api/v1/auths/{auth}'
-*/
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:32
+ * @route '/api/v1/auths/{auth}'
+ */
 show.url = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { auth: args }
     }
 
+    
     if (Array.isArray(args)) {
         args = {
-            auth: args[0],
-        }
+                    auth: args[0],
+                }
     }
 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-        auth: args.auth,
-    }
+                        auth: args.auth,
+                }
 
     return show.definition.url
             .replace('{auth}', parsedArgs.auth.toString())
@@ -180,66 +177,63 @@ show.url = (args: { auth: string | number } | [auth: string | number ] | string 
 
 /**
 * @see \Modules\Auth\Http\Controllers\AuthController::show
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:32
-* @route '/api/v1/auths/{auth}'
-*/
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:32
+ * @route '/api/v1/auths/{auth}'
+ */
 show.get = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
     url: show.url(args, options),
     method: 'get',
 })
-
 /**
 * @see \Modules\Auth\Http\Controllers\AuthController::show
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:32
-* @route '/api/v1/auths/{auth}'
-*/
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:32
+ * @route '/api/v1/auths/{auth}'
+ */
 show.head = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     url: show.url(args, options),
     method: 'head',
 })
 
-/**
+    /**
 * @see \Modules\Auth\Http\Controllers\AuthController::show
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:32
-* @route '/api/v1/auths/{auth}'
-*/
-const showForm = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: show.url(args, options),
-    method: 'get',
-})
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:32
+ * @route '/api/v1/auths/{auth}'
+ */
+    const showForm = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+        action: show.url(args, options),
+        method: 'get',
+    })
 
-/**
+            /**
 * @see \Modules\Auth\Http\Controllers\AuthController::show
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:32
-* @route '/api/v1/auths/{auth}'
-*/
-showForm.get = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: show.url(args, options),
-    method: 'get',
-})
-
-/**
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:32
+ * @route '/api/v1/auths/{auth}'
+ */
+        showForm.get = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url(args, options),
+            method: 'get',
+        })
+            /**
 * @see \Modules\Auth\Http\Controllers\AuthController::show
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:32
-* @route '/api/v1/auths/{auth}'
-*/
-showForm.head = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-    action: show.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'HEAD',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'get',
-})
-
-show.form = showForm
-
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:32
+ * @route '/api/v1/auths/{auth}'
+ */
+        showForm.head = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
+            action: show.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'HEAD',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'get',
+        })
+    
+    show.form = showForm
 /**
 * @see \Modules\Auth\Http\Controllers\AuthController::update
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:48
-* @route '/api/v1/auths/{auth}'
-*/
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:48
+ * @route '/api/v1/auths/{auth}'
+ */
 export const update = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
@@ -252,25 +246,26 @@ update.definition = {
 
 /**
 * @see \Modules\Auth\Http\Controllers\AuthController::update
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:48
-* @route '/api/v1/auths/{auth}'
-*/
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:48
+ * @route '/api/v1/auths/{auth}'
+ */
 update.url = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { auth: args }
     }
 
+    
     if (Array.isArray(args)) {
         args = {
-            auth: args[0],
-        }
+                    auth: args[0],
+                }
     }
 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-        auth: args.auth,
-    }
+                        auth: args.auth,
+                }
 
     return update.definition.url
             .replace('{auth}', parsedArgs.auth.toString())
@@ -279,76 +274,73 @@ update.url = (args: { auth: string | number } | [auth: string | number ] | strin
 
 /**
 * @see \Modules\Auth\Http\Controllers\AuthController::update
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:48
-* @route '/api/v1/auths/{auth}'
-*/
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:48
+ * @route '/api/v1/auths/{auth}'
+ */
 update.put = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
     url: update.url(args, options),
     method: 'put',
 })
-
 /**
 * @see \Modules\Auth\Http\Controllers\AuthController::update
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:48
-* @route '/api/v1/auths/{auth}'
-*/
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:48
+ * @route '/api/v1/auths/{auth}'
+ */
 update.patch = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
     url: update.url(args, options),
     method: 'patch',
 })
 
-/**
+    /**
 * @see \Modules\Auth\Http\Controllers\AuthController::update
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:48
-* @route '/api/v1/auths/{auth}'
-*/
-const updateForm = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: update.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'PUT',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'post',
-})
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:48
+ * @route '/api/v1/auths/{auth}'
+ */
+    const updateForm = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: update.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'PUT',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
 
-/**
+            /**
 * @see \Modules\Auth\Http\Controllers\AuthController::update
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:48
-* @route '/api/v1/auths/{auth}'
-*/
-updateForm.put = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: update.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'PUT',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'post',
-})
-
-/**
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:48
+ * @route '/api/v1/auths/{auth}'
+ */
+        updateForm.put = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PUT',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+            /**
 * @see \Modules\Auth\Http\Controllers\AuthController::update
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:48
-* @route '/api/v1/auths/{auth}'
-*/
-updateForm.patch = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: update.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'PATCH',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'post',
-})
-
-update.form = updateForm
-
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:48
+ * @route '/api/v1/auths/{auth}'
+ */
+        updateForm.patch = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: update.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'PATCH',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    update.form = updateForm
 /**
 * @see \Modules\Auth\Http\Controllers\AuthController::destroy
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:53
-* @route '/api/v1/auths/{auth}'
-*/
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:53
+ * @route '/api/v1/auths/{auth}'
+ */
 export const destroy = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
@@ -361,25 +353,26 @@ destroy.definition = {
 
 /**
 * @see \Modules\Auth\Http\Controllers\AuthController::destroy
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:53
-* @route '/api/v1/auths/{auth}'
-*/
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:53
+ * @route '/api/v1/auths/{auth}'
+ */
 destroy.url = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions) => {
     if (typeof args === 'string' || typeof args === 'number') {
         args = { auth: args }
     }
 
+    
     if (Array.isArray(args)) {
         args = {
-            auth: args[0],
-        }
+                    auth: args[0],
+                }
     }
 
     args = applyUrlDefaults(args)
 
     const parsedArgs = {
-        auth: args.auth,
-    }
+                        auth: args.auth,
+                }
 
     return destroy.definition.url
             .replace('{auth}', parsedArgs.auth.toString())
@@ -388,52 +381,51 @@ destroy.url = (args: { auth: string | number } | [auth: string | number ] | stri
 
 /**
 * @see \Modules\Auth\Http\Controllers\AuthController::destroy
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:53
-* @route '/api/v1/auths/{auth}'
-*/
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:53
+ * @route '/api/v1/auths/{auth}'
+ */
 destroy.delete = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
     url: destroy.url(args, options),
     method: 'delete',
 })
 
-/**
+    /**
 * @see \Modules\Auth\Http\Controllers\AuthController::destroy
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:53
-* @route '/api/v1/auths/{auth}'
-*/
-const destroyForm = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: destroy.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'DELETE',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'post',
-})
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:53
+ * @route '/api/v1/auths/{auth}'
+ */
+    const destroyForm = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: destroy.url(args, {
+                    [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                        _method: 'DELETE',
+                        ...(options?.query ?? options?.mergeQuery ?? {}),
+                    }
+                }),
+        method: 'post',
+    })
 
-/**
+            /**
 * @see \Modules\Auth\Http\Controllers\AuthController::destroy
-* @see Modules/Auth/app/Http/Controllers/AuthController.php:53
-* @route '/api/v1/auths/{auth}'
-*/
-destroyForm.delete = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
-    action: destroy.url(args, {
-        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-            _method: 'DELETE',
-            ...(options?.query ?? options?.mergeQuery ?? {}),
-        }
-    }),
-    method: 'post',
-})
-
-destroy.form = destroyForm
-
+ * @see Modules/Auth/app/Http/Controllers/AuthController.php:53
+ * @route '/api/v1/auths/{auth}'
+ */
+        destroyForm.delete = (args: { auth: string | number } | [auth: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: destroy.url(args, {
+                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
+                            _method: 'DELETE',
+                            ...(options?.query ?? options?.mergeQuery ?? {}),
+                        }
+                    }),
+            method: 'post',
+        })
+    
+    destroy.form = destroyForm
 const auth = {
     index: Object.assign(index, index),
-    store: Object.assign(store, store),
-    show: Object.assign(show, show),
-    update: Object.assign(update, update),
-    destroy: Object.assign(destroy, destroy),
+store: Object.assign(store, store),
+show: Object.assign(show, show),
+update: Object.assign(update, update),
+destroy: Object.assign(destroy, destroy),
 }
 
 export default auth

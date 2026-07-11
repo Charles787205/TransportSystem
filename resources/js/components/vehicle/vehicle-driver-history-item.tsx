@@ -1,5 +1,6 @@
 import { BadgeCheckIcon, ChevronRightIcon } from 'lucide-react';
 
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
     Item,
@@ -9,8 +10,7 @@ import {
     ItemMedia,
     ItemTitle,
 } from '@/components/ui/item';
-import { VehicleDriverHistory } from '@/generated/Vendor';
-import { ArrowRight } from 'lucide-react';
+import type { VehicleDriverHistory } from '@/generated/Vendor';
 export function VehicleDriverHistoryItem({
     driverHistory,
 }: {

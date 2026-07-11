@@ -1,10 +1,10 @@
+import { format } from 'date-fns';
 import { useState } from 'react';
+import InputError from './input-error';
+import { Button } from './ui/button';
+import { Calendar } from './ui/calendar';
 import { Field, FieldLabel } from './ui/field';
 import { Popover, PopoverTrigger, PopoverContent } from './ui/popover';
-import { Calendar } from './ui/calendar';
-import { Button } from './ui/button';
-import { format } from 'date-fns';
-import InputError from './input-error';
 const DatePicker = ({
     name,
     label,
@@ -15,6 +15,7 @@ const DatePicker = ({
     error: string;
 }) => {
     const [date, setDate] = useState<Date | undefined>();
+
     return (
         <Field className="">
             <FieldLabel htmlFor={`date-picker-${name}`}>{label}</FieldLabel>

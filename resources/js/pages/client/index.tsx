@@ -1,5 +1,6 @@
 import { Head, Link } from "@inertiajs/react"
-import { ClientData } from "@/generated/Client"
+import { Plus } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import {
   Table,
   TableBody,
@@ -8,8 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import { Button } from "@/components/ui/button"
-import { Plus } from "lucide-react"
+import type { ClientData } from "@/generated/Client"
 
 type ClientsPageProps = {
   clients: ClientData[]
