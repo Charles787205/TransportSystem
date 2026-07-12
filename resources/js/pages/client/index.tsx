@@ -1,5 +1,7 @@
 import { Head, Link } from "@inertiajs/react"
 import { Plus } from "lucide-react"
+import { useState } from "react"
+import CreateClientModal from "@/components/client/create-client-modal"
 import { Button } from "@/components/ui/button"
 import {
   Table,
@@ -10,16 +12,17 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import type { ClientData } from "@/generated/Client"
-
 type ClientsPageProps = {
   clients: ClientData[]
 }
 
 const ClientsPage = ({ clients }: ClientsPageProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
     <>
       <Head title="Clients" />
-
+      <CreateClientModal isOpen={isOpen}  setIsOpen={setIsOpen}/>
       <div className="p-6">
         <div className="mb-6 flex items-center justify-between">
           <div>
@@ -29,7 +32,9 @@ const ClientsPage = ({ clients }: ClientsPageProps) => {
             </p>
           </div>
 
-          <Button asChild>
+          <Button asChild onClick={() => {
+              setIsOpen(true); 
+            }}>
             <Link href="/clients/create">
               <Plus className="mr-2 h-4 w-4" />
               New Client

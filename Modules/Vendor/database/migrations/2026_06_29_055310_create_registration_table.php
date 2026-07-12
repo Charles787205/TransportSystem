@@ -20,7 +20,6 @@ return new class extends Migration
             $table->date('or_date');
             $table->date("ltfrb_date");
             $table->string("case_number");
-            $table->string('type');
             $table->timestamps();
         });
     }

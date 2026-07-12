@@ -3,4 +3,7 @@ export type ClientData = {
     email: string;
     name: string;
     phoneNumber: string;
+    active: string;
+    createdAt: string;
+    updatedAt: string;
 };

@@ -4,6 +4,7 @@ namespace Modules\DispatchOperation\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class DispatchOperationController extends Controller
 {
@@ -12,7 +13,9 @@ class DispatchOperationController extends Controller
      */
     public function index()
     {
-        return view('dispatchoperation::index');
+        return Inertia::render(
+            'dispatchoperations/index',
+        );
     }
 
     /**

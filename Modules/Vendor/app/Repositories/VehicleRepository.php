@@ -29,7 +29,6 @@ class VehicleRepository
 
     public function attachDriver(int $vehicleId, int $driverId){
         $vehicle = Vehicle::findOrFail($vehicleId);
-
         $vehicle->driver()->associate($driverId);
         $vehicle->save();
         return $vehicle;

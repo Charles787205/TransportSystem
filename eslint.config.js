@@ -53,13 +53,14 @@ export default [
             import: importPlugin,
         },
         settings: {
-            'import/resolver': {
+            'import/internal-regex': '^@/'
+            /**'import/resolver': {
                 typescript: {
                     alwaysTryTypes: true,
                     project: './tsconfig.json',
                 },
                 node: true,
-            },
+            },*/
         },
         rules: {
             '@typescript-eslint/no-explicit-any': 'off',
@@ -77,9 +78,7 @@ export default [
                         'builtin',
                         'external',
                         'internal',
-                        'parent',
-                        'sibling',
-                        'index',
+                        ['parent', 'sibling', 'index']
                     ],
                     alphabetize: { order: 'asc', caseInsensitive: true },
                 },

@@ -1,13 +1,13 @@
-import { BadgeCheckIcon, ChevronRightIcon } from 'lucide-react';
+
 
 import { ArrowRight } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+
 import {
     Item,
-    ItemActions,
+  
     ItemContent,
     ItemDescription,
-    ItemMedia,
+   
     ItemTitle,
 } from '@/components/ui/item';
 import type { VehicleDriverHistory } from '@/generated/Vendor';

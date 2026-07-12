@@ -1,9 +1,10 @@
 import { Link } from '@inertiajs/react';
 import { router } from '@inertiajs/react';
-import { Plus, Search, Mail, Phone, MoreHorizontal } from 'lucide-react';
+import { Plus, Search, Mail, Phone } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+
 import type { VendorWithVehicleCountData } from '@/generated/Vendor';
 import { create } from '@/routes/vendor';
 import { show } from '@/routes/vendor';
@@ -76,7 +77,11 @@ export default function VendorsPage({
                         {vendors.map((vendor) => (
                             <tr
                                 key={vendor.id}
-                                onClick={() => router.visit(show(vendor.id))}
+                                id={`${vendor.id}`}
+                                onClick={() => {
+                                    router.visit(show(vendor.id));
+                                    console.log("Clicked")
+                                }}
                                 className="cursor-pointer border-b border-gray-100 last:border-0 hover:bg-blue-100"
                             >
                                 <td className="px-4 py-3 font-medium text-slate-900">

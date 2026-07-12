@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('name');
             $table->string('phone_number');
-            $table->boolean("active");
+            $table->boolean("active")->default(true);
             $table->timestamps();
         });
     }

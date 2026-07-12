@@ -3,6 +3,7 @@ import { useState } from 'react';
 import InputError from './input-error';
 import { Button } from './ui/button';
 import { Calendar } from './ui/calendar';
+import { Calendar as CalendarIcon } from "lucide-react"
 import { Field, FieldLabel } from './ui/field';
 import { Popover, PopoverTrigger, PopoverContent } from './ui/popover';
 const DatePicker = ({
@@ -27,6 +28,7 @@ const DatePicker = ({
                         className="justify-start font-normal"
                     >
                         {date ? format(date, 'PPP') : 'Pick a date'}
+                    <CalendarIcon className='ml-auto'/>
                     </Button>
                 </PopoverTrigger>
                 <PopoverContent className="w-auto p-0" align="start">
@@ -35,6 +37,7 @@ const DatePicker = ({
                         selected={date}
                         onSelect={setDate}
                         captionLayout="dropdown"
+                        endMonth={new Date(2100,11)}
                     />
                 </PopoverContent>
             </Popover>

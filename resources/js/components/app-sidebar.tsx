@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid, Store } from 'lucide-react';
+import { BookOpen, FolderGit2, LayoutGrid, Store, Users, NotebookPen, Network } from 'lucide-react';
+
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -14,10 +15,11 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
-import { index } from '@/routes/vendor';
-
+import { index as ClientIndex } from '@/routes/client';
+import { index as DispatchOperationIndex } from '@/routes/dispatchoperation';
+import { index as PlanningIndex } from '@/routes/planning';
+import { index as VendorIndex } from '@/routes/vendor';
 import type { NavItem } from '@/types';
-
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
@@ -26,10 +28,25 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Vendors',
-        href: index(),
+        href: VendorIndex(),
         icon: Store,
     },
-];
+    {
+        title: 'Client',
+        href: ClientIndex(),
+        icon: Users
+    },
+    {
+        title: 'Planning',
+        href: PlanningIndex(),
+        icon: NotebookPen
+    },
+    {
+        title: 'Dispatch',
+        href: DispatchOperationIndex(),
+        icon: Network
+    }
+]
 
 const footerNavItems: NavItem[] = [
     {

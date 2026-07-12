@@ -4,6 +4,7 @@ import {
     store,
     index,
 } from '@/actions/Modules/Vendor/Http/Controllers/VendorVehicleController';
+import DatePicker from '@/components/datepicker';
 import { Button } from '@/components/ui/button';
 import {
     Card,
@@ -318,53 +319,22 @@ const Create = ({ vendorId }: CreateProps) => {
                                         )}
                                     </Field>
 
-                                    <Field
-                                        data-invalid={
-                                            !!errors['insurance.start_date']
-                                        }
-                                    >
-                                        <FieldLabel htmlFor="insurance.start_date">
-                                            Start Date
-                                        </FieldLabel>
-                                        <Input
-                                            type="date"
-                                            id="insurance.start_date"
-                                            name="insurance[start_date]"
-                                            aria-invalid={
-                                                !!errors['insurance.start_date']
-                                            }
-                                            className="focus-visible:border-blue-700 focus-visible:ring-blue-700/10"
-                                        />
-                                        {errors['insurance.start_date'] && (
-                                            <FieldError>
-                                                {errors['insurance.start_date']}
-                                            </FieldError>
-                                        )}
-                                    </Field>
+                                    
 
-                                    <Field
-                                        data-invalid={
-                                            !!errors['insurance.end_date']
-                                        }
-                                    >
-                                        <FieldLabel htmlFor="insurance.end_date">
-                                            End Date
-                                        </FieldLabel>
-                                        <Input
-                                            type="date"
-                                            id="insurance.end_date"
-                                            name="insurance[end_date]"
-                                            aria-invalid={
-                                                !!errors['insurance.end_date']
-                                            }
-                                            className="focus-visible:border-blue-700 focus-visible:ring-blue-700/10"
+                                    
+                                    <DatePicker
+                                            aria-invalid={!!errors['insurance.start_date']}
+                                            name="insurance.start_date"
+                                            label="Start Date"
+                                            error={errors['insurance.start_date']}
                                         />
-                                        {errors['insurance.end_date'] && (
-                                            <FieldError>
-                                                {errors['insurance.end_date']}
-                                            </FieldError>
-                                        )}
-                                    </Field>
+                                    <DatePicker
+                                            aria-invalid={!!errors['insurance.end_date']}
+                                            name="insurance.end_date"
+                                            label="End Date"
+                                            error={errors['insurance.end_date']}
+                                        />
+                                    
                                 </FieldGroup>
                             </CardContent>
                         </Card>
@@ -413,36 +383,12 @@ const Create = ({ vendorId }: CreateProps) => {
                                             )}
                                         </Field>
 
-                                        <Field
-                                            data-invalid={
-                                                !!errors['registration.cr_date']
-                                            }
-                                        >
-                                            <FieldLabel htmlFor="registration.cr_date">
-                                                CR Date
-                                            </FieldLabel>
-                                            <Input
-                                                type="date"
-                                                id="registration.cr_date"
-                                                name="registration[cr_date]"
-                                                aria-invalid={
-                                                    !!errors[
-                                                        'registration.cr_date'
-                                                    ]
-                                                }
-                                                className="focus-visible:border-blue-700 focus-visible:ring-blue-700/10"
-                                            />
-                                            {errors['registration.cr_date'] && (
-                                                <FieldError>
-                                                    {
-                                                        errors[
-                                                            'registration.cr_date'
-                                                        ]
-                                                    }
-                                                </FieldError>
-                                            )}
-                                        </Field>
-
+                                        <DatePicker
+                                            aria-invalid={!!errors['registration.cr_date']}
+                                            name="registration.cr_date"
+                                            label="Registration Date"
+                                            error={errors['registration.cr_date' ]}
+                                        />
                                         <Field
                                             data-invalid={
                                                 !!errors[
@@ -476,69 +422,25 @@ const Create = ({ vendorId }: CreateProps) => {
                                             )}
                                         </Field>
 
-                                        <Field
-                                            data-invalid={
-                                                !!errors['registration.or_date']
-                                            }
-                                        >
-                                            <FieldLabel htmlFor="registration.or_date">
-                                                OR Date
-                                            </FieldLabel>
-                                            <Input
-                                                type="date"
-                                                id="registration.or_date"
-                                                name="registration[or_date]"
-                                                aria-invalid={
-                                                    !!errors[
-                                                        'registration.or_date'
-                                                    ]
-                                                }
-                                                className="focus-visible:border-blue-700 focus-visible:ring-blue-700/10"
+                                        
+                                        <DatePicker
+                                                aria-invalid={!!errors['registration.or_date']}
+                                                name="registration.or_date"
+                                                label="OR Date"
+                                                error={errors['registration.or_date']}
                                             />
-                                            {errors['registration.or_date'] && (
-                                                <FieldError>
-                                                    {
-                                                        errors[
-                                                            'registration.or_date'
-                                                        ]
-                                                    }
-                                                </FieldError>
-                                            )}
-                                        </Field>
 
-                                        <Field
-                                            data-invalid={
-                                                !!errors[
+                                        
+                                        <DatePicker
+                                                aria-invalid={!!errors[
                                                     'registration.ltfrb_date'
-                                                ]
-                                            }
-                                        >
-                                            <FieldLabel htmlFor="registration.ltfrb_date">
-                                                LTFRB Date
-                                            </FieldLabel>
-                                            <Input
-                                                type="date"
-                                                id="registration.ltfrb_date"
-                                                name="registration[ltfrb_date]"
-                                                aria-invalid={
-                                                    !!errors[
-                                                        'registration.ltfrb_date'
-                                                    ]
-                                                }
-                                                className="focus-visible:border-blue-700 focus-visible:ring-blue-700/10"
+                                                ]}
+                                                name="registration.ltfrb_date"
+                                                label="LTFRB Date"
+                                                error={errors[
+                                                    'registration.ltfrb_date'
+                                                ]}
                                             />
-                                            {errors[
-                                                'registration.ltfrb_date'
-                                            ] && (
-                                                <FieldError>
-                                                    {
-                                                        errors[
-                                                            'registration.ltfrb_date'
-                                                        ]
-                                                    }
-                                                </FieldError>
-                                            )}
-                                        </Field>
 
                                         <Field
                                             data-invalid={

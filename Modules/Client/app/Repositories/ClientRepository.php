@@ -15,5 +15,14 @@ class ClientRepository
             ->orderBy('name')
             ->paginate(15);
     }
+    public function getClient($id){
+        return Client::find($id);
+    }
+
+    public function associateBusinessUnit(Client $client,int $buid){
+        $client->businessUnits()->associate($buid);
+        $client->save();
+        return $client;
+    }
 
 }

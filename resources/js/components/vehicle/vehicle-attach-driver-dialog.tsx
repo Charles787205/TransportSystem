@@ -10,6 +10,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+
 import type { VehicleData, VehicleDriverData } from '@/generated/Vendor';
 import driver from '@/routes/vendor/driver';
 import { attachVehicleToDriver } from '@/routes/vendors';

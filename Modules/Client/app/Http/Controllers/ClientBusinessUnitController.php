@@ -4,19 +4,20 @@ namespace Modules\Client\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use Modules\Client\Classes\Data\CreateClientData;
+use Modules\Client\Classes\Data\CreateBusinessUnitData;
 use Modules\Client\Services\ClientService;
 
-class ClientController extends Controller
+class ClientBusinessUnitController extends Controller
 {
-    public function __construct(private ClientService $clientService){}
+    
+
+    public function __construct(
+        private ClientService $clientService
+    ){}
     public function index()
     {
-        return Inertia::render(
-            'client/index',
-            ['clients' => $this->clientService->getClients()]
-        );
+        
+        return view('client::index');
     }
 
     /**
@@ -24,17 +25,16 @@ class ClientController extends Controller
      */
     public function create()
     {
-        return Inertia::render(
-            'client/create'
-        );
+        
+        return view('client::create');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateClientData $data) {
-        $client = $this->clientService->createClient($data);
-        return back()->with("success", $client->name ."Client Created");
+    public function store(CreateBusinessUnitData $data) {
+        $this->clientService->createBusinessUnit($data);
+        return back()->with('success', 'Business Unit Created');
     }
 
     /**
@@ -42,11 +42,7 @@ class ClientController extends Controller
      */
     public function show($id)
     {
-        $client = $this->clientService->getClient($id);
-        return Inertia::render(
-            'client/show',
-            ['client' => $client]
-        );
+        return view('client::show');
     }
 
     /**

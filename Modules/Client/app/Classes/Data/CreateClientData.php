@@ -15,4 +15,11 @@ class CreateClientData extends Data
         public string $name,
         public string $phoneNumber
     ) {}
+    public function clientAttributes(){
+        return [
+            'email' => $this->email,
+            'name' => $this->name,
+            'phone_number' => $this->phoneNumber
+        ];
+    }
 }
