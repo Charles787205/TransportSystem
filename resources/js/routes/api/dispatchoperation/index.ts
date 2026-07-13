@@ -1,7 +1,7 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../../wayfinder'
 /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::index
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:13
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:14
  * @route '/api/v1/dispatchoperations'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::index
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:13
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:14
  * @route '/api/v1/dispatchoperations'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::index
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:13
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:14
  * @route '/api/v1/dispatchoperations'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::index
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:13
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:14
  * @route '/api/v1/dispatchoperations'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::index
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:13
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:14
  * @route '/api/v1/dispatchoperations'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::index
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:13
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:14
  * @route '/api/v1/dispatchoperations'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::index
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:13
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:14
  * @route '/api/v1/dispatchoperations'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -79,7 +79,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::store
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:29
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:32
  * @route '/api/v1/dispatchoperations'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -94,7 +94,7 @@ store.definition = {
 
 /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::store
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:29
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:32
  * @route '/api/v1/dispatchoperations'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::store
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:29
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:32
  * @route '/api/v1/dispatchoperations'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -113,7 +113,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::store
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:29
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:32
  * @route '/api/v1/dispatchoperations'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -123,7 +123,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::store
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:29
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:32
  * @route '/api/v1/dispatchoperations'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -134,7 +134,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::show
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:34
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:37
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
 export const show = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -149,7 +149,7 @@ show.definition = {
 
 /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::show
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:34
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:37
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
 show.url = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -177,7 +177,7 @@ show.url = (args: { dispatchoperation: string | number } | [dispatchoperation: s
 
 /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::show
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:34
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:37
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
 show.get = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -186,7 +186,7 @@ show.get = (args: { dispatchoperation: string | number } | [dispatchoperation: s
 })
 /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::show
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:34
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:37
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
 show.head = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -196,7 +196,7 @@ show.head = (args: { dispatchoperation: string | number } | [dispatchoperation: 
 
     /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::show
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:34
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:37
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
     const showForm = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -206,7 +206,7 @@ show.head = (args: { dispatchoperation: string | number } | [dispatchoperation: 
 
             /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::show
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:34
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:37
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
         showForm.get = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -215,7 +215,7 @@ show.head = (args: { dispatchoperation: string | number } | [dispatchoperation: 
         })
             /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::show
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:34
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:37
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
         showForm.head = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -231,7 +231,7 @@ show.head = (args: { dispatchoperation: string | number } | [dispatchoperation: 
     show.form = showForm
 /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::update
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:50
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:53
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
 export const update = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -246,7 +246,7 @@ update.definition = {
 
 /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::update
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:50
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:53
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
 update.url = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -274,7 +274,7 @@ update.url = (args: { dispatchoperation: string | number } | [dispatchoperation:
 
 /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::update
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:50
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:53
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
 update.put = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -283,7 +283,7 @@ update.put = (args: { dispatchoperation: string | number } | [dispatchoperation:
 })
 /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::update
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:50
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:53
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
 update.patch = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -293,7 +293,7 @@ update.patch = (args: { dispatchoperation: string | number } | [dispatchoperatio
 
     /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::update
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:50
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:53
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
     const updateForm = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -308,7 +308,7 @@ update.patch = (args: { dispatchoperation: string | number } | [dispatchoperatio
 
             /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::update
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:50
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:53
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
         updateForm.put = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -322,7 +322,7 @@ update.patch = (args: { dispatchoperation: string | number } | [dispatchoperatio
         })
             /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::update
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:50
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:53
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
         updateForm.patch = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -338,7 +338,7 @@ update.patch = (args: { dispatchoperation: string | number } | [dispatchoperatio
     update.form = updateForm
 /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::destroy
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:55
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:58
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
 export const destroy = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -353,7 +353,7 @@ destroy.definition = {
 
 /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::destroy
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:55
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:58
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
 destroy.url = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -381,7 +381,7 @@ destroy.url = (args: { dispatchoperation: string | number } | [dispatchoperation
 
 /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::destroy
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:55
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:58
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
 destroy.delete = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -391,7 +391,7 @@ destroy.delete = (args: { dispatchoperation: string | number } | [dispatchoperat
 
     /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::destroy
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:55
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:58
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
     const destroyForm = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -406,7 +406,7 @@ destroy.delete = (args: { dispatchoperation: string | number } | [dispatchoperat
 
             /**
 * @see \Modules\DispatchOperation\Http\Controllers\DispatchOperationController::destroy
- * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:55
+ * @see Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php:58
  * @route '/api/v1/dispatchoperations/{dispatchoperation}'
  */
         destroyForm.delete = (args: { dispatchoperation: string | number } | [dispatchoperation: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

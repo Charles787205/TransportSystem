@@ -1,4 +1,4 @@
-import { Head, Link } from '@inertiajs/react';
+import { Head, Link, router } from '@inertiajs/react';
 import {
     Mail,
     Phone,
@@ -19,18 +19,26 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import type { ClientData } from '@/generated/Client';
+import type {  ClientData } from '@/generated/Client';
+import type { PaginatedBusinessUnitData } from '@/generated/Client';
 import { index } from '@/routes/client';
-
+import { index as BUIndex } from '@/routes/client/bu/index';
 const getInitials = (name: string) =>
     name
         .split(' ')
-        .map((part) => part[0])
+    .map((part) => part[0])
         .slice(0, 2)
         .join('')
         .toUpperCase();
 
-const Show = ({ client }: { client: ClientData }) => {
+const Show = ({ client, businessUnits }: { client: ClientData; businessUnits: PaginatedBusinessUnitData }) => {
+    const handlePageChange = (url: string | null) => {
+        if (url) {
+            router.get(url, {}, { preserveState: true });
+        }
+    };
+    console.log(businessUnits);
+
     return (
         <>
             <Head title={client.name} />
@@ -39,10 +47,10 @@ const Show = ({ client }: { client: ClientData }) => {
                 {/* Header */}
                 <Card>
                     <CardContent className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <Link href={index().url} className='cursor-pointer hover:scale-105'>
-                  <ArrowLeft />
-                </Link>
+                        <div className="flex items-center gap-4">
+                            <Link href={index().url} className='cursor-pointer hover:scale-105'>
+                            <ArrowLeft />
+                            </Link>
                             <Avatar className="size-14">
                                 <AvatarFallback className="text-lg font-medium">
                                     {getInitials(client.name)}
@@ -149,18 +157,72 @@ const Show = ({ client }: { client: ClientData }) => {
                                 <Share2 className="size-4" />
                                 Business Units
                             </CardTitle>
-                            <Button variant="ghost" size="sm">
+                            <Button onClick={()=>{
+                                router.visit(BUIndex.url({client: client.id}))
+                                }} variant="ghost" size="sm">
                                 <Plus className="size-4" />
                                 Add
                             </Button>
+                            
                         </CardHeader>
                         <CardContent>
-                            <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed py-10 text-center">
-                                <Share2 className="size-8 text-muted-foreground" />
-                                <p className="text-sm text-muted-foreground">
-                                    Table sa business Units diri
-                                </p>
-                            </div>
+                            {businessUnits.data.length > 0 ? (
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        {businessUnits.data.map((businessUnit, index) => (
+                                            <div
+                                                key={`${businessUnit.name}-${index}`}
+                                                className="flex items-center justify-between rounded-md border p-3"
+                                            >
+                                                <div>
+                                                    <p className="font-medium">
+                                                        {businessUnit.name}
+                                                    </p>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        {businessUnit.touchpoint}
+                                                    </p>
+                                                </div>
+                                                <Badge
+                                                    variant={
+                                                        businessUnit.active === '1'
+                                                            ? 'default'
+                                                            : 'secondary'
+                                                    }
+                                                >
+                                                    {businessUnit.active === '1' ? 'Active' : 'Inactive'}
+                                                </Badge>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    
+                                    {businessUnits.lastPage > 1 && (
+                                        <div className="flex items-center justify-between">
+                                            <p className="text-sm text-muted-foreground">
+                                                Showing {businessUnits.from ?? 0}–{businessUnits.to ?? 0} of {businessUnits.total}
+                                            </p>
+                                            <div className="flex flex-wrap gap-1">
+                                                {businessUnits.links.map((link, index) => (
+                                                    <Button
+                                                        key={`${link.label}-${index}`}
+                                                        variant={link.active ? 'default' : 'outline'}
+                                                        size="sm"
+                                                        disabled={!link.url}
+                                                        onClick={() => handlePageChange(link.url)}
+                                                       
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )} 
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed py-10 text-center">
+                                    <Share2 className="size-8 text-muted-foreground" />
+                                    <p className="text-sm text-muted-foreground">
+                                        No business units found for this client.
+                                    </p>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
 

@@ -231,7 +231,7 @@ show.head = (args: { client: string | number } | [client: string | number ] | st
     show.form = showForm
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/api/v1/clients/{client}'
  */
 export const update = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -246,7 +246,7 @@ update.definition = {
 
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/api/v1/clients/{client}'
  */
 update.url = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -274,7 +274,7 @@ update.url = (args: { client: string | number } | [client: string | number ] | s
 
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/api/v1/clients/{client}'
  */
 update.put = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -283,7 +283,7 @@ update.put = (args: { client: string | number } | [client: string | number ] | s
 })
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/api/v1/clients/{client}'
  */
 update.patch = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -293,7 +293,7 @@ update.patch = (args: { client: string | number } | [client: string | number ] |
 
     /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/api/v1/clients/{client}'
  */
     const updateForm = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -308,7 +308,7 @@ update.patch = (args: { client: string | number } | [client: string | number ] |
 
             /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/api/v1/clients/{client}'
  */
         updateForm.put = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -322,7 +322,7 @@ update.patch = (args: { client: string | number } | [client: string | number ] |
         })
             /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/api/v1/clients/{client}'
  */
         updateForm.patch = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -338,7 +338,7 @@ update.patch = (args: { client: string | number } | [client: string | number ] |
     update.form = updateForm
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::destroy
- * @see Modules/Client/app/Http/Controllers/ClientController.php:66
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:73
  * @route '/api/v1/clients/{client}'
  */
 export const destroy = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -353,7 +353,7 @@ destroy.definition = {
 
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::destroy
- * @see Modules/Client/app/Http/Controllers/ClientController.php:66
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:73
  * @route '/api/v1/clients/{client}'
  */
 destroy.url = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -381,7 +381,7 @@ destroy.url = (args: { client: string | number } | [client: string | number ] | 
 
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::destroy
- * @see Modules/Client/app/Http/Controllers/ClientController.php:66
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:73
  * @route '/api/v1/clients/{client}'
  */
 destroy.delete = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -391,7 +391,7 @@ destroy.delete = (args: { client: string | number } | [client: string | number ]
 
     /**
 * @see \Modules\Client\Http\Controllers\ClientController::destroy
- * @see Modules/Client/app/Http/Controllers/ClientController.php:66
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:73
  * @route '/api/v1/clients/{client}'
  */
     const destroyForm = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -406,7 +406,7 @@ destroy.delete = (args: { client: string | number } | [client: string | number ]
 
             /**
 * @see \Modules\Client\Http\Controllers\ClientController::destroy
- * @see Modules/Client/app/Http/Controllers/ClientController.php:66
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:73
  * @route '/api/v1/clients/{client}'
  */
         destroyForm.delete = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

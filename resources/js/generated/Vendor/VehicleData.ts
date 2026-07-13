@@ -1,5 +1,5 @@
-import { InsuranceData } from './InsuranceData';
-import { DriverData } from './DriverData';
+import type { InsuranceData } from './InsuranceData';
+import type { DriverData } from './DriverData';
 export type VehicleData = {
     readonly id: number;
     readonly vendorId: number;

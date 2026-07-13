@@ -8,6 +8,8 @@ use Modules\Client\Classes\Data\CreateBusinessUnitData;
 use Modules\Client\Classes\Data\CreateClientData;
 use Modules\Client\Repositories\BusinessUnitRepository;
 use Modules\Client\Repositories\ClientRepository;
+use Modules\Client\Classes\Data\BusinessUnitData;
+use Modules\Client\Classes\Data\PaginatedBusinessUnitData;
 
 class ClientService
 {
@@ -37,10 +39,14 @@ class ClientService
     }
 
     public function createBusinessUnit(CreateBusinessUnitData $data){
-        $this->businessUnitRepo->createBusinessunit($data->toArray());
+        $this->businessUnitRepo->createBusinessunit($data->businessUnitAttributes());
     }
 
-    public function getBusinessUnits($clientId){
-        
+    public function getPaginatedBusinessUnits(int $clientId, int $pageSize = 10, int $page = 1)
+    {
+        $businessUnits = $this->businessUnitRepo->getPaginatedBusinessUnits($clientId, $pageSize, $page);
+        return PaginatedBusinessUnitData::from($businessUnits);
     }
+    
+    
 }

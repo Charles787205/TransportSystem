@@ -181,6 +181,7 @@ class ComposerStaticInitc5496d2b60adf5c56639853defc2e8b1
             'Modules\\DispatchOperation\\Database\\Seeders\\' => 43,
             'Modules\\DispatchOperation\\Database\\Factories\\' => 45,
             'Modules\\DispatchOperation\\' => 26,
+            'Modules\\Core\\' => 13,
             'Modules\\Client\\Tests\\' => 21,
             'Modules\\Client\\Database\\Seeders\\' => 32,
             'Modules\\Client\\Database\\Factories\\' => 34,
@@ -639,7 +640,8 @@ class ComposerStaticInitc5496d2b60adf5c56639853defc2e8b1
         ),
         'Modules\\Planning\\Tests\\' =>
         array (
-            0 => __DIR__ . '/../..' . '/Modules/Planning/tests',
+            0 => __DIR__ . '/../..' . '/Modules/Core/tests',
+            1 => __DIR__ . '/../..' . '/Modules/Planning/tests',
         ),
         'Modules\\Planning\\Database\\Seeders\\' =>
         array (
@@ -668,6 +670,10 @@ class ComposerStaticInitc5496d2b60adf5c56639853defc2e8b1
         'Modules\\DispatchOperation\\' =>
         array (
             0 => __DIR__ . '/../..' . '/Modules/DispatchOperation/app',
+        ),
+        'Modules\\Core\\' =>
+        array (
+            0 => __DIR__ . '/../..' . '/Modules/Core/app',
         ),
         'Modules\\Client\\Tests\\' =>
         array (
@@ -5116,18 +5122,23 @@ class ComposerStaticInitc5496d2b60adf5c56639853defc2e8b1
         'Modules\\Auth\\Traits\\PasswordValidationRules' => __DIR__ . '/../..' . '/Modules/Auth/app/Traits/PasswordValidationRules.php',
         'Modules\\Auth\\Traits\\ProfileValidationRules' => __DIR__ . '/../..' . '/Modules/Auth/app/Traits/ProfileValidationRules.php',
         'Modules\\Auth\\Traits\\Test' => __DIR__ . '/../..' . '/Modules/Auth/app/Traits/Test.php',
+        'Modules\\Client\\Classes\\Data\\BusinessUnitData' => __DIR__ . '/../..' . '/Modules/Client/app/Classes/Data/BusinessUnitData.php',
         'Modules\\Client\\Classes\\Data\\ClientData' => __DIR__ . '/../..' . '/Modules/Client/app/Classes/Data/ClientData.php',
         'Modules\\Client\\Classes\\Data\\CreateBusinessUnitData' => __DIR__ . '/../..' . '/Modules/Client/app/Classes/Data/CreateBusinessUnitData.php',
         'Modules\\Client\\Classes\\Data\\CreateClientData' => __DIR__ . '/../..' . '/Modules/Client/app/Classes/Data/CreateClientData.php',
+        'Modules\\Client\\Classes\\Data\\PaginatedBusinessUnitData' => __DIR__ . '/../..' . '/Modules/Client/app/Classes/Data/PaginatedBusinessUnitData.php',
         'Modules\\Client\\Database\\Seeders\\ClientDatabaseSeeder' => __DIR__ . '/../..' . '/Modules/Client/database/seeders/ClientDatabaseSeeder.php',
+        'Modules\\Client\\Http\\Controllers\\ClientBusinessUnitController' => __DIR__ . '/../..' . '/Modules/Client/app/Http/Controllers/ClientBusinessUnitController.php',
         'Modules\\Client\\Http\\Controllers\\ClientController' => __DIR__ . '/../..' . '/Modules/Client/app/Http/Controllers/ClientController.php',
         'Modules\\Client\\Models\\BusinessUnit' => __DIR__ . '/../..' . '/Modules/Client/app/Models/BusinessUnit.php',
         'Modules\\Client\\Models\\Client' => __DIR__ . '/../..' . '/Modules/Client/app/Models/Client.php',
         'Modules\\Client\\Providers\\ClientServiceProvider' => __DIR__ . '/../..' . '/Modules/Client/app/Providers/ClientServiceProvider.php',
         'Modules\\Client\\Providers\\EventServiceProvider' => __DIR__ . '/../..' . '/Modules/Client/app/Providers/EventServiceProvider.php',
         'Modules\\Client\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/Modules/Client/app/Providers/RouteServiceProvider.php',
+        'Modules\\Client\\Repositories\\BusinessUnitRepository' => __DIR__ . '/../..' . '/Modules/Client/app/Repositories/BusinessUnitRepository.php',
         'Modules\\Client\\Repositories\\ClientRepository' => __DIR__ . '/../..' . '/Modules/Client/app/Repositories/ClientRepository.php',
         'Modules\\Client\\Services\\ClientService' => __DIR__ . '/../..' . '/Modules/Client/app/Services/ClientService.php',
+        'Modules\\Core\\Classes\\Data\\PaginatedLinks' => __DIR__ . '/../..' . '/Modules/Core/app/Classes/Data/PaginatedLinks.php',
         'Modules\\DispatchOperation\\Database\\Seeders\\DispatchOperationDatabaseSeeder' => __DIR__ . '/../..' . '/Modules/DispatchOperation/database/seeders/DispatchOperationDatabaseSeeder.php',
         'Modules\\DispatchOperation\\Http\\Controllers\\DispatchOperationController' => __DIR__ . '/../..' . '/Modules/DispatchOperation/app/Http/Controllers/DispatchOperationController.php',
         'Modules\\DispatchOperation\\Providers\\DispatchOperationServiceProvider' => __DIR__ . '/../..' . '/Modules/DispatchOperation/app/Providers/DispatchOperationServiceProvider.php',

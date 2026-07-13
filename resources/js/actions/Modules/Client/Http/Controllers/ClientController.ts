@@ -494,7 +494,7 @@ export const show = {
 
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/api/v1/clients/{client}'
  */
 const updateea31b889094195d46e90e7157acd1e61 = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -509,7 +509,7 @@ updateea31b889094195d46e90e7157acd1e61.definition = {
 
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/api/v1/clients/{client}'
  */
 updateea31b889094195d46e90e7157acd1e61.url = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -537,7 +537,7 @@ updateea31b889094195d46e90e7157acd1e61.url = (args: { client: string | number } 
 
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/api/v1/clients/{client}'
  */
 updateea31b889094195d46e90e7157acd1e61.put = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -546,7 +546,7 @@ updateea31b889094195d46e90e7157acd1e61.put = (args: { client: string | number } 
 })
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/api/v1/clients/{client}'
  */
 updateea31b889094195d46e90e7157acd1e61.patch = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -556,7 +556,7 @@ updateea31b889094195d46e90e7157acd1e61.patch = (args: { client: string | number 
 
     /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/api/v1/clients/{client}'
  */
     const updateea31b889094195d46e90e7157acd1e61Form = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -571,7 +571,7 @@ updateea31b889094195d46e90e7157acd1e61.patch = (args: { client: string | number 
 
             /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/api/v1/clients/{client}'
  */
         updateea31b889094195d46e90e7157acd1e61Form.put = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -585,7 +585,7 @@ updateea31b889094195d46e90e7157acd1e61.patch = (args: { client: string | number 
         })
             /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/api/v1/clients/{client}'
  */
         updateea31b889094195d46e90e7157acd1e61Form.patch = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -601,7 +601,7 @@ updateea31b889094195d46e90e7157acd1e61.patch = (args: { client: string | number 
     updateea31b889094195d46e90e7157acd1e61.form = updateea31b889094195d46e90e7157acd1e61Form
     /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/clients/{client}'
  */
 const update70e3494bda45dc4c18102ecad7998ceb = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -616,7 +616,7 @@ update70e3494bda45dc4c18102ecad7998ceb.definition = {
 
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/clients/{client}'
  */
 update70e3494bda45dc4c18102ecad7998ceb.url = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -644,7 +644,7 @@ update70e3494bda45dc4c18102ecad7998ceb.url = (args: { client: string | number } 
 
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/clients/{client}'
  */
 update70e3494bda45dc4c18102ecad7998ceb.put = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -653,7 +653,7 @@ update70e3494bda45dc4c18102ecad7998ceb.put = (args: { client: string | number } 
 })
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/clients/{client}'
  */
 update70e3494bda45dc4c18102ecad7998ceb.patch = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -663,7 +663,7 @@ update70e3494bda45dc4c18102ecad7998ceb.patch = (args: { client: string | number 
 
     /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/clients/{client}'
  */
     const update70e3494bda45dc4c18102ecad7998cebForm = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -678,7 +678,7 @@ update70e3494bda45dc4c18102ecad7998ceb.patch = (args: { client: string | number 
 
             /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/clients/{client}'
  */
         update70e3494bda45dc4c18102ecad7998cebForm.put = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -692,7 +692,7 @@ update70e3494bda45dc4c18102ecad7998ceb.patch = (args: { client: string | number 
         })
             /**
 * @see \Modules\Client\Http\Controllers\ClientController::update
- * @see Modules/Client/app/Http/Controllers/ClientController.php:61
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:68
  * @route '/clients/{client}'
  */
         update70e3494bda45dc4c18102ecad7998cebForm.patch = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -719,7 +719,7 @@ export const update = {
 
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::destroy
- * @see Modules/Client/app/Http/Controllers/ClientController.php:66
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:73
  * @route '/api/v1/clients/{client}'
  */
 const destroyea31b889094195d46e90e7157acd1e61 = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -734,7 +734,7 @@ destroyea31b889094195d46e90e7157acd1e61.definition = {
 
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::destroy
- * @see Modules/Client/app/Http/Controllers/ClientController.php:66
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:73
  * @route '/api/v1/clients/{client}'
  */
 destroyea31b889094195d46e90e7157acd1e61.url = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -762,7 +762,7 @@ destroyea31b889094195d46e90e7157acd1e61.url = (args: { client: string | number }
 
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::destroy
- * @see Modules/Client/app/Http/Controllers/ClientController.php:66
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:73
  * @route '/api/v1/clients/{client}'
  */
 destroyea31b889094195d46e90e7157acd1e61.delete = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -772,7 +772,7 @@ destroyea31b889094195d46e90e7157acd1e61.delete = (args: { client: string | numbe
 
     /**
 * @see \Modules\Client\Http\Controllers\ClientController::destroy
- * @see Modules/Client/app/Http/Controllers/ClientController.php:66
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:73
  * @route '/api/v1/clients/{client}'
  */
     const destroyea31b889094195d46e90e7157acd1e61Form = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -787,7 +787,7 @@ destroyea31b889094195d46e90e7157acd1e61.delete = (args: { client: string | numbe
 
             /**
 * @see \Modules\Client\Http\Controllers\ClientController::destroy
- * @see Modules/Client/app/Http/Controllers/ClientController.php:66
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:73
  * @route '/api/v1/clients/{client}'
  */
         destroyea31b889094195d46e90e7157acd1e61Form.delete = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -803,7 +803,7 @@ destroyea31b889094195d46e90e7157acd1e61.delete = (args: { client: string | numbe
     destroyea31b889094195d46e90e7157acd1e61.form = destroyea31b889094195d46e90e7157acd1e61Form
     /**
 * @see \Modules\Client\Http\Controllers\ClientController::destroy
- * @see Modules/Client/app/Http/Controllers/ClientController.php:66
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:73
  * @route '/clients/{client}'
  */
 const destroy70e3494bda45dc4c18102ecad7998ceb = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -818,7 +818,7 @@ destroy70e3494bda45dc4c18102ecad7998ceb.definition = {
 
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::destroy
- * @see Modules/Client/app/Http/Controllers/ClientController.php:66
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:73
  * @route '/clients/{client}'
  */
 destroy70e3494bda45dc4c18102ecad7998ceb.url = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -846,7 +846,7 @@ destroy70e3494bda45dc4c18102ecad7998ceb.url = (args: { client: string | number }
 
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::destroy
- * @see Modules/Client/app/Http/Controllers/ClientController.php:66
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:73
  * @route '/clients/{client}'
  */
 destroy70e3494bda45dc4c18102ecad7998ceb.delete = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -856,7 +856,7 @@ destroy70e3494bda45dc4c18102ecad7998ceb.delete = (args: { client: string | numbe
 
     /**
 * @see \Modules\Client\Http\Controllers\ClientController::destroy
- * @see Modules/Client/app/Http/Controllers/ClientController.php:66
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:73
  * @route '/clients/{client}'
  */
     const destroy70e3494bda45dc4c18102ecad7998cebForm = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -871,7 +871,7 @@ destroy70e3494bda45dc4c18102ecad7998ceb.delete = (args: { client: string | numbe
 
             /**
 * @see \Modules\Client\Http\Controllers\ClientController::destroy
- * @see Modules/Client/app/Http/Controllers/ClientController.php:66
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:73
  * @route '/clients/{client}'
  */
         destroy70e3494bda45dc4c18102ecad7998cebForm.delete = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -976,7 +976,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     create.form = createForm
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::edit
- * @see Modules/Client/app/Http/Controllers/ClientController.php:53
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:60
  * @route '/clients/{client}/edit'
  */
 export const edit = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -991,7 +991,7 @@ edit.definition = {
 
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::edit
- * @see Modules/Client/app/Http/Controllers/ClientController.php:53
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:60
  * @route '/clients/{client}/edit'
  */
 edit.url = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -1019,7 +1019,7 @@ edit.url = (args: { client: string | number } | [client: string | number ] | str
 
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::edit
- * @see Modules/Client/app/Http/Controllers/ClientController.php:53
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:60
  * @route '/clients/{client}/edit'
  */
 edit.get = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -1028,7 +1028,7 @@ edit.get = (args: { client: string | number } | [client: string | number ] | str
 })
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::edit
- * @see Modules/Client/app/Http/Controllers/ClientController.php:53
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:60
  * @route '/clients/{client}/edit'
  */
 edit.head = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -1038,7 +1038,7 @@ edit.head = (args: { client: string | number } | [client: string | number ] | st
 
     /**
 * @see \Modules\Client\Http\Controllers\ClientController::edit
- * @see Modules/Client/app/Http/Controllers/ClientController.php:53
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:60
  * @route '/clients/{client}/edit'
  */
     const editForm = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -1048,7 +1048,7 @@ edit.head = (args: { client: string | number } | [client: string | number ] | st
 
             /**
 * @see \Modules\Client\Http\Controllers\ClientController::edit
- * @see Modules/Client/app/Http/Controllers/ClientController.php:53
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:60
  * @route '/clients/{client}/edit'
  */
         editForm.get = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -1057,7 +1057,7 @@ edit.head = (args: { client: string | number } | [client: string | number ] | st
         })
             /**
 * @see \Modules\Client\Http\Controllers\ClientController::edit
- * @see Modules/Client/app/Http/Controllers/ClientController.php:53
+ * @see Modules/Client/app/Http/Controllers/ClientController.php:60
  * @route '/clients/{client}/edit'
  */
         editForm.head = (args: { client: string | number } | [client: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({

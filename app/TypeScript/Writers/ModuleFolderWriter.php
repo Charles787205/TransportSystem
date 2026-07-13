@@ -76,7 +76,7 @@ class ModuleFolderWriter implements Writer
             $content = '';
 
             foreach ($imports->getTypeScriptNodes() as $import) {
-                $content .= $import->write($context) . PHP_EOL;
+                $content .= $this->toTypeImport($import->write($context)) . PHP_EOL;
             }
 
             $content .= $transformed->write($context) . PHP_EOL;
@@ -89,6 +89,17 @@ class ModuleFolderWriter implements Writer
         $files[] = new WriteableFile(
             "{$folder}/index.ts",
             implode(PHP_EOL, $exports)
+        );
+    }
+    protected function toTypeImport(string $importStatement): string
+    {
+        // Turns `import { Foo } from '...'` into `import type { Foo } from '...'`
+        // Leaves already-correct `import type { ... }` untouched.
+        return preg_replace(
+            '/^import\s+(?!type\s)/',
+            'import type ',
+            $importStatement,
+            1
         );
     }
 

@@ -6,7 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Client\Classes\Data\CreateBusinessUnitData;
 use Modules\Client\Services\ClientService;
-
+use Modules\Client\Models\Client;
+use Inertia\Inertia;
 class ClientBusinessUnitController extends Controller
 {
     
@@ -14,10 +15,18 @@ class ClientBusinessUnitController extends Controller
     public function __construct(
         private ClientService $clientService
     ){}
-    public function index()
-    {
-        
-        return view('client::index');
+    public function index(Client $client)
+    {   
+
+        $businessUnits = $this->clientService->getPaginatedBusinessUnits($client->id);
+        return Inertia::render(
+            'client/business-clients/index',
+            [
+                'clientId' => $client->id,
+                'businessUnits' => $businessUnits,
+                
+            ]
+        );
     }
 
     /**
@@ -26,7 +35,9 @@ class ClientBusinessUnitController extends Controller
     public function create()
     {
         
-        return view('client::create');
+       return Inertia::render(
+            'client/business-clients/create',
+       );
     }
 
     /**

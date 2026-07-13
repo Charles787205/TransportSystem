@@ -40,12 +40,17 @@ class ClientController extends Controller
     /**
      * Show the specified resource.
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        $page = max(1, (int) $request->input('page', 1));
         $client = $this->clientService->getClient($id);
+
         return Inertia::render(
             'client/show',
-            ['client' => $client]
+            [
+                'client' => $client,
+                'businessUnits' => $this->clientService->getPaginatedBusinessUnits($id, 10, $page),
+            ]
         );
     }
 

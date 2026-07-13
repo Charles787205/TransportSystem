@@ -14,11 +14,12 @@ import {
 import type { ClientData } from "@/generated/Client"
 type ClientsPageProps = {
   clients: ClientData[]
+  businessUnits: any
 }
 
 const ClientsPage = ({ clients }: ClientsPageProps) => {
   const [isOpen, setIsOpen] = useState(false);
-
+  
   return (
     <>
       <Head title="Clients" />

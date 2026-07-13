@@ -13,4 +13,12 @@ class CreateBusinessUnitData extends Data
         public string $name,
         public string $touchpoint,
     ) {}
+
+    public function businessUnitAttributes(){
+        return [
+            'client_id' => $this->clientId,
+            'name' => $this->name,
+            'touchpoint'=> $this->touchpoint
+        ];
+    }
 }
