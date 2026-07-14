@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 // use Modules\Planning\Database\Factories\PlanFactory;
 
-#[Fillable(['business_unit_id', 'destination_id', , 'number_of_vehicles', 'dispatch_date'])]
+#[Fillable(['business_unit_id', 'destination_id',  'number_of_vehicles', 'dispatch_date'])]
 class Plan extends Model
 {
     use HasFactory;

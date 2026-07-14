@@ -3,8 +3,10 @@
 namespace Modules\Planning\Classes\Data;
 use Modules\Client\Classes\Data\BusinessUnitData;
 use Modules\Client\Classes\Data\DestinationData;
+use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 use Spatie\TypeScriptTransformer\Attributes\TypeScriptType;
 
+#[TypeScript()]
 class PlanWithBUandDestination
 {
     public function __construct(
