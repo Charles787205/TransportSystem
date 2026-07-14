@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('business_unit_id')->constrained()->cascadeOnDelete();
             $table->foreignId('destination_id')->constrained()->cascadeOnDelete();
-            $table->string('batch', 4)->default(1);
             $table->integer('number_of_vehicles');
             $table->date('dispatch_date');
             $table->timestamps();

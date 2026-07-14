@@ -157,11 +157,11 @@ const Show = ({ client, businessUnits }: { client: ClientData; businessUnits: Pa
                                 <Share2 className="size-4" />
                                 Business Units
                             </CardTitle>
-                            <Button onClick={()=>{
+                            <Button className='bg-blue-500 text-white' onClick={()=>{
                                 router.visit(BUIndex.url({client: client.id}))
                                 }} variant="ghost" size="sm">
-                                <Plus className="size-4" />
-                                Add
+                                
+                                Business Unit page
                             </Button>
                             
                         </CardHeader>
