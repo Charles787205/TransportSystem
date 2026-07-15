@@ -9,13 +9,17 @@ use Modules\Client\Classes\Data\CreateClientData;
 use Modules\Client\Repositories\BusinessUnitRepository;
 use Modules\Client\Repositories\ClientRepository;
 use Modules\Client\Classes\Data\BusinessUnitData;
+use Modules\Client\Classes\Data\CreateDestinationData;
+use Modules\Client\Classes\Data\DestinationData;
 use Modules\Client\Classes\Data\PaginatedBusinessUnitData;
-
+use Modules\Client\Repositories\DestinationRepository;
+use Modules\Client\Classes\Data\PaginatedDestinationData;
 class ClientService
 {
     public function __construct(
         private ClientRepository $clientRepo,
-        private BusinessUnitRepository $businessUnitRepo
+        private BusinessUnitRepository $businessUnitRepo,
+        private DestinationRepository $destinationRepo
     ){}
 
     /**
@@ -30,7 +34,7 @@ class ClientService
     {
         $client = $this->clientRepo->createClient($data->clientAttributes());
         
-        return ClientData::from($client);
+        return ClientData::from($client->refresh());
     }
     public function getClient(int $id) : ClientData 
     {   
@@ -47,6 +51,17 @@ class ClientService
         $businessUnits = $this->businessUnitRepo->getPaginatedBusinessUnits($clientId, $pageSize, $page);
         return PaginatedBusinessUnitData::from($businessUnits);
     }
+    public function createDestination(CreateDestinationData $data){
+        $destination = $this->destinationRepo->createDestination($data->destinationAttributes());
+        return DestinationData::from($destination);
+    }
+
+    public function getPaginatedClientsDestination(int $clientId){
+        $filter = ['client_id' => $clientId];
+        $destinations = $this->destinationRepo->getPaginatedDestinations(where: $filter);
+        return PaginatedDestinationData::from($destinations);
+    }
+
     
     
 }

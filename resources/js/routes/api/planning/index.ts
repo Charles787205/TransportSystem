@@ -79,7 +79,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::store
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:34
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:41
  * @route '/api/v1/plannings'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -94,7 +94,7 @@ store.definition = {
 
 /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::store
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:34
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:41
  * @route '/api/v1/plannings'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -103,7 +103,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::store
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:34
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:41
  * @route '/api/v1/plannings'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -113,7 +113,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::store
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:34
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:41
  * @route '/api/v1/plannings'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -123,7 +123,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::store
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:34
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:41
  * @route '/api/v1/plannings'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -134,7 +134,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
     store.form = storeForm
 /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::show
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:39
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:46
  * @route '/api/v1/plannings/{planning}'
  */
 export const show = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -149,7 +149,7 @@ show.definition = {
 
 /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::show
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:39
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:46
  * @route '/api/v1/plannings/{planning}'
  */
 show.url = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -177,7 +177,7 @@ show.url = (args: { planning: string | number } | [planning: string | number ] |
 
 /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::show
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:39
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:46
  * @route '/api/v1/plannings/{planning}'
  */
 show.get = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -186,7 +186,7 @@ show.get = (args: { planning: string | number } | [planning: string | number ] |
 })
 /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::show
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:39
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:46
  * @route '/api/v1/plannings/{planning}'
  */
 show.head = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -196,7 +196,7 @@ show.head = (args: { planning: string | number } | [planning: string | number ] 
 
     /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::show
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:39
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:46
  * @route '/api/v1/plannings/{planning}'
  */
     const showForm = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -206,7 +206,7 @@ show.head = (args: { planning: string | number } | [planning: string | number ] 
 
             /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::show
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:39
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:46
  * @route '/api/v1/plannings/{planning}'
  */
         showForm.get = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -215,7 +215,7 @@ show.head = (args: { planning: string | number } | [planning: string | number ] 
         })
             /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::show
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:39
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:46
  * @route '/api/v1/plannings/{planning}'
  */
         showForm.head = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -231,7 +231,7 @@ show.head = (args: { planning: string | number } | [planning: string | number ] 
     show.form = showForm
 /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::update
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:55
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:62
  * @route '/api/v1/plannings/{planning}'
  */
 export const update = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -246,7 +246,7 @@ update.definition = {
 
 /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::update
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:55
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:62
  * @route '/api/v1/plannings/{planning}'
  */
 update.url = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -274,7 +274,7 @@ update.url = (args: { planning: string | number } | [planning: string | number ]
 
 /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::update
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:55
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:62
  * @route '/api/v1/plannings/{planning}'
  */
 update.put = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'put'> => ({
@@ -283,7 +283,7 @@ update.put = (args: { planning: string | number } | [planning: string | number ]
 })
 /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::update
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:55
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:62
  * @route '/api/v1/plannings/{planning}'
  */
 update.patch = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'patch'> => ({
@@ -293,7 +293,7 @@ update.patch = (args: { planning: string | number } | [planning: string | number
 
     /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::update
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:55
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:62
  * @route '/api/v1/plannings/{planning}'
  */
     const updateForm = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -308,7 +308,7 @@ update.patch = (args: { planning: string | number } | [planning: string | number
 
             /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::update
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:55
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:62
  * @route '/api/v1/plannings/{planning}'
  */
         updateForm.put = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -322,7 +322,7 @@ update.patch = (args: { planning: string | number } | [planning: string | number
         })
             /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::update
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:55
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:62
  * @route '/api/v1/plannings/{planning}'
  */
         updateForm.patch = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -338,7 +338,7 @@ update.patch = (args: { planning: string | number } | [planning: string | number
     update.form = updateForm
 /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::destroy
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:60
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:67
  * @route '/api/v1/plannings/{planning}'
  */
 export const destroy = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -353,7 +353,7 @@ destroy.definition = {
 
 /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::destroy
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:60
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:67
  * @route '/api/v1/plannings/{planning}'
  */
 destroy.url = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions) => {
@@ -381,7 +381,7 @@ destroy.url = (args: { planning: string | number } | [planning: string | number 
 
 /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::destroy
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:60
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:67
  * @route '/api/v1/plannings/{planning}'
  */
 destroy.delete = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'delete'> => ({
@@ -391,7 +391,7 @@ destroy.delete = (args: { planning: string | number } | [planning: string | numb
 
     /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::destroy
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:60
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:67
  * @route '/api/v1/plannings/{planning}'
  */
     const destroyForm = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -406,7 +406,7 @@ destroy.delete = (args: { planning: string | number } | [planning: string | numb
 
             /**
 * @see \Modules\Planning\Http\Controllers\PlanningController::destroy
- * @see Modules/Planning/app/Http/Controllers/PlanningController.php:60
+ * @see Modules/Planning/app/Http/Controllers/PlanningController.php:67
  * @route '/api/v1/plannings/{planning}'
  */
         destroyForm.delete = (args: { planning: string | number } | [planning: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({

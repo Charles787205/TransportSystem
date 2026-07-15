@@ -32,7 +32,7 @@ export default function BusinessUnitsPage({
   businessUnits: PaginatedBusinessUnitData
 }) {
   const { data, from, to, total, links } = businessUnits
-
+  console.log(businessUnits);
   const activeCount = data.filter(
     (bu) => bu.active === 'true' || bu.active === '1',
   ).length

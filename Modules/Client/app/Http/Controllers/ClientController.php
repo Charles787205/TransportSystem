@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Modules\Client\Classes\Data\CreateClientData;
 use Modules\Client\Services\ClientService;
+use Modules\Client\Models\Client;
 
 class ClientController extends Controller
 {
@@ -40,16 +41,19 @@ class ClientController extends Controller
     /**
      * Show the specified resource.
      */
-    public function show(Request $request, $id)
+    public function show(Client $client)
     {
-        $page = max(1, (int) $request->input('page', 1));
-        $client = $this->clientService->getClient($id);
+    
+        $client = $this->clientService->getClient($client->id);
+        $businessUnits = $this->clientService->getPaginatedBusinessUnits($client->id, 10);
+        $destinations = $this->clientService->getPaginatedClientsDestination($client->id);
 
         return Inertia::render(
             'client/show',
             [
                 'client' => $client,
-                'businessUnits' => $this->clientService->getPaginatedBusinessUnits($id, 10, $page),
+                'businessUnits' => $businessUnits,
+                'destinations' => $destinations
             ]
         );
     }

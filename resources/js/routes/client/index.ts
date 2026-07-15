@@ -1,5 +1,6 @@
 import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
 import bu from './bu'
+import destination from './destination'
 /**
 * @see \Modules\Client\Http\Controllers\ClientController::index
  * @see Modules/Client/app/Http/Controllers/ClientController.php:14
@@ -605,6 +606,7 @@ edit: Object.assign(edit, edit),
 update: Object.assign(update, update),
 destroy: Object.assign(destroy, destroy),
 bu: Object.assign(bu, bu),
+destination: Object.assign(destination, destination),
 }
 
 export default client

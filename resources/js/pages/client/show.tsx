@@ -19,10 +19,11 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import type {  ClientData } from '@/generated/Client';
+import type {  ClientData, PaginatedDestinationData } from '@/generated/Client';
 import type { PaginatedBusinessUnitData } from '@/generated/Client';
 import { index } from '@/routes/client';
 import { index as BUIndex } from '@/routes/client/bu/index';
+import {index as DestinationIndex} from '@/routes/client/destination'
 const getInitials = (name: string) =>
     name
         .split(' ')
@@ -31,7 +32,9 @@ const getInitials = (name: string) =>
         .join('')
         .toUpperCase();
 
-const Show = ({ client, businessUnits }: { client: ClientData; businessUnits: PaginatedBusinessUnitData }) => {
+const Show = ({ client,
+    businessUnits,
+    destinations } : { client: ClientData; businessUnits: PaginatedBusinessUnitData, destinations: PaginatedDestinationData }) => {
     const handlePageChange = (url: string | null) => {
         if (url) {
             router.get(url, {}, { preserveState: true });
@@ -229,23 +232,70 @@ const Show = ({ client, businessUnits }: { client: ClientData; businessUnits: Pa
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
                             <CardTitle className="flex items-center gap-2">
-                                <Truck className="size-4" />
-                                Deliveries
+                                <Share2 className="size-4" />
+                                Destinations
                             </CardTitle>
-                            <Button variant="ghost" size="sm">
-                                View all
+                            <Button className='bg-blue-500 text-white' onClick={()=>{
+                                router.visit(DestinationIndex.url({client: client.id}))
+                                }} variant="ghost" size="sm">
+                                
+                                Destination Index
                             </Button>
+                            
                         </CardHeader>
+                        {/**Destinations */}
                         <CardContent>
-                            <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed py-10 text-center">
-                                <Truck className="size-8 text-muted-foreground" />
-                                <p className="text-sm text-muted-foreground">
-                                    No deliveries recorded yet.
-                                </p>
-                            </div>
+                            {destinations.data.length > 0 ? (
+                                <div className="space-y-4">
+                                    <div className="space-y-2">
+                                        {destinations.data.map((destination, index) => (
+                                            <div
+                                                key={`${destination.name}-${index}`}
+                                                className="flex items-center justify-between rounded-md border p-3"
+                                            >
+                                                <div>
+                                                    <p className="font-medium">
+                                                        {destination.name}
+                                                    </p>
+                                                    
+                                                </div>
+                                                
+                                            </div>
+                                        ))}
+                                    </div>
+                                    
+                                    {destinations.lastPage > 1 && (
+                                        <div className="flex items-center justify-between">
+                                            <p className="text-sm text-muted-foreground">
+                                                Showing {destinations.from ?? 0}–{destinations.to ?? 0} of {destinations.total}
+                                            </p>
+                                            <div className="flex flex-wrap gap-1">
+                                                {destinations.links.map((link, index) => (
+                                                    <Button
+                                                        key={`${link.label}-${index}`}
+                                                        variant={link.active ? 'default' : 'outline'}
+                                                        size="sm"
+                                                        disabled={!link.url}
+                                                        onClick={() => handlePageChange(link.url)}
+                                                       
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )} 
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed py-10 text-center">
+                                    <Share2 className="size-8 text-muted-foreground" />
+                                    <p className="text-sm text-muted-foreground">
+                                        No business units found for this client.
+                                    </p>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
                 </div>
+                
                 {/* Plans, deliveries, charts */}
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                     <Card>

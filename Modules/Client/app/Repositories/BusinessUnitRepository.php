@@ -14,14 +14,16 @@ class BusinessUnitRepository
         return $bu->refresh();
     }
 
-    public function getBusinessUnits(int $clientId): Collection
-    {
-        $bu = BusinessUnit::where('client_id', $clientId)->get();
-        return $bu;
-    }
+    
+    
     public function getPaginatedBusinessUnits(int $clientId, int $pageSize, int $page = 1): LengthAwarePaginator
     {
         return BusinessUnit::where('client_id', $clientId)
             ->paginate($pageSize, ['*'], 'page', $page);
+    }
+
+    public function getBusinessUnits(array $where = []): Collection
+    {
+        return BusinessUnit::where($where)->get();
     }
 }

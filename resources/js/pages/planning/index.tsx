@@ -38,21 +38,21 @@ import { index } from '@/routes/planning'
 const ALL = 'all'
 
 export default function PlanningPage({
-  plans,
+  paginatedPlans,
   businessUnits,
   destinations,
   filters,
 }: {
-  plans: PaginatedPlanData
+  paginatedPlans: PaginatedPlanData
   businessUnits: BusinessUnitData[]
   destinations: DestinationData[]
   filters?: {
     search?: string
     business_unit_id?: string
-    destination_id?: string
+  destination_id?: string
   }
 }) {
-  const { plans: data, from, to, total, links } = plans
+  const { plans, from, to, total, links } = paginatedPlans
 
   const [search, setSearch] = useState(filters?.search ?? '')
   const [businessUnitId, setBusinessUnitId] = useState(
@@ -124,14 +124,27 @@ export default function PlanningPage({
 
   const hasActiveFilters =
     search || businessUnitId !== ALL || destinationId !== ALL
+  console.log({
+    plans: plans,
+    businessUnits: businessUnits,
+    destinations: destinations,
+    filters: filters
+  })
+
+ 
 
   return (
     <div className="flex flex-col gap-6 p-6">
-      <div>
-        <h1 className="text-xl font-semibold text-slate-900">Planning</h1>
-        <p className="text-sm text-slate-500">
-          View and manage dispatch plans across business units
-        </p>
+      <div className="flex w-full">
+        <div>
+          <h1 className="text-xl font-semibold text-slate-900">Planning</h1>
+          <p className="text-sm text-slate-500">
+            View and manage dispatch plans across business units
+          </p>
+        </div>
+        <Button className='ml-auto'>
+          Somehitng
+        </Button>
       </div>
 
       <div className="grid grid-cols-3 gap-4">
@@ -221,7 +234,7 @@ export default function PlanningPage({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {data.length === 0 ? (
+            {plans.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={4} className="py-10 text-center text-slate-400">
                   <div className="flex flex-col items-center gap-2">
@@ -231,7 +244,7 @@ export default function PlanningPage({
                 </TableCell>
               </TableRow>
             ) : (
-              data.map((plan) => {
+              plans.map((plan) => {
                 const isActive =
                   plan.businessUnit.active === 'true' ||
                   plan.businessUnit.active === '1'
@@ -248,7 +261,7 @@ export default function PlanningPage({
                       </div>
                     </TableCell>
                     <TableCell className="text-slate-600">
-                      {plan.dispatchData}
+                     "dispatch  "
                     </TableCell>
                     <TableCell>
                       <Badge
@@ -270,7 +283,7 @@ export default function PlanningPage({
         </Table>
       </div>
 
-      {data.length > 0 && (
+      {plans.length > 0 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-slate-500">
             Showing <span className="font-medium text-slate-900">{from}</span>–

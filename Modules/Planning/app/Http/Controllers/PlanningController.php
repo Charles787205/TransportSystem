@@ -5,18 +5,25 @@ namespace Modules\Planning\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-
+use Modules\Planning\Classes\Data\PlanIndexFilterData;
+use Modules\Planning\Services\PlanService;
 
 
 class PlanningController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function __construct(
+        private PlanService $planService,
+    )
+    {}
+    public function index(Request $request)
     {
+        
+        $filters = PlanIndexFilterData::from($request->query());
+        $data = $this->planService->getDataForIndex($filters);
+        
         return Inertia::render(
-            'planning/index'
+            'planning/index',
+            $data
         );
     }
 

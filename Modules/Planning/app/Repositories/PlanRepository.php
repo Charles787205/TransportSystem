@@ -12,11 +12,13 @@ class PlanRepository
         return Plan::create($data);
     }
 
-    public function getPaginatedPlans(array $where =[], int $pageSize = 15): LengthAwarePaginator
+    public function getPaginatedPlans(array $where =[], int $pageSize = 15, array $with=[]): LengthAwarePaginator
     {
-        return Plan::where($where)
+        return Plan::with($with)->where($where)
         ->latest()
         ->paginate($pageSize);
     }
+
+    
 
 }

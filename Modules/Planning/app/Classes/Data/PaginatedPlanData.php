@@ -2,7 +2,6 @@
 
 namespace Modules\Planning\Classes\Data;
 
-use Modules\Planning\Classes\Data\PlanData;
 use Modules\Core\Classes\Data\PaginatedLink;
 use Spatie\TypeScriptTransformer\Attributes\TypeScriptType;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
@@ -11,14 +10,14 @@ use Spatie\LaravelData\Attributes\MapName;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\DataCollection;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
-
+use Spatie\LaravelData\Attributes\MapInputName;
 #[TypeScript()]
 class PaginatedPlanData extends Data
 {
     public function __construct(
-        #[TypeScriptType("BusinessUnitData[]")]
+        #[TypeScriptType("PlanWithBUandDestination[]")]
         #[DataCollectionOf(PlanWithBUandDestination::class)]
-        #[MapName('data')]
+        #[MapInputName('data')]
         public DataCollection $plans,
         public int $currentPage,
         public int $lastPage,

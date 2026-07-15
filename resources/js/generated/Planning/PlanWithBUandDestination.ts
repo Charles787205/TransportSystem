@@ -4,5 +4,5 @@ export type PlanWithBUandDestination = {
     id: number;
     businessUnit: BusinessUnitData;
     destination: DestinationData;
-    dispatchData: string;
+    dispatchDate: string;
 };
