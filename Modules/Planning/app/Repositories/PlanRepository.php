@@ -19,6 +19,9 @@ class PlanRepository
         ->paginate($pageSize);
     }
 
-    
+    public function getPlan(int $id, array $with = []): Plan
+    {
+        return Plan::with($with)->findOrFail($id);
+    }
 
 }

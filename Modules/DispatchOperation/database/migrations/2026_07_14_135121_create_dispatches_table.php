@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('driver_id')->constrained();
             $table->foreignId('business_unit_id')->constrained();
             $table->foreignId('destination_id')->constrained();
-            $table->foreignId('plan_id')->nullable()->constrained();
             $table->string('service_type', 20);
             $table->date('dispatch_date');
             $table->time('assigned_call_time');

@@ -11,6 +11,7 @@ use Modules\Planning\Repositories\PlanRepository;
 use Modules\Client\Repositories\BusinessUnitRepository;
 use Modules\Client\Repositories\DestinationRepository;
 use Modules\Planning\Classes\Data\PlanIndexFilterData;
+use Modules\Planning\Classes\Data\PlanWithBUandDestinationData;
 
 class PlanService
 {
@@ -21,11 +22,12 @@ class PlanService
         )
     {}
     public function createPlan(CreatePlanData $data){
-        $plan = $this->planRepo->createPlan($data->toArray());
+        $plan = $this->planRepo->createPlan($data->planAttributes());
         return $plan;
     }
 
-    public function getPaginatedPlan(){
+    public function getPaginatedPlan(): PaginatedPlanData
+    {
         $plans = $this->planRepo->getPaginatedPlans(pageSize: 20);
         return PaginatedPlanData::from($plans);
     }
@@ -33,7 +35,7 @@ class PlanService
     public function getDataForIndex(PlanIndexFilterData $filters): array {
         $destinations = $this->destinationRepo->getDestinations();
         $businessUnits = $this->businessUnitRepo->getBusinessUnits();
-        $plans = $this->planRepo->getPaginatedPlans(where: $filters->filterAttributes(), with: ['destinations', 'business_units']);
+        $plans = $this->planRepo->getPaginatedPlans(where: $filters->filterAttributes(), with: ['destination', 'businessUnit']);
         
         return [
             'destinations' => $destinations->map(fn ($dest) => DestinationData::from($dest)),
@@ -42,4 +44,12 @@ class PlanService
             'filters' => $filters
         ];
     }
+
+    public function getPlanDetails(int $id): PlanWithBUandDestinationData
+    {
+        $plan = $this->planRepo->getPlan($id, ['businessUnit', 'destination']);
+        return PlanWithBUandDestinationData::from($plan);
+    }
+
+    
 }

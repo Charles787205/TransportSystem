@@ -1,10 +1,19 @@
-import { router } from '@inertiajs/react'
-import { Search, ClipboardList, MapPin, X } from 'lucide-react'
+import { Link, router } from '@inertiajs/react'
+import { Search, ClipboardList, MapPin, X, MapPinHouse, MoreHorizontal } from 'lucide-react'
+
 import { useEffect, useRef, useState } from 'react'
 
+import CreatePlanModal from '@/components/client/create-plan-modal'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Input } from '@/components/ui/input'
+
 import {
   Pagination,
   PaginationContent,
@@ -33,8 +42,7 @@ import {
 import type { BusinessUnitData } from '@/generated/Client'
 import type { DestinationData } from '@/generated/Client'
 import type { PaginatedPlanData } from '@/generated/Planning'
-import { index } from '@/routes/planning'
-
+import { destroy, edit, index, show } from '@/routes/planning'
 const ALL = 'all'
 
 export default function PlanningPage({
@@ -122,6 +130,16 @@ export default function PlanningPage({
     applyFilters({})
   }
 
+  const handleDelete = (planId: number | string) => {
+    if (!window.confirm('Delete this plan? This action cannot be undone.')) {
+      return
+    }
+
+    router.delete(destroy({ planning: planId }).url, {
+      preserveScroll: true,
+    })
+  }
+
   const hasActiveFilters =
     search || businessUnitId !== ALL || destinationId !== ALL
   console.log({
@@ -132,7 +150,7 @@ export default function PlanningPage({
   })
 
  
-
+  
   return (
     <div className="flex flex-col gap-6 p-6">
       <div className="flex w-full">
@@ -142,9 +160,8 @@ export default function PlanningPage({
             View and manage dispatch plans across business units
           </p>
         </div>
-        <Button className='ml-auto'>
-          Somehitng
-        </Button>
+        
+        <div className="ml-auto"><CreatePlanModal /></div>
       </div>
 
       <div className="grid grid-cols-3 gap-4">
@@ -229,7 +246,13 @@ export default function PlanningPage({
                 Dispatch Date
               </TableHead>
               <TableHead className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+                Number Of Vehicles
+              </TableHead>
+              <TableHead className="text-xs font-medium tracking-wide text-slate-500 uppercase">
                 Status
+              </TableHead>
+              <TableHead className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+                Actions
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -252,7 +275,10 @@ export default function PlanningPage({
                 return (
                   <TableRow key={plan.id} className="border-gray-100 hover:bg-blue-50">
                     <TableCell className="font-medium text-slate-900">
-                      {plan.businessUnit.name}
+                      <div className="flex items-center gap-1 5">
+                        <MapPinHouse className="h-3.5 w-3.5 text-slate-400"/>
+                      {`${plan.businessUnit.touchpoint} ${plan.businessUnit.name}`}
+                      </div>
                     </TableCell>
                     <TableCell className="text-slate-600">
                       <div className="flex items-center gap-1.5">
@@ -261,8 +287,11 @@ export default function PlanningPage({
                       </div>
                     </TableCell>
                     <TableCell className="text-slate-600">
-                     "dispatch  "
+                     {plan.dispatchDate}
                     </TableCell>
+                    <TableHead className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+                      {plan.numberOfVehicles}
+                    </TableHead>
                     <TableCell>
                       <Badge
                         variant={isActive ? 'default' : 'secondary'}
@@ -274,6 +303,37 @@ export default function PlanningPage({
                       >
                         {isActive ? 'Active' : 'Inactive'}
                       </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8"
+                          >
+                            <MoreHorizontal className="h-4 w-4" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem asChild>
+                            <Link href={show({ planning: plan.id }).url}>
+                              View
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem asChild>
+                            <Link href={edit({ planning: plan.id }).url}>
+                              Edit
+                            </Link>
+                          </DropdownMenuItem>
+                          <DropdownMenuItem
+                            className="text-destructive focus:text-destructive"
+                            onClick={() => handleDelete(plan.id)}
+                          >
+                            Delete
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </TableCell>
                   </TableRow>
                 )

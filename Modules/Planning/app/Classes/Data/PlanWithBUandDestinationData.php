@@ -8,7 +8,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 use Spatie\TypeScriptTransformer\Attributes\TypeScriptType;
 
 #[TypeScript()]
-class PlanWithBUandDestination extends Data
+class PlanWithBUandDestinationData extends Data
 {
     public function __construct(
         public int $id,
@@ -17,5 +17,6 @@ class PlanWithBUandDestination extends Data
         #[TypeScriptType('DestinationData')]
         public DestinationData $destination,
         public string $dispatchDate,
+        public int $numberOfVehicles
     ) {}
 }

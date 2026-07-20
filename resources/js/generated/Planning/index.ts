@@ -1,3 +1,4 @@
+export type { CreatePlanData } from './CreatePlanData';
 export type { PaginatedPlanData } from './PaginatedPlanData';
 export type { PlanData } from './PlanData';
-export type { PlanWithBUandDestination } from './PlanWithBUandDestination';
+export type { PlanWithBUandDestinationData } from './PlanWithBUandDestinationData';

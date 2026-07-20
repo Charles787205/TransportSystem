@@ -1,7 +1,7 @@
-import type { PlanWithBUandDestination } from './PlanWithBUandDestination';
+import type { PlanWithBUandDestinationData } from './PlanWithBUandDestinationData';
 import type { PaginatedLink } from '../Core/PaginatedLink';
 export type PaginatedPlanData = {
-    plans: PlanWithBUandDestination[];
+    plans: PlanWithBUandDestinationData[];
     currentPage: number;
     lastPage: number;
     from: number | null;

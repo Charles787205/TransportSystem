@@ -5,8 +5,11 @@ namespace Modules\Planning\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Modules\Planning\Classes\Data\CreatePlanData;
+use Modules\Planning\Classes\Data\PlanData;
 use Modules\Planning\Classes\Data\PlanIndexFilterData;
 use Modules\Planning\Services\PlanService;
+use Modules\Planning\Models\Plan;
 
 
 class PlanningController extends Controller
@@ -38,14 +41,23 @@ class PlanningController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {}
+    public function store(CreatePlanData $data) {
+        $this->planService->createPlan($data);
+        return back()->with('success', 'Plan created');
+    }
 
     /**
      * Show the specified resource.
      */
-    public function show($id)
+    public function show(int $id)
     {
-        return view('planning::show');
+        $plan = $this->planService->getPlanDetails($id);
+        return Inertia::render('planning/show',
+            [
+                'plan' => $plan,
+                'dispatches' => []
+            ]
+        );
     }
 
     /**
