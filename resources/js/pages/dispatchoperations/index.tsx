@@ -13,6 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { ChevronLeft, ChevronRight, PackageSearch } from 'lucide-react';
 import CreateDispatchModal from '@/components/dispatchoperation/create-dispatch-modal';
 import { DispatchData } from '@/generated/DispatchOperation/DispatchData';
+import { Eye } from 'lucide-react';
 
 const DispatchOperation = ({
     dispatches,
@@ -41,7 +42,7 @@ const DispatchOperation = ({
                         All Dispatches
                     </CardTitle>
                 </CardHeader>
-                <CardContent className="p-0">
+                <CardContent className="">
                     {data.length === 0 ? (
                         <div className="flex flex-col items-center justify-center gap-2 py-16 text-slate-400">
                             <PackageSearch className="h-10 w-10" />
@@ -122,7 +123,9 @@ const DispatchOperation = ({
                                                     ? dispatch.odometerEnd.toLocaleString()
                                                     : '—'}
                                             </TableCell>
-                                            <TableCell>view</TableCell>
+                                            <TableCell className="text-right">
+                                                View
+                                            </TableCell>
                                         </TableRow>
                                     ))}
                                 </TableBody>

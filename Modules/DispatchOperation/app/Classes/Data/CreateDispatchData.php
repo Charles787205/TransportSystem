@@ -17,7 +17,7 @@ class CreateDispatchData extends Data
         public ServiceType $serviceType,
         public string $dispatchDate,
         public string $assignedCallTime,
-        public int $linehaulTripNo,
+        public string $linehaulTripNo,
         public float $odometerStart,
         public ?float $odometerEnd,
         ) {}

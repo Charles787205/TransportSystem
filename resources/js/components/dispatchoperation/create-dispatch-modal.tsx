@@ -287,7 +287,7 @@ const CreateDispatchModal = () => {
                                     <Input
                                         id="linehaul_trip_no"
                                         name="linehaul_trip_no"
-                                        type="number"
+
                                         aria-invalid={!!errors.linehaul_trip_no}
                                     />
                                     <InputError

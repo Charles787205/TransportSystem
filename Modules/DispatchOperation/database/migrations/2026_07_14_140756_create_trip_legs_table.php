@@ -22,6 +22,7 @@ return new class extends Migration
             $table->time('departure_time')->nullable();
             $table->time('end_time')->nullable();
             $table->time('arrived_time')->nullable();
+            $table->string('status');
             $table->timestamps();
         });
     }

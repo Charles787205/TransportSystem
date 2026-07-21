@@ -7,7 +7,7 @@ export type CreateDispatchData = {
     serviceType: ServiceType;
     dispatchDate: string;
     assignedCallTime: string;
-    linehaulTripNo: number;
+    linehaulTripNo: string;
     odometerStart: number;
     odometerEnd: number | null;
 };

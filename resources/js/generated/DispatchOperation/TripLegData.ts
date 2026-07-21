@@ -4,7 +4,7 @@ export type TripLegData = {
     tripSequence: number;
     totalParcel: number;
     odometerStart: number;
-    odometerEnd: number;
+    odometerEnd: number | null;
     departureTime: string;
     endTime: string;
     arrivedTime: string;
