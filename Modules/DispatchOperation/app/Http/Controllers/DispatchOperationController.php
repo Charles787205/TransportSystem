@@ -5,16 +5,22 @@ namespace Modules\DispatchOperation\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-
+use Modules\DispatchOperation\Classes\Data\CreateDispatchData;
+use Modules\DispatchOperation\Services\DispatchService;
 class DispatchOperationController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
+    public function __construct(
+        private DispatchService $dispatchService
+    ) {}
+
     public function index()
     {
+
+        $dispatchData = $this->dispatchService->getPaginatedDispatches();
         return Inertia::render(
             'dispatchoperations/index',
+            ['dispatches' => $dispatchData]
         );
     }
 
@@ -29,7 +35,10 @@ class DispatchOperationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {}
+    public function store(CreateDispatchData $data) {
+        $this->dispatchService->createDispatch($data);
+        return back()->with('success' , 'Dispatch Created');
+    }
 
     /**
      * Show the specified resource.

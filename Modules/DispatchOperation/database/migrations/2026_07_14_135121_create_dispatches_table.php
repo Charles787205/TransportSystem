@@ -21,8 +21,8 @@ return new class extends Migration
             $table->date('dispatch_date');
             $table->time('assigned_call_time');
             $table->integer('linehaul_trip_no');
-            $table->decimal('odometer_start', 10, 2)->default(0);
-            $table->decimal('odometer_end', 10, 2)->default(0);
+            $table->decimal('odometer_start', 10, 2)->nullable();
+            $table->decimal('odometer_end', 10, 2)->nullable();
             $table->timestamps();
         });
     }

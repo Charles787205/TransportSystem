@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\DispatchOperation\Enums\ServiceType;
 
-#[Fillable('vehicle_id', 'driver_id', 'business_unit_id', 'destination_id', 'service_type', 'dispatch_id', 'assigned_call_time', 'linehaule_trip_no','odometer_start', 'odometer_end')]
+#[Fillable('vehicle_id', 'driver_id', 'business_unit_id', 'destination_id', 'service_type', 'dispatch_date', 'assigned_call_time', 'linehaul_trip_no','odometer_start', 'odometer_end')]
 class Dispatch extends Model
 {
     use HasFactory;
@@ -16,8 +17,9 @@ class Dispatch extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $fillable = [];
-
+    protected $case = [
+        'service_type' => ServiceType::class
+    ];
     public function vehicle(): BelongsTo {
         return $this->belongsTo(\Modules\Vendor\Models\Vehicle::class);
     }

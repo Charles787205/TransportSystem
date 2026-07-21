@@ -1,0 +1,24 @@
+import type { ServiceType } from './ServiceType';
+import type { DriverData } from '../Vendor/DriverData';
+import type { BusinessUnitData } from '../Client/BusinessUnitData';
+import type { DestinationData } from '../Client/DestinationData';
+import type { VehicleData } from '../Vendor/VehicleData';
+export type DispatchData = {
+    id: number;
+    vehicleId: number;
+    driverId: number;
+    businessUnitId: number;
+    destinationId: number;
+    serviceType: ServiceType;
+    dispatchDate: string;
+    assignedCallTime: string;
+    linehaulTripNo: number;
+    odometerStart: number;
+    odometerEnd: number | null;
+    updatedAt: string;
+    createdAt: string;
+    driver: DriverData | null;
+    businessUnit: BusinessUnitData | null;
+    destination: DestinationData | null;
+    vehicle: VehicleData | null;
+};
