@@ -2,20 +2,14 @@
 
 namespace Modules\DispatchOperation\Classes\Data;
 
+use Spatie\LaravelData\Attributes\MapOutputName;
 use Spatie\LaravelData\Data;
-use Spatie\TypeScriptTransformer\Attributes\TypeScript;
+use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
-#[TypeScript()]
+#[MapOutputName(SnakeCaseMapper::class)]
 class CreateTripLegData extends Data
 {
     public function __construct(
         public int $dispatchId,
-        public int $tripSequence,
-        public int $totalParcel,
-        public float $odometerStart,
-        public float $odometerEnd,
-        public string $departureTime,
-        public string $endTime,
-        public string $arrivedTime,
-        ) {}
+    ) {}
 }

@@ -1,5 +1,10 @@
-import { PaginatedDispatchData } from '@/generated/DispatchOperation';
 import { Link } from '@inertiajs/react';
+import { ChevronLeft, ChevronRight, PackageSearch } from 'lucide-react';
+import { Eye } from 'lucide-react';
+import CreateDispatchModal from '@/components/dispatchoperation/create-dispatch-modal';
+import PlannedDispatchMetrics from '@/components/dispatchoperation/planned-disptatch-metrics';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Table,
     TableBody,
@@ -8,34 +13,32 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { ChevronLeft, ChevronRight, PackageSearch } from 'lucide-react';
-import CreateDispatchModal from '@/components/dispatchoperation/create-dispatch-modal';
-import { DispatchData } from '@/generated/DispatchOperation/DispatchData';
-import { Eye } from 'lucide-react';
-
+import type { PaginatedDispatchData } from '@/generated/DispatchOperation';
+import type { DispatchData } from '@/generated/DispatchOperation/DispatchData';
+import { show } from '@/routes/dispatchoperation';
 const DispatchOperation = ({
     dispatches,
 }: {
     dispatches: PaginatedDispatchData;
 }) => {
-    const { data, currentPage, lastPage, from, to, total, links } = dispatches;
+    const { data, from, to, total, links } = dispatches;
     console.log(dispatches);
+
     return (
         <div className="space-y-4 p-6">
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-semibold text-slate-900">
+                    <h1 className="text-xl font-semibold text-slate-900">
                         Dispatch Operations
                     </h1>
+
                     <p className="text-sm text-slate-500">
                         {total} total {total === 1 ? 'dispatch' : 'dispatches'}
                     </p>
                 </div>
                 <CreateDispatchModal />
             </div>
-
+            <PlannedDispatchMetrics />
             <Card className="border-slate-200">
                 <CardHeader className="pb-3">
                     <CardTitle className="text-base font-medium text-slate-700">
@@ -53,20 +56,15 @@ const DispatchOperation = ({
                             <Table>
                                 <TableHeader>
                                     <TableRow className="bg-slate-50 hover:bg-slate-50">
+                                        <TableHead>Vehicle</TableHead>
                                         <TableHead>Service Type</TableHead>
                                         <TableHead>Dispatch Date</TableHead>
                                         <TableHead>Call Time</TableHead>
-                                        <TableHead>Vehicle</TableHead>
                                         <TableHead>Driver</TableHead>
                                         <TableHead>Business Unit</TableHead>
                                         <TableHead>Destination</TableHead>
                                         <TableHead>Trip No.</TableHead>
-                                        <TableHead className="text-right">
-                                            Odometer Start
-                                        </TableHead>
-                                        <TableHead className="text-right">
-                                            Odometer End
-                                        </TableHead>
+                                        <TableHead>Status</TableHead>
                                         <TableHead className="text-right">
                                             Actions
                                         </TableHead>
@@ -78,6 +76,10 @@ const DispatchOperation = ({
                                             key={dispatch.id}
                                             className="hover:bg-slate-50"
                                         >
+                                            <TableCell>
+                                                {dispatch.vehicle
+                                                    ?.plateNumber ?? ''}
+                                            </TableCell>
                                             <TableCell>
                                                 <Badge
                                                     variant="secondary"
@@ -92,10 +94,7 @@ const DispatchOperation = ({
                                             <TableCell>
                                                 {dispatch.assignedCallTime}
                                             </TableCell>
-                                            <TableCell>
-                                                {dispatch.vehicle
-                                                    ?.plateNumber ?? ''}
-                                            </TableCell>
+
                                             <TableCell>
                                                 {dispatch.driver?.fullName ??
                                                     ''}
@@ -115,16 +114,16 @@ const DispatchOperation = ({
                                             <TableCell>
                                                 {dispatch.linehaulTripNo}
                                             </TableCell>
-                                            <TableCell className="text-right">
-                                                {dispatch.odometerStart.toLocaleString()}
+                                            <TableCell>
+                                                {dispatch.tripLegs?.length}
                                             </TableCell>
-                                            <TableCell className="text-right">
-                                                {dispatch.odometerEnd !== null
-                                                    ? dispatch.odometerEnd.toLocaleString()
-                                                    : '—'}
-                                            </TableCell>
-                                            <TableCell className="text-right">
-                                                View
+                                            <TableCell className="flex justify-end">
+                                                <Link
+                                                    className="hover:scale-105"
+                                                    href={show(dispatch.id)}
+                                                >
+                                                    <Eye className="h-4 text-neutral-600" />
+                                                </Link>
                                             </TableCell>
                                         </TableRow>
                                     ))}

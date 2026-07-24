@@ -3,13 +3,14 @@
 namespace Modules\DispatchOperation\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Modules\DispatchOperation\Classes\Data\CreateDispatchData;
+use Modules\DispatchOperation\Classes\Data\EditTripLegData;
 use Modules\DispatchOperation\Services\DispatchService;
+use Modules\DispatchOperation\Enums\TripStatus;
+
 class DispatchOperationController extends Controller
 {
-    
     public function __construct(
         private DispatchService $dispatchService
     ) {}
@@ -18,6 +19,7 @@ class DispatchOperationController extends Controller
     {
 
         $dispatchData = $this->dispatchService->getPaginatedDispatches();
+
         return Inertia::render(
             'dispatchoperations/index',
             ['dispatches' => $dispatchData]
@@ -35,9 +37,15 @@ class DispatchOperationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateDispatchData $data) {
-        $this->dispatchService->createDispatch($data);
-        return back()->with('success' , 'Dispatch Created');
+    public function store(CreateDispatchData $data)
+    {
+        try {
+            $this->dispatchService->createDispatch($data);
+
+            return back()->with('success', 'Dispatch Created');
+        } catch (\Exception $e) {
+            return back()->with('error', 'Error: '.$e->getMessage());
+        }
     }
 
     /**
@@ -45,7 +53,19 @@ class DispatchOperationController extends Controller
      */
     public function show($id)
     {
-        return view('dispatchoperation::show');
+        $dispatch = $this->dispatchService->getDispatchDetails($id);
+
+        return Inertia::render(
+            'dispatchoperations/show',
+            [
+                'dispatch' => $dispatch,
+                'tripStatuses' => Inertia::defer(fn () =>
+                    collect(TripStatus::cases())->map(fn ($status) => [
+                        'value' => $status->value,
+                        'label' => str($status->value)->headline(),
+                    ])->values())
+            ]
+        );
     }
 
     /**
@@ -59,7 +79,7 @@ class DispatchOperationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id) {}
+    public function update(EditTripLegData $request, $id) {}
 
     /**
      * Remove the specified resource from storage.

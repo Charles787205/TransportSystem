@@ -1,9 +1,14 @@
-import { useState, useEffect } from 'react';
 import { Form } from '@inertiajs/react';
 import axios from 'axios';
+import { Plus, Loader2 } from 'lucide-react';
+import { useState } from 'react';
 // TODO: replace with your actual Wayfinder-generated action import
 // import { store } from '@/actions/Modules/DispatchOperation/Http/Controllers/DispatchController';
+import { index } from '@/actions/Modules/DispatchOperation/Http/Controllers/DispatchFormOptionsController';
 import type { DispatchFormOptionsData } from '@/generated/DispatchOperation';
+import { store } from '@/routes/dispatchoperation';
+import InputError from '../input-error';
+import { Button } from '../ui/button';
 import {
     Dialog,
     DialogContent,
@@ -13,11 +18,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from '../ui/dialog';
-import { Button } from '../ui/button';
-import { Label } from '../ui/label';
 import { Input } from '../ui/input';
-import { index } from '@/actions/Modules/DispatchOperation/Http/Controllers/DispatchFormOptionsController';
-import { store } from '@/routes/dispatchoperation';
+import { Label } from '../ui/label';
 import {
     Select,
     SelectContent,
@@ -25,8 +27,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from '../ui/select';
-import InputError from '../input-error';
-import { Plus, Loader2 } from 'lucide-react';
 
 const CreateDispatchModal = () => {
     const [open, setOpen] = useState(false);
@@ -35,18 +35,22 @@ const CreateDispatchModal = () => {
     );
     const [loadingOptions, setLoadingOptions] = useState(false);
 
-    useEffect(() => {
-        if (!open || options) return;
+    const handleOpenChange = (open: boolean) => {
+        setOpen(open);
+
+        if (!open || options) {
+            return;
+        }
 
         setLoadingOptions(true);
         axios
             .get<DispatchFormOptionsData>(index.url())
             .then((res) => setOptions(res.data))
             .finally(() => setLoadingOptions(false));
-    }, [open, options]);
+    };
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
+        <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
                 <Button className="bg-blue-800 text-white hover:bg-blue-900">
                     <Plus className="mr-2 h-4 w-4" />
@@ -67,13 +71,16 @@ const CreateDispatchModal = () => {
                     </div>
                 ) : (
                     <Form
-                        action={store()} // TODO: replace `store` with your real Wayfinder action
+                        action={store()}
                         onSuccess={() => setOpen(false)}
+                        onError={(e) => {
+                            console.log(e);
+                        }}
                         resetOnSuccess
                         className="space-y-4"
                     >
                         {({ errors, processing }) => (
-                            <>
+                            <div className="flex flex-col gap-2">
                                 <div className="grid grid-cols-2 gap-4">
                                     <div
                                         className="space-y-1.5"
@@ -88,6 +95,7 @@ const CreateDispatchModal = () => {
                                                 aria-invalid={
                                                     !!errors.vehicle_id
                                                 }
+                                                className="w-full"
                                             >
                                                 <SelectValue placeholder="Select vehicle" />
                                             </SelectTrigger>
@@ -120,6 +128,7 @@ const CreateDispatchModal = () => {
                                                 aria-invalid={
                                                     !!errors.driver_id
                                                 }
+                                                className="w-full"
                                             >
                                                 <SelectValue placeholder="Select driver" />
                                             </SelectTrigger>
@@ -152,6 +161,7 @@ const CreateDispatchModal = () => {
                                                 aria-invalid={
                                                     !!errors.business_unit_id
                                                 }
+                                                className="w-full"
                                             >
                                                 <SelectValue placeholder="Select business unit" />
                                             </SelectTrigger>
@@ -186,6 +196,7 @@ const CreateDispatchModal = () => {
                                                 aria-invalid={
                                                     !!errors.destination_id
                                                 }
+                                                className="w-full"
                                             >
                                                 <SelectValue placeholder="Select destination" />
                                             </SelectTrigger>
@@ -219,6 +230,7 @@ const CreateDispatchModal = () => {
                                         <SelectTrigger
                                             id="service_type"
                                             aria-invalid={!!errors.service_type}
+                                            className="w-full"
                                         >
                                             <SelectValue placeholder="Select service type" />
                                         </SelectTrigger>
@@ -295,49 +307,7 @@ const CreateDispatchModal = () => {
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
-                                    <div
-                                        className="space-y-1.5"
-                                        data-invalid={!!errors.odometer_start}
-                                    >
-                                        <Label htmlFor="odometer_start">
-                                            Odometer Start
-                                        </Label>
-                                        <Input
-                                            id="odometer_start"
-                                            name="odometer_start"
-                                            type="number"
-                                            step="0.01"
-                                            aria-invalid={
-                                                !!errors.odometer_start
-                                            }
-                                        />
-                                        <InputError
-                                            message={errors.odometer_start}
-                                        />
-                                    </div>
-
-                                    <div
-                                        className="space-y-1.5"
-                                        data-invalid={!!errors.odometer_end}
-                                    >
-                                        <Label htmlFor="odometer_end">
-                                            Odometer End
-                                        </Label>
-                                        <Input
-                                            id="odometer_end"
-                                            name="odometer_end"
-                                            type="number"
-                                            step="0.01"
-                                            aria-invalid={!!errors.odometer_end}
-                                        />
-                                        <InputError
-                                            message={errors.odometer_end}
-                                        />
-                                    </div>
-                                </div>
-
-                                <DialogFooter>
+                                <DialogFooter className="mt-5">
                                     <Button
                                         type="button"
                                         variant="outline"
@@ -355,7 +325,7 @@ const CreateDispatchModal = () => {
                                             : 'Create Dispatch'}
                                     </Button>
                                 </DialogFooter>
-                            </>
+                            </div>
                         )}
                     </Form>
                 )}

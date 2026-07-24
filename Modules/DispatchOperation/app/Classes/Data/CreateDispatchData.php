@@ -18,11 +18,11 @@ class CreateDispatchData extends Data
         public string $dispatchDate,
         public string $assignedCallTime,
         public string $linehaulTripNo,
-        public float $odometerStart,
-        public ?float $odometerEnd,
-        ) {}
-        
-    public function dispatchAttributes(){
+
+    ) {}
+
+    public function dispatchAttributes()
+    {
         return [
             'vehicle_id' => $this->vehicleId,
             'driver_id' => $this->driverId,
@@ -32,8 +32,7 @@ class CreateDispatchData extends Data
             'dispatch_date' => $this->dispatchDate,
             'assigned_call_time' => $this->assignedCallTime,
             'linehaul_trip_no' => $this->linehaulTripNo,
-            'odometer_start' => $this->odometerStart,
-            'odometer_end' => $this->odometerEnd,
+
         ];
     }
 }

@@ -7,10 +7,11 @@ use Modules\Client\Classes\Data\DestinationData;
 use Modules\DispatchOperation\Enums\ServiceType;
 use Modules\Vendor\Classes\Data\DriverData;
 use Modules\Vendor\Classes\Data\VehicleData;
+use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\DataCollection;
-use Spatie\LaravelData\Attributes\DataCollectionOf;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
+use Spatie\TypeScriptTransformer\Attributes\TypeScriptType;
 
 #[TypeScript()]
 class DispatchData extends Data
@@ -25,7 +26,7 @@ class DispatchData extends Data
         public string $dispatchDate,
         public string $assignedCallTime,
         public string $linehaulTripNo,
-        public float $odometerStart,
+        public ?float $odometerStart,
         public ?float $odometerEnd,
         public string $updatedAt,
         public string $createdAt,
@@ -33,5 +34,9 @@ class DispatchData extends Data
         public ?BusinessUnitData $businessUnit,
         public ?DestinationData $destination,
         public ?VehicleData $vehicle,
+
+        #[TypeScriptType('TripLegData[]')]
+        #[DataCollectionOf(TripLegData::class)]
+        public ?DataCollection $tripLegs
     ) {}
 }
