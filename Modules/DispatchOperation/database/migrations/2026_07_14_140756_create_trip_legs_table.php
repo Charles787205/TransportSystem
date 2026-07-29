@@ -22,9 +22,10 @@ return new class extends Migration
             $table->time('departure_time')->nullable();
             $table->time('end_time')->nullable();
             $table->time('arrived_time')->nullable();
+            $table->string('linehaul_trip_no');
             $table->string('status')->default(TripStatus::Pending->value);
             $table->timestamps();
-            $table->unique(['dispatch_id', 'trip_sequence', 'id']);
+            $table->unique(['dispatch_id', 'trip_sequence']);
         });
     }
 

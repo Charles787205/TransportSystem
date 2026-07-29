@@ -6,6 +6,7 @@ use Modules\DispatchOperation\Repositories\TripLegRepository;
 use Modules\DispatchOperation\Classes\Data\EditTripLegData;
 use Modules\DispatchOperation\Models\TripLeg;
 use Illuminate\Support\Facades\Log;
+use Modules\DispatchOperation\Classes\Data\CreateTripLegData;
 use Modules\DispatchOperation\Repositories\DispatchRepository;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 class TripLegService
@@ -19,9 +20,9 @@ class TripLegService
     {
         return $this->tripLegRepo->editTripLeg($data->toModelAttributes(), $tripId);
     }
-    public function addTripLeg(int $dispatchId)
+    public function addTripLeg(CreateTripLegData $data)
     {
-        $dispatch = $this->dispatchRepo->getDispatch($dispatchId, with: ['tripLegs']);
+        $dispatch = $this->dispatchRepo->getDispatch($data->dispatchId, with: ['tripLegs']);
 
         $hasIncomplete = $dispatch->tripLegs->contains(
             fn ($tripLeg) => $tripLeg->end_time === null
@@ -34,6 +35,10 @@ class TripLegService
         }
         $tripSequence = $dispatch->tripLegs()->count() + 1;
 
-        return $this->dispatchRepo->attachTripLegs($dispatch, ['dispatch_id' => $dispatchId, 'trip_sequence' => $tripSequence]);
+        return $this->dispatchRepo->attachTripLegs($dispatch, [
+            'dispatch_id' => $data->dispatchId,
+            'linehaul_trip_no' => $data->linehaulTripNo,
+            'trip_sequence' => $tripSequence
+            ]);
     }
 }

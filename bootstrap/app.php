@@ -31,14 +31,19 @@ return Application::configure(basePath: dirname(__DIR__))
             fn (Request $request) => $request->is('api/*'),
         );
 
+        // 1. Specific handler for Domain Exceptions (Your Business Logic)
+        $exceptions->render(function (DomainException $e, Request $request) {
+            return back()->with('error', $e->getMessage());
+        });
+
+        // 2. Existing generic handler for HTTP exceptions on Inertia requests
         $exceptions->render(function (Throwable $e, Request $request) {
             // Let api/* requests fall through to shouldRenderJsonWhen() above
             if ($request->is('api/*')) {
                 return null;
             }
 
-            // Only intercept actual Inertia visits, not the Next.js proxy's
-            // plain axios calls (which won't send X-Inertia)
+            // Only intercept actual Inertia visits
             if (! $request->header('X-Inertia')) {
                 return null;
             }
@@ -46,6 +51,8 @@ return Application::configure(basePath: dirname(__DIR__))
             if ($e instanceof HttpExceptionInterface) {
                 return back()->with('error', $e->getMessage());
             }
+
+            return null; // Let standard exceptions bubble up normally
         });
 
     })->create();

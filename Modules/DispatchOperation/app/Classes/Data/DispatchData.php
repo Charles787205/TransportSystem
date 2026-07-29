@@ -25,7 +25,7 @@ class DispatchData extends Data
         public ServiceType $serviceType,
         public string $dispatchDate,
         public string $assignedCallTime,
-        public string $linehaulTripNo,
+     
         public ?float $odometerStart,
         public ?float $odometerEnd,
         public string $updatedAt,
@@ -34,7 +34,7 @@ class DispatchData extends Data
         public ?BusinessUnitData $businessUnit,
         public ?DestinationData $destination,
         public ?VehicleData $vehicle,
-
+   
         #[TypeScriptType('TripLegData[]')]
         #[DataCollectionOf(TripLegData::class)]
         public ?DataCollection $tripLegs

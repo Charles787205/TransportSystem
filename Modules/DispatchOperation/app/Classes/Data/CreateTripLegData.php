@@ -11,5 +11,13 @@ class CreateTripLegData extends Data
 {
     public function __construct(
         public int $dispatchId,
+        public string $linehaulTripNo,
     ) {}
+
+    public function toModelAttributes() {
+        return [
+            'dispatch_id' => $this->dispatchId,
+            'linehaul_trip_no' => $this->linehaulTripNo
+        ];
+    }
 }

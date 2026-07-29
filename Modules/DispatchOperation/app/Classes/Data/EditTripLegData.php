@@ -6,6 +6,7 @@ use Spatie\LaravelData\Attributes\MapOutputName;
 use Spatie\LaravelData\Data;
 use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 use Spatie\LaravelData\Optional;
+use Spatie\TypeScriptTransformer\Attributes\Optional as AttributesOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript()] 
@@ -13,20 +14,26 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 class EditTripLegData extends Data
 {
     public function __construct(
-        public int|Optional|null $tripSequence,
+        #[AttributesOptional]
         public int|Optional|null $totalParcel,
+        #[AttributesOptional]
         public float|Optional|null $odometerStart,
+        #[AttributesOptional]
         public float|Optional|null $odometerEnd,
+        #[AttributesOptional]
         public string|Optional|null $departureTime,
+        #[AttributesOptional]
         public string|Optional|null $endTime,
+        #[AttributesOptional]
         public string|Optional|null $arrivedTime,
+        #[AttributesOptional]
         public string|Optional|null $status,
     ) {}
 
 
     public function toModelAttributes() {
         return array_filter([
-            'trip_sequence' => $this->tripSequence,
+            
             'total_parcel' => $this->totalParcel,
             'odometer_start' => $this->odometerStart,
             'odometer_end' => $this->odometerEnd,

@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Client\Models\BusinessUnit;
 use Modules\Client\Models\Destination;
 
+
+
 #[Fillable(['business_unit_id', 'destination_id', 'number_of_vehicles', 'dispatch_date'])]
 class Plan extends Model
 {
@@ -28,4 +30,5 @@ class Plan extends Model
     {
         return $this->belongsTo(BusinessUnit::class, 'business_unit_id');
     }
+    
 }

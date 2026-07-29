@@ -3,6 +3,7 @@
 namespace Modules\DispatchOperation\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 use Modules\DispatchOperation\Classes\Data\CreateDispatchData;
 use Modules\DispatchOperation\Classes\Data\EditTripLegData;
@@ -41,9 +42,10 @@ class DispatchOperationController extends Controller
     {
         try {
             $this->dispatchService->createDispatch($data);
-
+            
             return back()->with('success', 'Dispatch Created');
         } catch (\Exception $e) {
+            Log::info($e->getMessage());
             return back()->with('error', 'Error: '.$e->getMessage());
         }
     }

@@ -12,19 +12,14 @@ class DriverData extends Data
         
         public readonly string $fullName,
         public readonly ?string $birthday,
-        public readonly string $gender,
+        
      
         public readonly string $phoneNumber,
-        public readonly string $address,
+        
       
         public readonly string $status,
        
-        public readonly ?string $licenseExpiry,
-       
-        public readonly ?string $driverIdNumber,
-   
-        public readonly ?string $licenseNumber,
-   
+        
         public readonly ?int $vendorId
 
     ) {}

@@ -93,26 +93,6 @@ const TripLegModal = ({
 
                             <div className="grid grid-cols-2 gap-4">
                                 <div className="space-y-2">
-                                    <Label htmlFor="trip-sequence">
-                                        Trip Sequence
-                                    </Label>
-                                    <Input
-                                        id="trip-sequence"
-                                        name="trip_sequence"
-                                        type="number"
-                                        min={1}
-                                        defaultValue={
-                                            tripLeg?.tripSequence ?? undefined
-                                        }
-                                        aria-invalid={!!errors.trip_sequence}
-                                        data-invalid={!!errors.trip_sequence}
-                                    />
-                                    <InputError
-                                        message={errors.trip_sequence}
-                                    />
-                                </div>
-
-                                <div className="space-y-2">
                                     <Label htmlFor="total-parcel">
                                         Total Parcel
                                     </Label>

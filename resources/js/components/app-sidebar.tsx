@@ -1,5 +1,12 @@
 import { Link } from '@inertiajs/react';
-import {  FolderGit2, LayoutGrid, Store, Users, NotebookPen, Network } from 'lucide-react';
+import {
+    FolderGit2,
+    LayoutGrid,
+    Store,
+    Users,
+    NotebookPen,
+    Network,
+} from 'lucide-react';
 
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
@@ -18,6 +25,7 @@ import { dashboard } from '@/routes';
 import { index as ClientIndex } from '@/routes/client';
 import { index as DispatchOperationIndex } from '@/routes/dispatchoperation';
 import { index as PlanningIndex } from '@/routes/planning';
+import { index as UserIndex } from '@/routes/user';
 import { index as VendorIndex } from '@/routes/vendor';
 import type { NavItem } from '@/types';
 const mainNavItems: NavItem[] = [
@@ -34,19 +42,24 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Client',
         href: ClientIndex(),
-        icon: Users
+        icon: Users,
     },
     {
         title: 'Planning',
         href: PlanningIndex(),
-        icon: NotebookPen
+        icon: NotebookPen,
     },
     {
         title: 'Dispatch',
         href: DispatchOperationIndex(),
-        icon: Network
-    }
-]
+        icon: Network,
+    },
+    {
+        title: 'User',
+        href: UserIndex(),
+        icon: Users,
+    },
+];
 
 const footerNavItems: NavItem[] = [
     {
@@ -54,7 +67,6 @@ const footerNavItems: NavItem[] = [
         href: 'https://github.com/laravel/react-starter-kit',
         icon: FolderGit2,
     },
-    
 ];
 
 export function AppSidebar() {

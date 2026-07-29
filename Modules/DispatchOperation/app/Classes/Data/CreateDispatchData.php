@@ -17,7 +17,8 @@ class CreateDispatchData extends Data
         public ServiceType $serviceType,
         public string $dispatchDate,
         public string $assignedCallTime,
-        public string $linehaulTripNo,
+        public string $linehaulTripNo
+     
 
     ) {}
 
@@ -31,8 +32,6 @@ class CreateDispatchData extends Data
             'service_type' => $this->serviceType,
             'dispatch_date' => $this->dispatchDate,
             'assigned_call_time' => $this->assignedCallTime,
-            'linehaul_trip_no' => $this->linehaulTripNo,
-
         ];
     }
 }

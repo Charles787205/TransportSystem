@@ -19,4 +19,16 @@ class TripLegRepository
 
         return $tripLeg->refresh();
     }
+    public function getTripLegs(array $where = [], array $with=[]){
+        return TripLeg::with($with)->where($where)->get();
+    }
+
+    public function getTripLegsByBusinessUnitAndDestination(int $businessUnitId, int $destinationId, array $with= []){
+        return TripLeg::with($with)
+        ->whereHas('dispatch', function ($query) use ($businessUnitId, $destinationId) {
+            $query
+                ->where('business_unit_id', $businessUnitId)
+                ->where('destination_id', $destinationId);
+        })->get();
+    }
 }

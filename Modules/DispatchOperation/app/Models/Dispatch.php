@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\Client\Models\BusinessUnit;
 use Modules\Client\Models\Destination;
 use Modules\DispatchOperation\Enums\ServiceType;
+use Modules\DispatchOperation\Enums\TripStatus;
 use Modules\Vendor\Models\Driver;
 use Modules\Vendor\Models\Vehicle;
 
@@ -21,7 +22,6 @@ use Modules\Vendor\Models\Vehicle;
     'service_type',
     'dispatch_date',
     'assigned_call_time',
-    'linehaul_trip_no',
     'odometer_start',
     'odometer_end')]
 class Dispatch extends Model
@@ -31,7 +31,7 @@ class Dispatch extends Model
     /**
      * The attributes that are mass assignable.
      */
-    protected $case = [
+    protected $casts = [
         'service_type' => ServiceType::class,
     ];
 
@@ -58,5 +58,15 @@ class Dispatch extends Model
     public function tripLegs(): HasMany
     {
         return $this->hasMany(TripLeg::class);
+    }
+    public function currentStatus(): ?TripStatus
+    {
+        
+        if ($this->relationLoaded('tripLegs')) {
+            return $this->tripLegs->sortByDesc('created_at')->first()?->status;
+        }
+
+        
+        return $this->tripLegs()->latest()->first()?->status;
     }
 }

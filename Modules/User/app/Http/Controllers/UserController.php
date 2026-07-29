@@ -4,15 +4,24 @@ namespace Modules\User\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Modules\User\Services\UserService;
 
 class UserController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    
+    public function __construct(
+        public UserService $userService
+    ){}
     public function index()
     {
-        return view('user::index');
+        $userData = $this->userService->getPaginatedUsers();
+        return Inertia::render(
+            'user/index',
+            ['paginatedUsers' =>  $userData,
+            'filters' => ['search'=>""]
+            ]
+        );
     }
 
     /**

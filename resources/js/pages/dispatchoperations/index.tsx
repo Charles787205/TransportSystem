@@ -14,7 +14,10 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import type { PaginatedDispatchData } from '@/generated/DispatchOperation';
+import type { TripLegData } from '@/generated/DispatchOperation';
 import type { DispatchData } from '@/generated/DispatchOperation/DispatchData';
+import type { TripStatus } from '@/generated/DispatchOperation/TripStatus';
+import { TRIP_STATUS_COLORS } from '@/lib/trip_status_colors';
 import { show } from '@/routes/dispatchoperation';
 const DispatchOperation = ({
     dispatches,
@@ -22,7 +25,12 @@ const DispatchOperation = ({
     dispatches: PaginatedDispatchData;
 }) => {
     const { data, from, to, total, links } = dispatches;
-    console.log(dispatches);
+
+    function getDispatchStatus(tripLegs: TripLegData[]): TripStatus {
+        return tripLegs && tripLegs.length > 0
+            ? tripLegs[tripLegs.length - 1].status
+            : 'pending';
+    }
 
     return (
         <div className="space-y-4 p-6">
@@ -112,10 +120,22 @@ const DispatchOperation = ({
                                                 {dispatch.destination?.name}
                                             </TableCell>
                                             <TableCell>
-                                                {dispatch.linehaulTripNo}
+                                                {dispatch.tripLegs.length}
                                             </TableCell>
                                             <TableCell>
-                                                {dispatch.tripLegs?.length}
+                                                <Badge
+                                                    className={
+                                                        TRIP_STATUS_COLORS[
+                                                            getDispatchStatus(
+                                                                dispatch.tripLegs,
+                                                            ) || 'pending'
+                                                        ]
+                                                    }
+                                                >
+                                                    {getDispatchStatus(
+                                                        dispatch.tripLegs,
+                                                    )}
+                                                </Badge>
                                             </TableCell>
                                             <TableCell className="flex justify-end">
                                                 <Link

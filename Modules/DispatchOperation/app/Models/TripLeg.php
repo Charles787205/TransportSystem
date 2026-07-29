@@ -16,7 +16,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'odometer_end',
     'departure_time',
     'end_time',
-    'arrived_time'
+    'arrived_time',
+    'linehaul_trip_no'
 )]
 class TripLeg extends Model
 {

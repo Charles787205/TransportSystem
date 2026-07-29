@@ -6,5 +6,6 @@
     "VehicleDriverData": true,
     "Client": true,
     "Planning": true,
-    "DispatchOperation": true
+    "DispatchOperation": true,
+    "Users": true
 }

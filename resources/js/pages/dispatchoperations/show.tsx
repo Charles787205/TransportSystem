@@ -4,16 +4,15 @@ import {
     Building2,
     Calendar,
     Gauge,
-    IdCard,
     MapPin,
     Pencil,
     Phone,
-    Plus,
     Truck,
     User,
     ArrowLeft,
 } from 'lucide-react';
 import { useState } from 'react';
+import CreateTripLegModal from '@/components/dispatchoperation/create-trip-leg-modal';
 import TripLegModal from '@/components/dispatchoperation/trip-leg-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -35,7 +34,6 @@ import {
 } from '@/components/ui/table';
 import type { DispatchData, TripLegData } from '@/generated/DispatchOperation';
 import { index } from '@/routes/dispatchoperation';
-import { store } from '@/routes/triplegs';
 
 type DispatchDetailsPagesProps = {
     dispatch: DispatchData;
@@ -154,11 +152,6 @@ const DispatchDetailsPages = ({
                             Dispatch #{dispatch.id}
                         </h1>
                     </div>
-
-                    <p className="text-sm text-muted-foreground">
-                        Trip {dispatch.linehaulTripNo ?? '—'} ·{' '}
-                        {dispatch.serviceType}
-                    </p>
                 </div>
                 <Badge variant="outline" className="capitalize">
                     {dispatch.serviceType}
@@ -195,10 +188,10 @@ const DispatchDetailsPages = ({
                         </div>
                         <div className="flex items-center justify-between">
                             <span className="text-muted-foreground">
-                                Linehaul Trip No.
+                                Number of Trips
                             </span>
                             <span className="font-medium">
-                                {dispatch.linehaulTripNo ?? '—'}
+                                {dispatch.tripLegs.length}
                             </span>
                         </div>
 
@@ -272,15 +265,7 @@ const DispatchDetailsPages = ({
                                 {dispatch.driver?.phoneNumber ?? '—'}
                             </span>
                         </div>
-                        <div className="flex items-center justify-between">
-                            <span className="flex items-center gap-1.5 text-muted-foreground">
-                                <IdCard className="h-3.5 w-3.5" />
-                                License No.
-                            </span>
-                            <span className="font-medium">
-                                {dispatch.driver?.licenseNumber ?? '—'}
-                            </span>
-                        </div>
+
                         <div className="flex items-center justify-between">
                             <span className="text-muted-foreground">
                                 Status
@@ -339,26 +324,7 @@ const DispatchDetailsPages = ({
                                 : 'Add trip leg is only available after the latest leg is delivered, cancelled, or foul'}
                         </CardDescription>
                     </div>
-                    <Form {...store.form()}>
-                        <input
-                            type="number"
-                            name="dispatch_id"
-                            id="dispatch_id"
-                            value={dispatch.id}
-                            readOnly
-                            hidden
-                        />
-                        <Button
-                            size="sm"
-                            onClick={handleTripLegAction}
-                            disabled={!canAddTripLeg}
-
-                            type="submit"
-                        >
-                            <Plus className="h-4 w-4" />
-                            Add Trip Leg
-                        </Button>
-                    </Form>
+                    <CreateTripLegModal dispatchId={dispatch.id} />
                 </CardHeader>
                 <CardContent>
                     {tripLegs.length === 0 ? (
@@ -370,6 +336,7 @@ const DispatchDetailsPages = ({
                             <TableHeader>
                                 <TableRow>
                                     <TableHead>Seq</TableHead>
+                                    <TableHead>Trip No</TableHead>
                                     <TableHead>Total Parcel</TableHead>
                                     <TableHead>Odometer Start</TableHead>
                                     <TableHead>Odometer End</TableHead>
@@ -392,6 +359,9 @@ const DispatchDetailsPages = ({
                                         <TableRow key={leg.id}>
                                             <TableCell className="font-medium">
                                                 {leg.tripSequence}
+                                            </TableCell>
+                                            <TableCell>
+                                                {leg.linehaulTripNo}
                                             </TableCell>
                                             <TableCell>
                                                 {leg.totalParcel ?? '—'}

@@ -51,12 +51,9 @@ class PlanningController extends Controller
      */
     public function show(int $id)
     {
-        $plan = $this->planService->getPlanDetails($id);
+        $planDetails = $this->planService->getPlanDetails($id);
         return Inertia::render('planning/show',
-            [
-                'plan' => $plan,
-                'dispatches' => []
-            ]
+            $planDetails
         );
     }
 

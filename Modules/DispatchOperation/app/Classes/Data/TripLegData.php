@@ -2,8 +2,10 @@
 
 namespace Modules\DispatchOperation\Classes\Data;
 
+use Modules\DispatchOperation\Enums\TripStatus;
 use Spatie\LaravelData\Data;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
+use Spatie\TypeScriptTransformer\Attributes\TypeScriptType;
 
 #[TypeScript()]
 class TripLegData extends Data
@@ -18,7 +20,9 @@ class TripLegData extends Data
         public ?string $departureTime,
         public ?string $endTime,
         public ?string $arrivedTime,
-        public ?string $status,
+        public string $linehaulTripNo,
+        #[TypeScriptType('TripStatus')]
+        public ?TripStatus $status,
         public string $updatedAt,
         public string $createdAt,
     ) {}

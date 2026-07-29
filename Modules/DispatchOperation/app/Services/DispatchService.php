@@ -3,6 +3,7 @@
 namespace Modules\DispatchOperation\Services;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Modules\Core\Classes\Data\PaginatedData;
 use Modules\DispatchOperation\Classes\Data\CreateDispatchData;
 use Modules\DispatchOperation\Classes\Data\CreateTripLegData;
@@ -41,13 +42,14 @@ class DispatchService
                 'vehicle_id' => $data->vehicleId,
                 'dispatch_date' => $data->dispatchDate,
             ]);
-            if ($currentDispatches) {
+            Log::info(['current' => $data->toArray()]);
+            if ($currentDispatches->isNotEmpty()) {
                 throw new \DomainException(
                     'Cannot add a new trip leg while another trip leg is still in progress.'
                 );
             }
             $dispatch = $this->dispatchRepo->createDispatch($data->dispatchAttributes());
-            $this->dispatchRepo->attachTripLegs($dispatch, [[]]);
+            $this->dispatchRepo->attachTripLegs($dispatch, ['linehaul_trip_no'=> $data->linehaulTripNo]);
 
             return DispatchData::from($dispatch->fresh());
         });
@@ -55,7 +57,7 @@ class DispatchService
 
     public function getPaginatedDispatches()
     {
-        $dispatches = $this->dispatchRepo->getPaginatedDispatches(with: ['driver', 'destination', 'businessUnit', 'vehicle']);
+        $dispatches = $this->dispatchRepo->getPaginatedDispatches(with: ['driver', 'destination', 'businessUnit', 'vehicle', 'tripLegs']);
 
         return PaginatedData::fromPaginator($dispatches, DispatchData::class);
     }
