@@ -5,6 +5,7 @@ namespace Modules\User\Services;
 use Modules\Core\Classes\Data\PaginatedData;
 use Modules\User\Classes\Data\UserData;
 use Modules\User\Repositories\UserRepository;
+use Illuminate\Support\Facades\Log;
 
 class UserService
 {
@@ -20,7 +21,10 @@ class UserService
     }
 
     public function getUserDetails(int $userId){
-        return $this->userRepo->getUser($userId)->with(['role']);
+        $user =  $this->userRepo->getUser($userId, with:['role']);
+        Log::info($user);
+        return UserData::from($user);
     }
+    
 
 }

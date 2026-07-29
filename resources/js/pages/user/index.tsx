@@ -1,5 +1,11 @@
 import { Link, router } from '@inertiajs/react';
-import { Users as UsersIcon, MoreHorizontal, Search, X } from 'lucide-react';
+import {
+    Users as UsersIcon,
+    MoreHorizontal,
+    Search,
+    X,
+    Plus,
+} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 import { Badge } from '@/components/ui/badge';
@@ -95,6 +101,20 @@ export default function UserPage({
                     <p className="text-sm text-slate-500">
                         Manage user accounts and their roles
                     </p>
+                </div>
+                <div className="ml-auto flex gap-2">
+                    <Link
+                        className={`'bg-blue-800 text-white' } ml-auto flex h-8 min-w-8 items-center justify-center rounded-md bg-blue-800 px-2 text-sm font-bold text-white transition-colors`}
+                    >
+                        <Plus />
+                        Add Users
+                    </Link>
+                    <Link
+                        className={`'bg-blue-800 text-white' } flex h-8 min-w-8 items-center justify-center rounded-md bg-rose-300 px-2 text-sm font-bold text-white transition-colors`}
+                    >
+                        <Plus />
+                        Roles
+                    </Link>
                 </div>
             </div>
 

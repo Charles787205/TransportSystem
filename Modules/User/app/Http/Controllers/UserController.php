@@ -5,13 +5,15 @@ namespace Modules\User\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Modules\User\Services\RoleService;
 use Modules\User\Services\UserService;
 
 class UserController extends Controller
 {
     
     public function __construct(
-        public UserService $userService
+        public UserService $userService,
+        public RoleService $roleService
     ){}
     public function index()
     {
@@ -29,7 +31,14 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('user::create');
+        $user = $this->userService->getUserDetails();
+        return Inertia::render(
+            'user/show',
+            [
+                'users',
+                'roles'
+            ]
+        );
     }
 
     /**
@@ -42,7 +51,15 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        return view('user::show');
+        $user = $this->userService->getUserDetails($id);
+        $roles = $this->roleService->getRoles();
+        return Inertia::render(
+            'user/show',
+            [
+                'user' => $user,
+                'roles' => $roles
+            ]
+        );
     }
 
     /**

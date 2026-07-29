@@ -28,6 +28,7 @@ export default function UserDetailPage({
     roles: RoleData[];
 }) {
     const [isEditing, setIsEditing] = useState(false);
+    console.log(user, roles);
 
     return (
         <div className="flex flex-col gap-6 p-6">

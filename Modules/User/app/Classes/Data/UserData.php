@@ -12,7 +12,7 @@ class UserData extends Data
         public int $id,
         public string $name,
         public string $email,
-        public ?int $roleId,
+        public ?int $roleId = null,
         public ?RoleData $role = null
     ) {}
 }

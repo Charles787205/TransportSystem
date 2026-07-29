@@ -20,6 +20,6 @@ class UserRepository
     }
 
     public function getUser(int $id, array $with = []){
-        return User::with($with)->find($id);
+        return User::with($with)->findOrFail($id);
     }
 }
