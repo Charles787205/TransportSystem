@@ -9,6 +9,7 @@ class PlanIndexFilterData extends Data
     public function __construct(
         public ?int $destinationId = null,
         public ?int $businessUnitId = null,
+        public ?string $dispatchDate = null,
     ) {}
 
     public function filterAttributes(): array
@@ -16,6 +17,7 @@ class PlanIndexFilterData extends Data
         return array_filter([
             'destination_id' => $this->destinationId,
             'business_unit_id' => $this->businessUnitId,
+            'dispatch_date' => $this->dispatchDate,
         ], fn ($value) => $value !== null);
     }
 }

@@ -3,25 +3,34 @@
 namespace Modules\User\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
-use Modules\User\Services\RoleService;
+use Modules\User\Classes\Data\CreateUserData;
+use Modules\User\Classes\Data\UpdateUserData;
+use Modules\User\Models\User;
+use Modules\User\Services\RolePermissionService;
 use Modules\User\Services\UserService;
 
 class UserController extends Controller
 {
-    
     public function __construct(
         public UserService $userService,
-        public RoleService $roleService
-    ){}
+        public RolePermissionService $roleService
+    ) {}
+
     public function index()
     {
+        Gate::authorize('viewAny', User::class);
+
         $userData = $this->userService->getPaginatedUsers();
+        $roles = $this->roleService->getRoles();
+
         return Inertia::render(
             'user/index',
-            ['paginatedUsers' =>  $userData,
-            'filters' => ['search'=>""]
+            [
+                'paginatedUsers' => $userData,
+                'roles' => $roles,
+                'filters' => ['search' => ''],
             ]
         );
     }
@@ -31,33 +40,39 @@ class UserController extends Controller
      */
     public function create()
     {
-        $user = $this->userService->getUserDetails();
-        return Inertia::render(
-            'user/show',
-            [
-                'users',
-                'roles'
-            ]
-        );
+        Gate::authorize('create', User::class);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {}
+    public function store(CreateUserData $request)
+    {
+        Gate::authorize('create', User::class);
+
+        $result = $this->userService->createUser($request);
+        $password = $result['plainPassword'];
+
+        return back()
+            ->with('createdPassword', $password);
+    }
 
     /**
      * Show the specified resource.
      */
     public function show($id)
     {
+        $userModel = User::findOrFail($id);
+        Gate::authorize('view', $userModel);
+
         $user = $this->userService->getUserDetails($id);
         $roles = $this->roleService->getRoles();
+
         return Inertia::render(
             'user/show',
             [
                 'user' => $user,
-                'roles' => $roles
+                'roles' => $roles,
             ]
         );
     }
@@ -67,16 +82,31 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        return view('user::edit');
+        $userModel = User::findOrFail($id);
+        Gate::authorize('update', $userModel);
+
+        return redirect()->route('users.show', $id);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id) {}
+    public function update(UpdateUserData $request, $id)
+    {
+        $userModel = User::findOrFail($id);
+        Gate::authorize('update', $userModel);
+
+        $this->userService->updateUser((int) $id, $request);
+
+        return back()->with('success', 'User updated successfully.');
+    }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id) {}
+    public function destroy($id)
+    {
+        $userModel = User::findOrFail($id);
+        Gate::authorize('delete', $userModel);
+    }
 }

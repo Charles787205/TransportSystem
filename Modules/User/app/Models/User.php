@@ -13,7 +13,6 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 use Modules\User\Database\Factories\UserFactory;
 
-
 /**
  * @property int $id
  * @property string $name
@@ -45,8 +44,39 @@ class User extends Authenticatable
     }
 
     public function role(): BelongsTo
-     {
+    {
         return $this->belongsTo(Role::class);
     }
-  
+
+    public function hasPermission(string $permissionSlug, string $action): bool
+    {
+        if (! $this->relationLoaded('role')) {
+            $this->loadMissing('role.permissions');
+        } elseif ($this->role && ! $this->role->relationLoaded('permissions')) {
+            $this->role->loadMissing('permissions');
+        }
+
+        if (! $this->role) {
+            return false;
+        }
+
+        $permission = $this->role->permissions->firstWhere('slug', $permissionSlug);
+
+        if (! $permission) {
+            return false;
+        }
+
+        $actionMap = [
+            'view' => 'view',
+            'viewAny' => 'view',
+            'create' => 'create',
+            'edit' => 'edit',
+            'update' => 'edit',
+            'delete' => 'delete',
+        ];
+
+        $column = $actionMap[$action] ?? $action;
+
+        return (bool) ($permission->pivot->{$column} ?? false);
+    }
 }

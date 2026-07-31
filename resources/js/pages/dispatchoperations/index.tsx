@@ -1,10 +1,12 @@
-import { Link } from '@inertiajs/react';
-import { ChevronLeft, ChevronRight, PackageSearch } from 'lucide-react';
+import { Link, router } from '@inertiajs/react';
+import { ChevronLeft, ChevronRight, PackageSearch, Search, Calendar as CalendarIcon } from 'lucide-react';
 import { Eye } from 'lucide-react';
 import CreateDispatchModal from '@/components/dispatchoperation/create-dispatch-modal';
 import PlannedDispatchMetrics from '@/components/dispatchoperation/planned-disptatch-metrics';
+import type { DispatchMetrics } from '@/components/dispatchoperation/planned-disptatch-metrics';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
 import {
     Table,
     TableBody,
@@ -13,18 +15,54 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import type { PaginatedDispatchData } from '@/generated/DispatchOperation';
 import type { TripLegData } from '@/generated/DispatchOperation';
 import type { DispatchData } from '@/generated/DispatchOperation/DispatchData';
 import type { TripStatus } from '@/generated/DispatchOperation/TripStatus';
 import { TRIP_STATUS_COLORS } from '@/lib/trip_status_colors';
 import { show } from '@/routes/dispatchoperation';
+import { useState, useEffect } from 'react';
+
 const DispatchOperation = ({
     dispatches,
+    metrics,
+    filters,
 }: {
     dispatches: PaginatedDispatchData;
+    metrics: DispatchMetrics;
+    filters?: { search?: string; date_filter?: string; start_date?: string; end_date?: string };
 }) => {
     const { data, from, to, total, links } = dispatches;
+    const [searchQuery, setSearchQuery] = useState(filters?.search || '');
+    const [dateFilter, setDateFilter] = useState(filters?.date_filter || 'today');
+    const [startDate, setStartDate] = useState(filters?.start_date || '');
+    const [endDate, setEndDate] = useState(filters?.end_date || '');
+
+    useEffect(() => {
+        const delayDebounceFn = setTimeout(() => {
+            if (
+                searchQuery !== (filters?.search || '') ||
+                dateFilter !== (filters?.date_filter || 'today') ||
+                startDate !== (filters?.start_date || '') ||
+                endDate !== (filters?.end_date || '')
+            ) {
+                router.get(
+                    '/dispatchoperations',
+                    { search: searchQuery, date_filter: dateFilter, start_date: startDate, end_date: endDate },
+                    { preserveState: true, preserveScroll: true, replace: true }
+                );
+            }
+        }, 300);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [searchQuery, dateFilter, startDate, endDate, filters]);
 
     function getDispatchStatus(tripLegs: TripLegData[]): TripStatus {
         return tripLegs && tripLegs.length > 0
@@ -44,9 +82,52 @@ const DispatchOperation = ({
                         {total} total {total === 1 ? 'dispatch' : 'dispatches'}
                     </p>
                 </div>
-                <CreateDispatchModal />
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                        <Select value={dateFilter} onValueChange={setDateFilter}>
+                            <SelectTrigger className="w-[140px]">
+                                <SelectValue placeholder="Date Filter" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="today">Today</SelectItem>
+                                <SelectItem value="custom">Custom Date</SelectItem>
+                                <SelectItem value="all">All Dates</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        
+                        {dateFilter === 'custom' && (
+                            <div className="flex items-center gap-2">
+                                <Input
+                                    type="date"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                    className="w-[140px]"
+                                />
+                                <span className="text-slate-500">to</span>
+                                <Input
+                                    type="date"
+                                    value={endDate}
+                                    onChange={(e) => setEndDate(e.target.value)}
+                                    className="w-[140px]"
+                                />
+                            </div>
+                        )}
+                    </div>
+                    
+                    <div className="relative">
+                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            type="search"
+                            placeholder="Search..."
+                            className="w-64 pl-8"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                        />
+                    </div>
+                    <CreateDispatchModal />
+                </div>
             </div>
-            <PlannedDispatchMetrics />
+            <PlannedDispatchMetrics metrics={metrics} />
             <Card className="border-slate-200">
                 <CardHeader className="pb-3">
                     <CardTitle className="text-base font-medium text-slate-700">

@@ -2,18 +2,16 @@
 
 namespace Modules\Auth\Providers;
 
-
-use Modules\Auth\Actions\Fortify\ResetUserPassword;
-use Modules\Auth\Actions\Fortify\CreateNewUser;
-use Illuminate\Support\ServiceProvider;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rules\Password;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
+use Modules\Auth\Actions\Fortify\CreateNewUser;
+use Modules\Auth\Actions\Fortify\UpdateUserPassword;
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -40,8 +38,9 @@ class FortifyServiceProvider extends ServiceProvider
      */
     private function configureActions(): void
     {
-        
+
         Fortify::createUsersUsing(CreateNewUser::class);
+        Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
     }
 
     /**
@@ -54,7 +53,6 @@ class FortifyServiceProvider extends ServiceProvider
             'status' => $request->session()->get('status'),
         ]));
 
-       
         Fortify::requestPasswordResetLinkView(fn (Request $request) => Inertia::render('auth/forgot-password', [
             'status' => $request->session()->get('status'),
         ]));

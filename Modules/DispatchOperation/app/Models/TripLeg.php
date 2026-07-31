@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Modules\DispatchOperation\Enums\TripStatus;
 
 #[Fillable(
     'dispatch_id',
@@ -23,13 +24,12 @@ class TripLeg extends Model
 {
     use HasFactory;
 
-    public $cast = [
-        'status' => \Modules\DispatchOperation\Enums\TripStatus::class
+    protected $casts = [
+        'status' => TripStatus::class,
     ];
 
     public function dispatch(): BelongsTo
     {
         return $this->belongsTo(Dispatch::class);
     }
-
 }

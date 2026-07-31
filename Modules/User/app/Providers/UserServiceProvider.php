@@ -2,9 +2,22 @@
 
 namespace Modules\User\Providers;
 
-use Nwidart\Modules\Support\ModuleServiceProvider;
 use Illuminate\Console\Scheduling\Schedule;
+use Illuminate\Support\Facades\Gate;
+use Modules\Client\Models\Client;
+use Modules\DispatchOperation\Models\Dispatch;
+use Modules\Planning\Models\Plan;
 use Modules\User\Console\CreateRole;
+use Modules\User\Models\Role;
+use Modules\User\Models\User;
+use Modules\User\Policies\ClientPolicy;
+use Modules\User\Policies\DispatchPolicy;
+use Modules\User\Policies\PlanPolicy;
+use Modules\User\Policies\RolePolicy;
+use Modules\User\Policies\UserPolicy;
+use Modules\User\Policies\VendorPolicy;
+use Modules\Vendor\Models\Vendor;
+use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class UserServiceProvider extends ModuleServiceProvider
 {
@@ -35,17 +48,25 @@ class UserServiceProvider extends ModuleServiceProvider
         RouteServiceProvider::class,
     ];
 
-    public function boot(): void{
+    public function boot(): void
+    {
         parent::boot();
         $this->commands([
-            CreateRole::class
+            CreateRole::class,
         ]);
+
+        Gate::policy(User::class, UserPolicy::class);
+        Gate::policy(Role::class, RolePolicy::class);
+        Gate::policy(Client::class, ClientPolicy::class);
+        Gate::policy(Plan::class, PlanPolicy::class);
+        Gate::policy(Vendor::class, VendorPolicy::class);
+        Gate::policy(Dispatch::class, DispatchPolicy::class);
     }
-    
+
     /**
      * Define module schedules.
-     * 
-     * @param $schedule
+     *
+     * @param  $schedule
      */
     // protected function configureSchedules(Schedule $schedule): void
     // {

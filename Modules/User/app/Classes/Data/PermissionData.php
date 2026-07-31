@@ -25,10 +25,10 @@ class PermissionData extends Data
             id: $permission->id,
             name: $permission->name,
             slug: $permission->slug,
-            view: (bool) $permission->pivot->view,
-            create: (bool) $permission->pivot->create,
-            edit: (bool) $permission->pivot->edit,
-            delete: (bool) $permission->pivot->delete,
+            view: (bool) ($permission->pivot->view ?? false),
+            create: (bool) ($permission->pivot->create ?? false),
+            edit: (bool) ($permission->pivot->edit ?? false),
+            delete: (bool) ($permission->pivot->delete ?? false),
         );
     }
 }

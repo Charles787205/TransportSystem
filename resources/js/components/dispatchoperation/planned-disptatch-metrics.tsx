@@ -13,7 +13,19 @@ import {
     TooltipContent,
 } from '../ui/tooltip';
 
-export default function PlannedDispatchMetrics() {
+export type DispatchMetrics = {
+    planned: number;
+    completed: number;
+    dispatched: number;
+    remaining: number;
+};
+
+export default function PlannedDispatchMetrics({ metrics }: { metrics: DispatchMetrics }) {
+    const total = metrics.planned || 1; // Prevent division by zero
+    const completedPct = (metrics.completed / total) * 100;
+    const dispatchedPct = (metrics.dispatched / total) * 100;
+    const remainingPct = (metrics.remaining / total) * 100;
+
     return (
         <div className="grid gap-4 md:grid-cols-5">
             <Card>
@@ -21,16 +33,16 @@ export default function PlannedDispatchMetrics() {
                     <CardTitle>Planned</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-3xl font-bold">34</p>
+                    <p className="text-3xl font-bold">{metrics.planned}</p>
                 </CardContent>
             </Card>
 
             <Card>
                 <CardHeader className="pb-2">
-                    <CardTitle>Dispatches</CardTitle>
+                    <CardTitle>Dispatched</CardTitle>
                 </CardHeader>
                 <CardContent>
-                    <p className="text-3xl font-bold">34</p>
+                    <p className="text-3xl font-bold">{metrics.dispatched}</p>
                 </CardContent>
             </Card>
 
@@ -49,11 +61,11 @@ export default function PlannedDispatchMetrics() {
                                 <TooltipTrigger asChild>
                                     <div
                                         className="bg-green-500"
-                                        style={{ width: '40%' }}
+                                        style={{ width: `${completedPct}%` }}
                                     />
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p>Completed: 40 / 100</p>
+                                    <p>Completed: {metrics.completed} / {metrics.planned}</p>
                                 </TooltipContent>
                             </Tooltip>
 
@@ -61,22 +73,22 @@ export default function PlannedDispatchMetrics() {
                                 <TooltipTrigger asChild>
                                     <div
                                         className="bg-blue-500"
-                                        style={{ width: '20%' }}
+                                        style={{ width: `${dispatchedPct}%` }}
                                     />
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p>Dispatched: 60 / 100</p>
+                                    <p>Dispatched: {metrics.dispatched} / {metrics.planned}</p>
                                 </TooltipContent>
                             </Tooltip>
                             <Tooltip>
                                 <TooltipTrigger asChild>
                                     <div
                                         className="bg-neutral-200"
-                                        style={{ width: '40%' }}
+                                        style={{ width: `${remainingPct}%` }}
                                     />
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p>Remaining: 40 / 100</p>
+                                    <p>Remaining: {metrics.remaining} / {metrics.planned}</p>
                                 </TooltipContent>
                             </Tooltip>
                         </div>

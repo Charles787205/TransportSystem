@@ -65,6 +65,7 @@ export default function PlanningPage({
         search?: string;
         business_unit_id?: string;
         destination_id?: string;
+        dispatch_date?: string;
     };
 }) {
     const { plans, from, to, total, links } = paginatedPlans;
@@ -76,12 +77,16 @@ export default function PlanningPage({
     const [destinationId, setDestinationId] = useState(
         filters?.destination_id ?? ALL,
     );
+    const [dispatchDate, setDispatchDate] = useState(
+        filters?.dispatch_date ?? '',
+    );
     const isFirstRender = useRef(true);
 
     const applyFilters = (next: {
         search?: string;
         business_unit_id?: string;
         destination_id?: string;
+        dispatch_date?: string;
     }) => {
         router.get(
             index().url,
@@ -95,6 +100,7 @@ export default function PlanningPage({
                     next.destination_id && next.destination_id !== ALL
                         ? next.destination_id
                         : undefined,
+                dispatch_date: next.dispatch_date || undefined,
             },
             { preserveState: true, preserveScroll: true, replace: true },
         );
@@ -113,6 +119,7 @@ export default function PlanningPage({
                 search,
                 business_unit_id: businessUnitId,
                 destination_id: destinationId,
+                dispatch_date: dispatchDate,
             });
         }, 350);
 
@@ -126,6 +133,7 @@ export default function PlanningPage({
             search,
             business_unit_id: value,
             destination_id: destinationId,
+            dispatch_date: dispatchDate,
         });
     };
 
@@ -135,6 +143,18 @@ export default function PlanningPage({
             search,
             business_unit_id: businessUnitId,
             destination_id: value,
+            dispatch_date: dispatchDate,
+        });
+    };
+
+    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const val = e.target.value;
+        setDispatchDate(val);
+        applyFilters({
+            search,
+            business_unit_id: businessUnitId,
+            destination_id: destinationId,
+            dispatch_date: val,
         });
     };
 
@@ -142,6 +162,7 @@ export default function PlanningPage({
         setSearch('');
         setBusinessUnitId(ALL);
         setDestinationId(ALL);
+        setDispatchDate('');
         applyFilters({});
     };
 
@@ -158,7 +179,7 @@ export default function PlanningPage({
     };
 
     const hasActiveFilters =
-        search || businessUnitId !== ALL || destinationId !== ALL;
+        search || businessUnitId !== ALL || destinationId !== ALL || dispatchDate;
     console.log({
         plans: plans,
         businessUnits: businessUnits,
@@ -248,6 +269,13 @@ export default function PlanningPage({
                         ))}
                     </SelectContent>
                 </Select>
+
+                <Input
+                    type="date"
+                    value={dispatchDate}
+                    onChange={handleDateChange}
+                    className="w-[180px]"
+                />
 
                 {hasActiveFilters && (
                     <Button variant="ghost" size="sm" onClick={clearFilters}>

@@ -5,7 +5,6 @@ namespace Modules\Client\Classes\Data;
 use Spatie\LaravelData\Data;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
-
 #[TypeScript()]
 class BusinessUnitData extends Data
 {
@@ -15,5 +14,6 @@ class BusinessUnitData extends Data
         public string $name,
         public string $touchpoint,
         public string $active
+
     ) {}
 }

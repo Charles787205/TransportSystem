@@ -4,16 +4,20 @@ namespace Modules\Client\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 use Modules\Client\Classes\Data\CreateClientData;
-use Modules\Client\Services\ClientService;
 use Modules\Client\Models\Client;
+use Modules\Client\Services\ClientService;
 
 class ClientController extends Controller
 {
-    public function __construct(private ClientService $clientService){}
+    public function __construct(private ClientService $clientService) {}
+
     public function index()
     {
+        Gate::authorize('viewAny', Client::class);
+
         return Inertia::render(
             'client/index',
             ['clients' => $this->clientService->getClients()]
@@ -25,6 +29,8 @@ class ClientController extends Controller
      */
     public function create()
     {
+        Gate::authorize('create', Client::class);
+
         return Inertia::render(
             'client/create'
         );
@@ -33,9 +39,13 @@ class ClientController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateClientData $data) {
+    public function store(CreateClientData $data)
+    {
+        Gate::authorize('create', Client::class);
+
         $client = $this->clientService->createClient($data);
-        return back()->with("success", $client->name ."Client Created");
+
+        return back()->with('success', $client->name.'Client Created');
     }
 
     /**
@@ -43,7 +53,8 @@ class ClientController extends Controller
      */
     public function show(Client $client)
     {
-    
+        Gate::authorize('view', $client);
+
         $client = $this->clientService->getClient($client->id);
         $businessUnits = $this->clientService->getPaginatedBusinessUnits($client->id, 10);
         $destinations = $this->clientService->getPaginatedClientsDestination($client->id);
@@ -53,7 +64,7 @@ class ClientController extends Controller
             [
                 'client' => $client,
                 'businessUnits' => $businessUnits,
-                'destinations' => $destinations
+                'destinations' => $destinations,
             ]
         );
     }
@@ -63,16 +74,27 @@ class ClientController extends Controller
      */
     public function edit($id)
     {
+        $clientModel = Client::findOrFail($id);
+        Gate::authorize('update', $clientModel);
+
         return view('client::edit');
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id) {}
+    public function update(Request $request, $id)
+    {
+        $clientModel = Client::findOrFail($id);
+        Gate::authorize('update', $clientModel);
+    }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id) {}
+    public function destroy($id)
+    {
+        $clientModel = Client::findOrFail($id);
+        Gate::authorize('delete', $clientModel);
+    }
 }

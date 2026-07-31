@@ -6,13 +6,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Modules\Core\Classes\Data\PaginatedData;
 use Modules\DispatchOperation\Classes\Data\CreateDispatchData;
-use Modules\DispatchOperation\Classes\Data\CreateTripLegData;
 use Modules\DispatchOperation\Classes\Data\DispatchData;
-use Modules\DispatchOperation\Classes\Data\EditTripLegData;
-use Modules\DispatchOperation\Models\TripLeg;
 use Modules\DispatchOperation\Repositories\DispatchRepository;
 use Modules\DispatchOperation\Repositories\TripLegRepository;
-use Spatie\LaravelData\Optional;
 
 class DispatchService
 {
@@ -49,20 +45,24 @@ class DispatchService
                 );
             }
             $dispatch = $this->dispatchRepo->createDispatch($data->dispatchAttributes());
-            $this->dispatchRepo->attachTripLegs($dispatch, ['linehaul_trip_no'=> $data->linehaulTripNo]);
+            $this->dispatchRepo->attachTripLegs($dispatch, ['linehaul_trip_no' => $data->linehaulTripNo]);
 
             return DispatchData::from($dispatch->fresh());
         });
     }
 
-    public function getPaginatedDispatches()
+    public function getPaginatedDispatches(array $filters = [])
     {
-        $dispatches = $this->dispatchRepo->getPaginatedDispatches(with: ['driver', 'destination', 'businessUnit', 'vehicle', 'tripLegs']);
+        $dispatches = $this->dispatchRepo->getPaginatedDispatches(
+            with: ['driver', 'destination', 'businessUnit', 'vehicle', 'tripLegs'],
+            filters: $filters
+        );
 
         return PaginatedData::fromPaginator($dispatches, DispatchData::class);
     }
 
-    
-
-    
+    public function getDispatchMetrics(array $filters = [])
+    {
+        return $this->dispatchRepo->getDispatchMetrics($filters);
+    }
 }

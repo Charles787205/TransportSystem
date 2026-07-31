@@ -35,14 +35,17 @@ import {
     TableRow,
 } from '@/components/ui/table';
 
-import type { PaginatedUserData } from '@/generated/User';
-import { destroy, edit, index, show } from '@/routes/user';
-
+import CreateUserModal from '@/components/user/create-user-modal';
+import type { PaginatedUserData, RoleData } from '@/generated/User';
+import { index as rolesIndex } from '@/routes/roles';
+import { destroy, edit, index as userIndex, show } from '@/routes/user';
 export default function UserPage({
     paginatedUsers,
+    roles,
     filters,
 }: {
     paginatedUsers: PaginatedUserData;
+    roles: RoleData[];
     filters?: { search?: string };
 }) {
     const { data: users, from, to, total, links } = paginatedUsers;
@@ -52,7 +55,7 @@ export default function UserPage({
 
     const applyFilters = (next: { search?: string }) => {
         router.get(
-            index().url,
+            userIndex().url,
             { search: next.search || undefined },
             { preserveState: true, preserveScroll: true, replace: true },
         );
@@ -103,13 +106,9 @@ export default function UserPage({
                     </p>
                 </div>
                 <div className="ml-auto flex gap-2">
+                    <CreateUserModal roles={roles} />
                     <Link
-                        className={`'bg-blue-800 text-white' } ml-auto flex h-8 min-w-8 items-center justify-center rounded-md bg-blue-800 px-2 text-sm font-bold text-white transition-colors`}
-                    >
-                        <Plus />
-                        Add Users
-                    </Link>
-                    <Link
+                        href={rolesIndex().url}
                         className={`'bg-blue-800 text-white' } flex h-8 min-w-8 items-center justify-center rounded-md bg-rose-300 px-2 text-sm font-bold text-white transition-colors`}
                     >
                         <Plus />

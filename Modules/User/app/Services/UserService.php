@@ -2,29 +2,52 @@
 
 namespace Modules\User\Services;
 
+use Illuminate\Support\Facades\Log;
 use Modules\Core\Classes\Data\PaginatedData;
+use Modules\User\Classes\Data\CreateUserData;
+use Modules\User\Classes\Data\UpdateUserData;
 use Modules\User\Classes\Data\UserData;
 use Modules\User\Repositories\UserRepository;
-use Illuminate\Support\Facades\Log;
 
 class UserService
 {
     public function __construct(
         private UserRepository $userRepo
-    ){}
+    ) {}
 
-    public function getPaginatedUsers(){
+    public function getPaginatedUsers()
+    {
         $paginatedData = $this->userRepo->getPaginatedUsers(with: [
-            'role'
+            'role',
         ]);
+
         return PaginatedData::fromPaginator($paginatedData, UserData::class);
     }
 
-    public function getUserDetails(int $userId){
-        $user =  $this->userRepo->getUser($userId, with:['role']);
+    public function getUserDetails(int $userId)
+    {
+        $user = $this->userRepo->getUser($userId, with: ['role']);
         Log::info($user);
+
         return UserData::from($user);
     }
-    
 
+    public function createUser(CreateUserData $data): array
+    {
+        $attributes = $data->toModelAttributes();
+        $user = $this->userRepo->createUser($attributes);
+
+        return [
+            'user' => UserData::from($user),
+            'plainPassword' => $data->generatedPassword,
+        ];
+    }
+
+    public function updateUser(int $userId, UpdateUserData $data): UserData
+    {
+        $user = $this->userRepo->getUser($userId);
+        $updatedUser = $this->userRepo->updateUser($user, $data->toModelAttributes());
+
+        return UserData::from($updatedUser);
+    }
 }

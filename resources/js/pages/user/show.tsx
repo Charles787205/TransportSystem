@@ -124,6 +124,21 @@ export default function UserDetailPage({
                                     <InputError message={errors.role_id} />
                                 </Field>
 
+                                <Field>
+                                    <Label htmlFor="password">
+                                        Password (leave blank to keep current)
+                                    </Label>
+                                    <Input
+                                        id="password"
+                                        name="password"
+                                        type="password"
+                                        placeholder="••••••••"
+                                        data-invalid={!!errors.password}
+                                        aria-invalid={!!errors.password}
+                                    />
+                                    <InputError message={errors.password} />
+                                </Field>
+
                                 <div className="flex justify-end gap-2 pt-2">
                                     <Button
                                         type="button"
@@ -185,7 +200,7 @@ export default function UserDetailPage({
                         Permissions ({user.role.name})
                     </h2>
                     <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-                        {user.role.permissions.map((perm) => (
+                        {user.role?.permissions?.map((perm) => (
                             <div
                                 key={perm.id}
                                 className="rounded-md border border-gray-100 p-3"
