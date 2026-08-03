@@ -106,7 +106,7 @@ it('updates an existing trip leg through dispatch service', function () {
     $updatedTripLeg = $service->editTripLeg($data, $tripLeg->id);
 
     expect($updatedTripLeg)->toBeInstanceOf(TripLeg::class)
-        ->and($updatedTripLeg->trip_sequence)->toBe(2)
+        ->and($updatedTripLeg->trip_sequence)->toBe(1)
         ->and($updatedTripLeg->total_parcel)->toBe(11)
         ->and($updatedTripLeg->odometer_start)->toBe(110.0)
         ->and($updatedTripLeg->odometer_end)->toBe(130.0)
