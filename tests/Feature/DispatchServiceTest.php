@@ -44,7 +44,7 @@ it('updates an existing trip leg through dispatch service', function () {
         'driver_id_number' => 'DRV-001',
         'full_name' => 'Jane Driver',
         'birthday' => '1990-01-01',
-        'gender' => 'female',
+        'gender' => 'Female',
         'phone_number' => '555-9999',
         'address' => '1 Main St',
         'license_number' => 'LIC-001',

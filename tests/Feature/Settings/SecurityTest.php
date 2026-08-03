@@ -92,6 +92,6 @@ test('correct password must be provided to update password', function () {
         ]);
 
     $response
-        ->assertSessionHasErrors('current_password')
+        ->assertSessionHasErrors('current_password', errorBag: 'updatePassword')
         ->assertRedirect(route('security.edit'));
 });

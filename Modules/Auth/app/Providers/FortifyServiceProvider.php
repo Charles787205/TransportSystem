@@ -11,6 +11,7 @@ use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
 use Modules\Auth\Actions\Fortify\CreateNewUser;
+use Modules\Auth\Actions\Fortify\ResetUserPassword;
 use Modules\Auth\Actions\Fortify\UpdateUserPassword;
 
 class FortifyServiceProvider extends ServiceProvider
@@ -41,6 +42,7 @@ class FortifyServiceProvider extends ServiceProvider
 
         Fortify::createUsersUsing(CreateNewUser::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
+        Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
     }
 
     /**
@@ -55,6 +57,11 @@ class FortifyServiceProvider extends ServiceProvider
 
         Fortify::requestPasswordResetLinkView(fn (Request $request) => Inertia::render('auth/forgot-password', [
             'status' => $request->session()->get('status'),
+        ]));
+
+        Fortify::resetPasswordView(fn (Request $request) => Inertia::render('auth/reset-password', [
+            'token' => $request->route('token'),
+            'email' => $request->email,
         ]));
 
         Fortify::confirmPasswordView(fn () => Inertia::render('auth/confirm-password'));
