@@ -12,10 +12,8 @@ import {
 } from '@/components/ui/select';
 
 import type { VehicleData, VehicleDriverData } from '@/generated/Vendor';
-import driver from '@/routes/vendor/driver';
 import { attachVehicleToDriver } from '@/routes/vendors';
 import { Button } from '../ui/button';
-import { Card, CardContent } from '../ui/card';
 import {
     Dialog,
     DialogHeader,
@@ -26,7 +24,6 @@ import {
     DialogClose,
 } from '../ui/dialog';
 import { Field } from '../ui/field';
-import { ScrollArea } from '../ui/scroll-area';
 const VehicleAttachDriverDialog = ({
     isOpen,
     setIsOpen,
@@ -58,7 +55,7 @@ const VehicleAttachDriverDialog = ({
                     }}
                     resetOnSuccess
                 >
-                    {({ processing, errors }) => (
+                    {({ processing }) => (
                         <>
                             <Field>
                                 <Select name="driver_id">

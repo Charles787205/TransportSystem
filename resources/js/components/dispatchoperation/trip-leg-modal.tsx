@@ -1,7 +1,7 @@
 import { Form } from '@inertiajs/react';
 import { Loader2 } from 'lucide-react';
+import { useState } from 'react';
 import TripLegController from '@/actions/Modules/DispatchOperation/Http/Controllers/TripLegController';
-import type { TripLegData } from '@/generated/DispatchOperation';
 import InputError from '../input-error';
 import { Button } from '../ui/button';
 import {
@@ -21,7 +21,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from '../ui/select';
-import { useState } from 'react';
 
 type TripLegModalProps = {
     tripLeg: any;

@@ -1,5 +1,4 @@
 import { Link } from '@inertiajs/react';
-import { Form } from '@inertiajs/react';
 import {
     Building2,
     Calendar,
@@ -37,8 +36,6 @@ import { index } from '@/routes/dispatchoperation';
 
 type DispatchDetailsPagesProps = {
     dispatch: DispatchData;
-    /** Wire this up to open the create trip leg modal (separate file). */
-    onAddTripLeg?: () => void;
     /** Wire this up to open the edit trip leg modal (separate file), pre-filled with the given leg. */
     onEditTripLeg?: (tripLeg: TripLegData) => void;
 };
@@ -98,7 +95,6 @@ const isTripLegComplete = (tripLeg: TripLegData) =>
 
 const DispatchDetailsPages = ({
     dispatch,
-    onAddTripLeg,
     onEditTripLeg,
 }: DispatchDetailsPagesProps) => {
     const [selectedTripLeg, setSelectedTripLeg] = useState<TripLegData | null>(
@@ -116,16 +112,6 @@ const DispatchDetailsPages = ({
     const openTripLegModal = (tripLeg: TripLegData) => {
         onEditTripLeg?.(tripLeg);
         setSelectedTripLeg(tripLeg);
-        setTripLegModalOpen(true);
-    };
-
-    const handleTripLegAction = () => {
-        if (!canAddTripLeg) {
-            return;
-        }
-
-        onAddTripLeg?.();
-        setSelectedTripLeg(null);
         setTripLegModalOpen(true);
     };
 

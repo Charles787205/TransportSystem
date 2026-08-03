@@ -1,4 +1,5 @@
 import { Form } from '@inertiajs/react';
+import { useState } from 'react';
 import { store } from '@/routes/triplegs';
 import InputError from '../input-error';
 import { Button } from '../ui/button';
@@ -14,7 +15,6 @@ import { Field } from '../ui/field';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 
-import { useState } from 'react';
 
 interface CreateTripLegModalProps {
     dispatchId: number;

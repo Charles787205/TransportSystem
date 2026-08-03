@@ -1,6 +1,5 @@
 import { Head, Link, useForm, router } from '@inertiajs/react';
-import { ArrowLeft, Shield, Check, Save } from 'lucide-react';
-import { useState } from 'react';
+import { ArrowLeft, Shield, Save } from 'lucide-react';
 
 import InputError from '@/components/input-error';
 import { Badge } from '@/components/ui/badge';
@@ -68,7 +67,7 @@ export default function RoleDetailPage({
         };
     });
 
-    const { data, setData, put, processing, errors } = useForm({
+    const { data, setData, processing, errors } = useForm({
         name: role.name || '',
         description: role.description || '',
         permissions: initialPermissions,

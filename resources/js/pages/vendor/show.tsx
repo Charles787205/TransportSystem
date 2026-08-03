@@ -24,7 +24,6 @@ import { index as vehiclesIndex } from '@/routes/vendor/vehicle';
 
 const Show = ({ vendor }: { vendor: VendorWithDriversAndVehiclesData }) => {
     const [openAddDriverModal, setOpenAddDriverModal] = useState(false);
-    const [openAddTruckModal, setOpenAddTruckModal] = useState(false);
     console.log(vendor.drivers);
     console.log(vendor);
 

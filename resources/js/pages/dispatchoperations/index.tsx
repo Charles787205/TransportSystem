@@ -1,12 +1,20 @@
 import { Link, router } from '@inertiajs/react';
-import { ChevronLeft, ChevronRight, PackageSearch, Search, Calendar as CalendarIcon } from 'lucide-react';
+import { ChevronLeft, ChevronRight, PackageSearch, Search } from 'lucide-react';
 import { Eye } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import CreateDispatchModal from '@/components/dispatchoperation/create-dispatch-modal';
 import PlannedDispatchMetrics from '@/components/dispatchoperation/planned-disptatch-metrics';
 import type { DispatchMetrics } from '@/components/dispatchoperation/planned-disptatch-metrics';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 import {
     Table,
     TableBody,
@@ -15,20 +23,12 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
 import type { PaginatedDispatchData } from '@/generated/DispatchOperation';
 import type { TripLegData } from '@/generated/DispatchOperation';
 import type { DispatchData } from '@/generated/DispatchOperation/DispatchData';
 import type { TripStatus } from '@/generated/DispatchOperation/TripStatus';
 import { TRIP_STATUS_COLORS } from '@/lib/trip_status_colors';
 import { show } from '@/routes/dispatchoperation';
-import { useState, useEffect } from 'react';
 
 const DispatchOperation = ({
     dispatches,

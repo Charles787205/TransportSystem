@@ -1,4 +1,4 @@
-import { Head, Form, Link } from '@inertiajs/react';
+import { Form, Link } from '@inertiajs/react';
 import { ArrowLeft, Pencil, X } from 'lucide-react';
 import { useState } from 'react';
 

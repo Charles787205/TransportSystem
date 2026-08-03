@@ -1,4 +1,13 @@
 import { Head } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
+import {
+    FileText,
+    Truck,
+    Users,
+    UserCheck,
+    Building2,
+    ArrowUpRight,
+} from 'lucide-react';
 import {
     BarChart,
     Bar,
@@ -11,20 +20,10 @@ import {
     Pie,
     Cell,
 } from 'recharts';
-import {
-    FileText,
-    Truck,
-    Users,
-    UserCheck,
-    Building2,
-    Calendar,
-    ArrowUpRight,
-} from 'lucide-react';
-import { Link } from '@inertiajs/react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { dashboard } from '@/routes';
 
 interface DashboardProps {
@@ -54,7 +53,6 @@ const COLORS = ['#6366f1', '#3b82f6', '#10b981', '#f43f5e', '#a855f7', '#f59e0b'
 
 export default function Dashboard({
     metrics,
-    statusBreakdown,
     dispatchesByDestination,
     dispatchesByBU,
     recentDispatches,

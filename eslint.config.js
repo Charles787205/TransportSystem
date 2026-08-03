@@ -115,6 +115,14 @@ export default [
             'resources/js/wayfinder/**',
         ],
     },
+    {
+        files: ['**/*.config.js', '**/*.config.ts', 'vite-module-loader.js'],
+        languageOptions: {
+            globals: {
+                ...globals.node,
+            },
+        },
+    },
     prettier,
     {
         plugins: {
