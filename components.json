@@ -18,5 +18,10 @@
         "hooks": "@/hooks",
         "generated": "@/generated"
     },
-    "iconLibrary": "lucide"
+    "iconLibrary": "lucide",
+    "config": {
+        "platform": {
+            "php": "8.4.1"
+        }
+    }
 }
