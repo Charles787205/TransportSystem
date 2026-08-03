@@ -6,7 +6,7 @@ use Modules\Client\Models\Destination;
 use Modules\DispatchOperation\Classes\Data\EditTripLegData;
 use Modules\DispatchOperation\Models\Dispatch;
 use Modules\DispatchOperation\Models\TripLeg;
-use Modules\DispatchOperation\Services\DispatchService;
+use Modules\DispatchOperation\Services\TripLegService;
 use Modules\Vendor\Models\Driver;
 use Modules\Vendor\Models\Vehicle;
 use Modules\Vendor\Models\Vendor;
@@ -92,7 +92,7 @@ it('updates an existing trip leg through dispatch service', function () {
         'status' => 'pending',
     ]);
 
-    $service = app(DispatchService::class);
+    $service = app(TripLegService::class);
     $data = EditTripLegData::from([
         'trip_sequence' => 2,
         'total_parcel' => 11,
