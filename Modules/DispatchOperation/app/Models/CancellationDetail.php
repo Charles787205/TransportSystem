@@ -25,7 +25,7 @@ class CancellationDetail extends Model
         'detail' => CancellationDetailsEnum::class,
     ];
 
-    public function tripLeg()
+    public function tripLeg() 
     {
         return $this->belongsTo(TripLeg::class);
     }
