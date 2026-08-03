@@ -3,12 +3,12 @@
 namespace App\Providers;
 
 use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Model;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -26,23 +26,24 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
-        Factory::guessFactoryNamesUsing(
-        /**
-         * @param class-string<Model> $modelName
-         * @return class-string<Factory>
-         */    
-        function (string $modelName): string {
-        
-        if (str_starts_with($modelName, 'Modules\\')) {
-            $parts = explode('\\', $modelName);
-            $module = $parts[1];       // "User"
-            $model  = $parts[3];       // "User"
-            return "Modules\\{$module}\\Database\\Factories\\{$model}Factory";
-        }
 
-        // Fallback to Laravel default for anything in App\Models
-        return 'Database\\Factories\\' . class_basename($modelName) . 'Factory';
-    });
+        /** @var callable(class-string<Model>): class-string<Factory> $resolver */
+        $resolver = function (string $modelName): string {
+            if (str_starts_with($modelName, 'Modules\\')) {
+                $parts = explode('\\', $modelName);
+                $module = $parts[1];       // "User"
+                $model  = $parts[3];       // "User"
+                /** @var class-string<Factory> $factory */
+                $factory = "Modules\\{$module}\\Database\\Factories\\{$model}Factory";
+                return $factory;
+            }
+
+            /** @var class-string<Factory> $factory */
+            $factory = 'Database\\Factories\\' . class_basename($modelName) . 'Factory';
+            return $factory;
+        };
+
+        Factory::guessFactoryNamesUsing($resolver);
     }
 
     /**
