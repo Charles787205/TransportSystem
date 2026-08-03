@@ -20,7 +20,7 @@ class ModuleFolderWriter implements Writer
         protected SplitTransformedPerLocationAction $split = new SplitTransformedPerLocationAction,
         protected ResolveImportsAndResolvedReferenceMapAction $resolver = new ResolveImportsAndResolvedReferenceMapAction,
     ) {}
-
+ 
     public function output(
         array $transformed,
         TransformedCollection $collection,
