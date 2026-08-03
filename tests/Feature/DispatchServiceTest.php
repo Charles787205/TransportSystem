@@ -14,6 +14,8 @@ use Modules\Vendor\Models\Vendor;
 it('updates an existing trip leg through dispatch service', function () {
     $client = Client::create([
         'name' => 'Acme Transport',
+        'email' => 'acme@example.com',
+        'phone_number' => '123-456-7890',
         'touchpoint' => 'HQ',
         'active' => true,
     ]);
