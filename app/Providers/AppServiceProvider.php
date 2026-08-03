@@ -2,71 +2,51 @@
 
 namespace App\Providers;
 
-use Carbon\CarbonImmutable;
-use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Date;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Validation\Rules\Password;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Aws\SecretsManager\SecretsManagerClient;
 
 class AppServiceProvider extends ServiceProvider
 {
-    /**
-     * Register any application services.
-     */
-    public function register(): void
-    {
-        //
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
     public function boot(): void
     {
-        $this->configureDefaults();
-
-        /** @var \Closure(string): class-string<Factory<Model>> $resolver */
-        $resolver = function (string $modelName): string {
+        // Custom Factory Resolver for Modular Architecture
+        Factory::guessFactoryNamesUsing(function (string $modelName) {
             if (str_starts_with($modelName, 'Modules\\')) {
+                // Example: Modules\User\Models\User 
+                // becomes: Modules\User\Database\Factories\UserFactory
                 $parts = explode('\\', $modelName);
-                $module = $parts[1];       // "User"
-                $model = $parts[3];       // "User"
-                /** @var class-string<Factory<Model>> $factory */
-                $factory = "Modules\\{$module}\\Database\\Factories\\{$model}Factory";
+                $module = $parts[1]; // "User"
+                $model = class_basename($modelName); // "User"
 
-                return $factory;
+                return "Modules\\{$module}\\Database\\Factories\\{$model}Factory";
             }
 
-            /** @var class-string<Factory<Model>> $factory */
-            $factory = 'Database\\Factories\\'.class_basename($modelName).'Factory';
+            // Default fallback for standard App\Models
+            return 'Database\\Factories\\' . class_basename($modelName) . 'Factory';
+        });
 
-            return $factory;
-        };
+        // Load AWS Secrets in production/staging environments
+        if (app()->isProduction()) {
+            try {
+                $client = new SecretsManagerClient([
+                    'version' => 'latest',
+                    'region'  => config('services.aws.region', 'ap-southeast-1'),
+                ]);
 
-        Factory::guessFactoryNamesUsing($resolver);
-    }
+                $result = $client->getSecretValue([
+                    'SecretId' => config('services.aws.secret_name', 'TransportSystem/Prod'),
+                ]);
 
-    /**
-     * Configure default behaviors for production-ready applications.
-     */
-    protected function configureDefaults(): void
-    {
-        Date::use(CarbonImmutable::class);
-
-        DB::prohibitDestructiveCommands(
-            app()->isProduction(),
-        );
-
-        Password::defaults(fn (): ?Password => app()->isProduction()
-            ? Password::min(12)
-                ->mixedCase()
-                ->letters()
-                ->numbers()
-                ->symbols()
-                ->uncompromised()
-            : null,
-        );
+                if (isset($result['SecretString'])) {
+                    $secrets = json_decode($result['SecretString'], true);
+                    foreach ($secrets as $key => $value) {
+                        config([$key => $value]);
+                    }
+                }
+            } catch (\Exception $e) {
+                logger()->error('Failed to load AWS Secrets: ' . $e->getMessage());
+            }
+        }
     }
 }
