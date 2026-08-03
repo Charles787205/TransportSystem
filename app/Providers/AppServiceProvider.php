@@ -25,8 +25,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->configureDefaults();
-        Factory::guessFactoryNamesUsing(function (string $modelName) {
-        // Modules\User\Models\User → Modules\User\Database\Factories\UserFactory
+        Factory::guessFactoryNamesUsing(function (string $modelName): string {
+        /**
+         * @param class-string<Model> $modelName
+         * @return class-string<Factory>
+         */
         if (str_starts_with($modelName, 'Modules\\')) {
             $parts = explode('\\', $modelName);
             $module = $parts[1];       // "User"
