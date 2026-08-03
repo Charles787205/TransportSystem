@@ -11,14 +11,16 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      # MUST COME BEFORE COMPOSER INSTALL
       - name: Setup PHP Environment
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4.1' # Updated from '8.4' to satisfy Symfony >= 8.4.1 requirement
+          php-version: '8.4.1' # Forces PHP 8.4.1 to satisfy locked Symfony 8.1 / Laravel dependencies
           extensions: mbstring, xml, ctype, iconv, mysql, gd
+          tools: composer:v2
 
       - name: Install PHP Dependencies
-        run: composer install --no-ansi --no-interaction --no-plugins --no-scripts --prefer-dist
+        run: composer install --no-interaction --prefer-dist --optimize-autoloader
 
       - name: Discover Laravel Packages
         run: php artisan package:discover --ansi
@@ -39,7 +41,6 @@ jobs:
           npm ci
           npm run build
 
-      # SAVE THE BUILD AS AN ARTIFACT
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
