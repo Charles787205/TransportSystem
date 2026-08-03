@@ -17,10 +17,9 @@ class ModuleFolderWriter implements Writer
 {
     public function __construct(
         protected ?string $path,
-        protected SplitTransformedPerLocationAction $split = new SplitTransformedPerLocationAction(),
-        protected ResolveImportsAndResolvedReferenceMapAction $resolver = new ResolveImportsAndResolvedReferenceMapAction(),
-    ) {
-    }
+        protected SplitTransformedPerLocationAction $split = new SplitTransformedPerLocationAction,
+        protected ResolveImportsAndResolvedReferenceMapAction $resolver = new ResolveImportsAndResolvedReferenceMapAction,
+    ) {}
 
     public function output(
         array $transformed,
@@ -36,6 +35,9 @@ class ModuleFolderWriter implements Writer
         return $files;
     }
 
+    /**
+     * @param  array<int, WriteableFile>  $files
+     */
     protected function walk(
         Location $location,
         TransformedCollection $collection,
@@ -51,6 +53,9 @@ class ModuleFolderWriter implements Writer
         }
     }
 
+    /**
+     * @param  array<int, WriteableFile>  $files
+     */
     protected function writeModule(
         Location $location,
         TransformedCollection $collection,
@@ -76,10 +81,10 @@ class ModuleFolderWriter implements Writer
             $content = '';
 
             foreach ($imports->getTypeScriptNodes() as $import) {
-                $content .= $this->toTypeImport($import->write($context)) . PHP_EOL;
+                $content .= $this->toTypeImport($import->write($context)).PHP_EOL;
             }
 
-            $content .= $transformed->write($context) . PHP_EOL;
+            $content .= $transformed->write($context).PHP_EOL;
 
             $files[] = new WriteableFile($file, $content);
 
@@ -91,6 +96,7 @@ class ModuleFolderWriter implements Writer
             implode(PHP_EOL, $exports)
         );
     }
+
     protected function toTypeImport(string $importStatement): string
     {
         // Turns `import { Foo } from '...'` into `import type { Foo } from '...'`
@@ -103,6 +109,9 @@ class ModuleFolderWriter implements Writer
         );
     }
 
+    /**
+     * @param  array<int, string>  $segments
+     */
     protected function folder(array $segments): string
     {
         // Remove unwanted namespace segments
@@ -133,8 +142,8 @@ class ModuleFolderWriter implements Writer
         return new ModuleImportResolvedReference(
             $transformed->getName(),
             $this->folder($transformed->getLocation())
-            . DIRECTORY_SEPARATOR
-            . "{$transformed->getName()}.ts",
+            .DIRECTORY_SEPARATOR
+            ."{$transformed->getName()}.ts",
         );
     }
 }
