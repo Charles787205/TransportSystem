@@ -88,6 +88,7 @@ it('updates an existing trip leg through dispatch service', function () {
         'departure_time' => '08:30:00',
         'end_time' => '10:00:00',
         'arrived_time' => '10:30:00',
+        'linehaul_trip_no' => 'LH-100',
         'status' => 'pending',
     ]);
 
