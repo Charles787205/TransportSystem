@@ -21,9 +21,10 @@ import {
     SelectTrigger,
     SelectValue,
 } from '../ui/select';
+import { useState } from 'react';
 
 type TripLegModalProps = {
-    tripLeg: TripLegData;
+    tripLeg: any;
     dispatchId: number;
     open: boolean;
     onOpenChange?: (open: boolean) => void;
@@ -51,12 +52,30 @@ const TRIP_STATUS_OPTIONS = [
     'cancelled',
 ];
 
+const CANCELLATION_DETAIL_OPTIONS = [
+    { value: 'refusal of trip', label: 'Refusal of Trip' },
+    { value: 'coding', label: 'Coding' },
+    { value: 'vehicle breakdown', label: 'Vehicle Breakdown' },
+    { value: 'personnel on leave', label: 'Personnel on Leave' },
+    { value: 'resigned', label: 'Resigned' },
+    { value: 'cancelled by client', label: 'Cancelled by Client' },
+    { value: 'not available', label: 'Not Available' },
+    { value: 'rescue urgent', label: 'Rescue Urgent' },
+    { value: 'water leak', label: 'Water Leak' },
+    { value: 'client app issue', label: 'Client App Issue' },
+    { value: 'due to bad', label: 'Due to Bad' },
+    { value: 'driver not available', label: 'Driver Not Available' },
+    { value: 'unrecognized', label: 'Unrecognized' },
+    { value: 'apprehended by enforcement', label: 'Apprehended by Enforcement' },
+];
+
 const TripLegModal = ({
     tripLeg,
     dispatchId,
     open,
     onOpenChange,
 }: TripLegModalProps) => {
+    const [status, setStatus] = useState(tripLeg?.status ?? 'pending');
     console.log(tripLeg);
     const isEditing = tripLeg !== null;
     const formAction = TripLegController.update.form(tripLeg.id);
@@ -203,9 +222,8 @@ const TripLegModal = ({
                                     <Label htmlFor="status">Status</Label>
                                     <Select
                                         name="status"
-                                        defaultValue={
-                                            tripLeg?.status ?? 'pending'
-                                        }
+                                        value={status}
+                                        onValueChange={setStatus}
                                     >
                                         <SelectTrigger
                                             id="status"
@@ -217,12 +235,12 @@ const TripLegModal = ({
                                         </SelectTrigger>
                                         <SelectContent>
                                             {TRIP_STATUS_OPTIONS.map(
-                                                (status) => (
+                                                (statusOption) => (
                                                     <SelectItem
-                                                        key={status}
-                                                        value={status}
+                                                        key={statusOption}
+                                                        value={statusOption}
                                                     >
-                                                        {status}
+                                                        {statusOption}
                                                     </SelectItem>
                                                 ),
                                             )}
@@ -230,6 +248,46 @@ const TripLegModal = ({
                                     </Select>
                                     <InputError message={errors.status} />
                                 </div>
+
+                                {status === 'cancelled' && (
+                                    <div className="col-span-2 space-y-4 border border-dashed border-red-200 rounded-lg p-4 bg-red-50/30">
+                                        <h4 className="font-medium text-sm text-red-950">Cancellation Details</h4>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="cancellation-detail">Reason</Label>
+                                            <Select
+                                                name="cancellation_detail"
+                                                defaultValue={
+                                                    tripLeg?.cancellationDetail?.detail ?? ''
+                                                }
+                                            >
+                                                <SelectTrigger id="cancellation-detail" className="w-full bg-white">
+                                                    <SelectValue placeholder="Select cancellation reason" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {CANCELLATION_DETAIL_OPTIONS.map((opt) => (
+                                                        <SelectItem key={opt.value} value={opt.value}>
+                                                            {opt.label}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                            <InputError message={errors.cancellation_detail} />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="cancellation-remark">Remark</Label>
+                                            <Input
+                                                id="cancellation-remark"
+                                                name="cancellation_remark"
+                                                placeholder="Enter any additional remark..."
+                                                className="bg-white"
+                                                defaultValue={
+                                                    tripLeg?.cancellationDetail?.remark ?? ''
+                                                }
+                                            />
+                                            <InputError message={errors.cancellation_remark} />
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             <DialogFooter>

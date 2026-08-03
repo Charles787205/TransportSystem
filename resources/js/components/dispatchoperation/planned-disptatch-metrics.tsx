@@ -18,16 +18,21 @@ export type DispatchMetrics = {
     completed: number;
     dispatched: number;
     remaining: number;
+    unplanned: number;
 };
 
 export default function PlannedDispatchMetrics({ metrics }: { metrics: DispatchMetrics }) {
     const total = metrics.planned || 1; // Prevent division by zero
     const completedPct = (metrics.completed / total) * 100;
-    const dispatchedPct = (metrics.dispatched / total) * 100;
+    
+    // Active planned is dispatches matching plans that are not completed (remaining are not yet dispatched)
+    const activePlanned = Math.max(0, metrics.planned - metrics.completed - metrics.remaining);
+    const activePlannedPct = (activePlanned / total) * 100;
     const remainingPct = (metrics.remaining / total) * 100;
+    console.log(metrics);
 
     return (
-        <div className="grid gap-4 md:grid-cols-5">
+        <div className="grid gap-4 md:grid-cols-6">
             <Card>
                 <CardHeader className="pb-2">
                     <CardTitle>Planned</CardTitle>
@@ -43,6 +48,15 @@ export default function PlannedDispatchMetrics({ metrics }: { metrics: DispatchM
                 </CardHeader>
                 <CardContent>
                     <p className="text-3xl font-bold">{metrics.dispatched}</p>
+                </CardContent>
+            </Card>
+
+            <Card>
+                <CardHeader className="pb-2">
+                    <CardTitle>Unplanned</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <p className="text-3xl font-bold">{metrics.unplanned}</p>
                 </CardContent>
             </Card>
 
@@ -73,11 +87,11 @@ export default function PlannedDispatchMetrics({ metrics }: { metrics: DispatchM
                                 <TooltipTrigger asChild>
                                     <div
                                         className="bg-blue-500"
-                                        style={{ width: `${dispatchedPct}%` }}
+                                        style={{ width: `${activePlannedPct}%` }}
                                     />
                                 </TooltipTrigger>
                                 <TooltipContent>
-                                    <p>Dispatched: {metrics.dispatched} / {metrics.planned}</p>
+                                    <p>Active: {activePlanned} / {metrics.planned}</p>
                                 </TooltipContent>
                             </Tooltip>
                             <Tooltip>

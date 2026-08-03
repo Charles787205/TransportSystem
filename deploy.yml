@@ -1,0 +1,54 @@
+name: Deploy Application
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP Environment
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5' # Change this if your server uses a different PHP version
+          extensions: mbstring, xml, ctype, iconv, mysql, gd
+
+      # 1. Install without scripts to prevent background memory loops
+      - name: Install PHP Dependencies
+        run: composer install --no-ansi --no-interaction --no-plugins --no-scripts --prefer-dist
+
+      - name: Discover Laravel Packages
+        run: php artisan package:discover --ansi
+
+      # 2. Fire the Spatie Type generation explicitly
+      - name: Generate Spatie TypeScript Types
+        run: |
+          php artisan typescript:transform
+          php artisan structure:discover
+
+      # 3. Fire the Wayfinder command WITH the form variants flag
+      - name: Generate Wayfinder Routes and Form Variants
+        run: php artisan wayfinder:generate --with-form
+
+      # 4. Compile the Inertia assets safely using GitHub's memory
+      - name: Install Node & Build Assets
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: |
+          npm install
+          npm run build
+
+      # 5. Push the compiled public build straight to your EC2 website folder
+      - name: Upload Compiled Assets to Server via SFTP
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ubuntu
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          source: 'public/build/'
+          target: '/var/www/TransportSystem/public/'

@@ -32,4 +32,9 @@ class TripLeg extends Model
     {
         return $this->belongsTo(Dispatch::class);
     }
+
+    public function cancellationDetail()
+    {
+        return $this->hasOne(CancellationDetail::class);
+    }
 }

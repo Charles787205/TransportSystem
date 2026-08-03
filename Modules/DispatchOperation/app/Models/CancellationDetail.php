@@ -9,10 +9,12 @@ use Modules\DispatchOperation\Enums\CancellationDetailsEnum;
 
 // use Modules\DispatchOperation\Database\Factories\CancellationDetailFactory;
 
-#[Fillable(['trip_leg_id', 'detail', 'remark'])]
+#[Fillable(['trip_leg_id', 'detail', 'remarks'])]
 class CancellationDetail extends Model
 {
     use HasFactory;
+
+    public $timestamps = false;
 
     /**
      * The attributes that are mass assignable.

@@ -14,19 +14,23 @@ import { Field } from '../ui/field';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 
+import { useState } from 'react';
+
 interface CreateTripLegModalProps {
     dispatchId: number;
 }
 
 const CreateTripLegModal = ({ dispatchId }: CreateTripLegModalProps) => {
+    const [open, setOpen] = useState(false);
+
     return (
-        <Dialog>
+        <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button>Add Trip Leg</Button>
             </DialogTrigger>
             <DialogContent>
                 <DialogTitle>Add Trip Leg</DialogTitle>
-                <Form {...store.form()} resetOnSuccess>
+                <Form {...store.form()} resetOnSuccess onSuccess={() => setOpen(false)}>
                     {({ errors, processing }) => (
                         <>
                             <input

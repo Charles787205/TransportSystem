@@ -2,14 +2,12 @@
 
 namespace Modules\DispatchOperation\Classes\Data;
 
-use Spatie\LaravelData\Attributes\MapOutputName;
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 use Spatie\LaravelData\Optional;
 use Spatie\TypeScriptTransformer\Attributes\Optional as AttributesOptional;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
-#[TypeScript()] 
+#[TypeScript()]
 
 class EditTripLegData extends Data
 {
@@ -28,12 +26,24 @@ class EditTripLegData extends Data
         public string|Optional|null $arrivedTime,
         #[AttributesOptional]
         public string|Optional|null $status,
+        #[AttributesOptional]
+        public string|Optional|null $cancellationDetail,
+        #[AttributesOptional]
+        public string|Optional|null $cancellationRemark,
     ) {}
 
+    public static function rules(): array
+    {
+        return [
+            'cancellation_detail' => ['required_if:status,cancelled', 'nullable', 'string'],
+            'cancellation_remark' => ['nullable', 'string'],
+        ];
+    }
 
-    public function toModelAttributes() {
+    public function toModelAttributes()
+    {
         return array_filter([
-            
+
             'total_parcel' => $this->totalParcel,
             'odometer_start' => $this->odometerStart,
             'odometer_end' => $this->odometerEnd,
@@ -41,7 +51,8 @@ class EditTripLegData extends Data
             'end_time' => $this->endTime,
             'arrived_time' => $this->arrivedTime,
             'status' => $this->status,
+            'cancellation_detail' => $this->cancellationDetail,
+            'cancellation_remark' => $this->cancellationRemark,
         ], fn ($value) => ! $value instanceof Optional);
     }
-
 }

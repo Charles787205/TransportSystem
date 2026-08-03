@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('cancellation_details', function (Blueprint $table) {
             $table->id();
             $table->foreignId('trip_leg_id')->constrained();
-            $table->string('details');
-            $table->string('remarks');
+            $table->string('detail');
+            $table->string('remarks')->nullable();
         });
     }
 

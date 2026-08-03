@@ -26,7 +26,7 @@ class DispatchService
 
     public function getDispatchDetails(int $id)
     {
-        $dispatch = $this->dispatchRepo->getDispatch($id, with: ['tripLegs', 'driver', 'destination', 'businessUnit', 'vehicle']);
+        $dispatch = $this->dispatchRepo->getDispatch($id, with: ['tripLegs.cancellationDetail', 'driver', 'destination', 'businessUnit', 'vehicle']);
 
         return DispatchData::from($dispatch);
     }

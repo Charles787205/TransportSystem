@@ -4,6 +4,7 @@ namespace Modules\DispatchOperation\Repositories;
 
 use Modules\DispatchOperation\Models\Dispatch;
 use Modules\DispatchOperation\Models\TripLeg;
+use Modules\Planning\Models\Plan;
 
 class DispatchRepository
 {
@@ -40,34 +41,85 @@ class DispatchRepository
 
     public function getDispatchMetrics(array $filters = [])
     {
+        // 1. Calculate Planned metrics from Plan model
+        $planQuery = Plan::query();
+        if (isset($filters['date_filter'])) {
+            if ($filters['date_filter'] === 'today') {
+                $planQuery->whereDate('dispatch_date', today());
+            } elseif ($filters['date_filter'] === 'custom') {
+                if (! empty($filters['start_date'])) {
+                    $planQuery->whereDate('dispatch_date', '>=', $filters['start_date']);
+                }
+                if (! empty($filters['end_date'])) {
+                    $planQuery->whereDate('dispatch_date', '<=', $filters['end_date']);
+                }
+            }
+        } else {
+            // Default to today if no date filter is provided
+            $planQuery->whereDate('dispatch_date', today());
+        }
+
+        $plans = $planQuery->get();
+        $planned = $plans->sum('number_of_vehicles');
+
+        // Create a unique mapping of planned business_unit_id and destination_id
+        $planKeys = $plans->map(function ($p) {
+            return $p->business_unit_id.'-'.$p->destination_id;
+        })->unique()->toArray();
+
+        // 2. Fetch dispatches and calculate dispatched/completed/unplanned metrics
         $query = Dispatch::query();
         $query = $this->applyFilters($query, $filters);
-
-        // Fetch dispatches with their latest trip leg to determine status
         $dispatches = $query->with('tripLegs')->get();
 
-        $metrics = [
-            'planned' => 0,
-            'completed' => 0,
-            'dispatched' => 0,
-            'remaining' => 0,
-        ];
+        $dispatched = 0;
+        $completed = 0;
+        $unplanned = 0;
+        $validDispatchCountsByPlan = [];
 
         foreach ($dispatches as $dispatch) {
-            $metrics['planned']++;
+            $key = $dispatch->business_unit_id.'-'.$dispatch->destination_id;
+            $isPlanned = in_array($key, $planKeys);
 
-            $status = $dispatch->currentStatus()?->value ?? 'pending';
+            foreach ($dispatch->tripLegs as $tripLeg) {
+                $status = $tripLeg->status?->value ?? 'pending';
+                $dispatched++;
 
-            if ($status === 'delivered') {
-                $metrics['completed']++;
-            } elseif ($status === 'pending' || $status === 'cancelled') {
-                $metrics['remaining']++;
-            } else {
-                $metrics['dispatched']++;
+                if ($status === 'delivered') {
+                    if ($isPlanned) {
+                        $completed++;
+                    }
+                }
+
+                if (! $isPlanned) {
+                    $unplanned++;
+                }
+
+                // Track valid (non-cancelled / non-foul) dispatches for remaining calculation
+                if ($status !== 'cancelled' && $status !== 'foul trip') {
+                    if (! isset($validDispatchCountsByPlan[$key])) {
+                        $validDispatchCountsByPlan[$key] = 0;
+                    }
+                    $validDispatchCountsByPlan[$key]++;
+                }
             }
         }
 
-        return $metrics;
+        // 3. Calculate remaining planned trips
+        $remaining = 0;
+        foreach ($plans as $plan) {
+            $key = $plan->business_unit_id.'-'.$plan->destination_id;
+            $dispatchedForPlan = $validDispatchCountsByPlan[$key] ?? 0;
+            $remaining += max(0, $plan->number_of_vehicles - $dispatchedForPlan);
+        }
+
+        return [
+            'planned' => (int) $planned,
+            'completed' => $completed,
+            'dispatched' => $dispatched,
+            'unplanned' => $unplanned,
+            'remaining' => $remaining,
+        ];
     }
 
     private function applyFilters($query, array $filters)
