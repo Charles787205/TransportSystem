@@ -27,19 +27,21 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
 
-        /** @var callable(class-string<Model>): class-string<Factory> $resolver */
+        /** @var \Closure(string): class-string<Factory<Model>> $resolver */
         $resolver = function (string $modelName): string {
             if (str_starts_with($modelName, 'Modules\\')) {
                 $parts = explode('\\', $modelName);
                 $module = $parts[1];       // "User"
-                $model  = $parts[3];       // "User"
-                /** @var class-string<Factory> $factory */
+                $model = $parts[3];       // "User"
+                /** @var class-string<Factory<Model>> $factory */
                 $factory = "Modules\\{$module}\\Database\\Factories\\{$model}Factory";
+
                 return $factory;
             }
 
-            /** @var class-string<Factory> $factory */
-            $factory = 'Database\\Factories\\' . class_basename($modelName) . 'Factory';
+            /** @var class-string<Factory<Model>> $factory */
+            $factory = 'Database\\Factories\\'.class_basename($modelName).'Factory';
+
             return $factory;
         };
 
