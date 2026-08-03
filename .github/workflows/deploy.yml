@@ -29,7 +29,7 @@ jobs:
         run: |
           mkdir -p resources/js/generated
           php artisan typescript:transform
-          php artisan structure:discover
+          php artisan structure-scouts:cache
 
       - name: Generate Wayfinder Routes and Form Variants
         run: php artisan wayfinder:generate --with-form
