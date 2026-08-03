@@ -108,8 +108,8 @@ it('updates an existing trip leg through dispatch service', function () {
     expect($updatedTripLeg)->toBeInstanceOf(TripLeg::class)
         ->and($updatedTripLeg->trip_sequence)->toBe(1)
         ->and($updatedTripLeg->total_parcel)->toBe(11)
-        ->and($updatedTripLeg->odometer_start)->toBe(110.0)
-        ->and($updatedTripLeg->odometer_end)->toBe(130.0)
+        ->and($updatedTripLeg->odometer_start)->toEqual(110.0)
+        ->and($updatedTripLeg->odometer_end)->toEqual(130.0)
         ->and($updatedTripLeg->departure_time)->toBe('09:00:00')
         ->and($updatedTripLeg->end_time)->toBe('11:00:00')
         ->and($updatedTripLeg->arrived_time)->toBe('11:15:00');
