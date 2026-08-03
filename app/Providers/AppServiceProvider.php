@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Load AWS Secrets EARLY during registration, before DB connections boot
+        // Load AWS Secrets BEFORE database connections boot
         if ($this->app->isProduction() || $this->app->environment('staging')) {
             try {
                 $client = new SecretsManagerClient([
@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
                         config([$key => $value]);
                     }
 
-                    // Purge database connection to force Laravel to pick up the updated credentials
+                    // Force Laravel to drop initial connections and re-connect using updated credentials
                     DB::purge('mysql');
                 }
             } catch (\Exception $e) {
