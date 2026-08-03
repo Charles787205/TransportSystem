@@ -27,6 +27,7 @@ jobs:
 
       - name: Generate Spatie TypeScript Types
         run: |
+          mkdir -p resources/js/generated
           php artisan typescript:transform
           php artisan structure:discover
 
