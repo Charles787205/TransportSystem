@@ -11,7 +11,7 @@ class RegistrationData extends Data
     public function __construct(
         public readonly int $id,
         public readonly int $vehicleId,
-        public readonly int $crNumber,
+        public readonly string $crNumber,
         public readonly string $orNumber,
         public readonly string $orDate,
         public readonly string $ltfrbDate,

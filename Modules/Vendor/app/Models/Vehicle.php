@@ -3,10 +3,11 @@
 namespace Modules\Vendor\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Vendor\Enums\VehicleType;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 
@@ -21,7 +22,7 @@ use Spatie\Activitylog\Support\LogOptions;
     'owners_name',
     'registered_address',
     'is_active',
-    'driver_id'
+    'driver_id',
 ])]
 class Vehicle extends Model
 {
@@ -30,8 +31,9 @@ class Vehicle extends Model
 
     protected $cast = [
         'is_active' => 'boolean',
-        'type' => \Modules\Vendor\Enums\VehicleTypeEnum::class,
+        'type' => VehicleType::class,
     ];
+
     /**
      * The attributes that are mass assignable.
      */
@@ -41,21 +43,25 @@ class Vehicle extends Model
             ->logFillable()
             ->logOnlyDirty();
     }
+
     protected $fillable = [];
 
     public function vendor(): BelongsTo
-     {
+    {
         return $this->belongsTo(Vendor::class);
     }
+
     public function insurances(): HasMany
     {
         return $this->hasMany(Insurance::class);
     }
-    public function registrations() : HasMany
-     {
+
+    public function registrations(): HasMany
+    {
         return $this->hasMany(Registration::class);
     }
-    public function driver() : BelongsTo
+
+    public function driver(): BelongsTo
     {
         return $this->belongsTo(Driver::class);
     }
