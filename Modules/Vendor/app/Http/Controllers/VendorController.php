@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
-use Modules\Vendor\Classes\Data\CreateVendorData;
+use Modules\Vendor\Classes\Data\Request\CreateVendorData;
 use Modules\Vendor\Models\Vendor;
 use Modules\Vendor\Services\VendorService;
 

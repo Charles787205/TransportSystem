@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
-use Modules\Client\Classes\Data\CreateClientData;
+use Modules\Client\Classes\Data\Request\CreateClientData;
 use Modules\Client\Models\Client;
 use Modules\Client\Services\ClientService;
 

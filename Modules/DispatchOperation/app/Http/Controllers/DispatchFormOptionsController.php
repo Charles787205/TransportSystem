@@ -3,14 +3,12 @@
 namespace Modules\DispatchOperation\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use Modules\DispatchOperation\Classes\Data\DispatchFormOptionsData;
-use Modules\Core\Classes\Data\SelectOptionData;
-
-use Modules\Vendor\Models\Vehicle;
-use Modules\Vendor\Models\Driver;
 use Modules\Client\Models\BusinessUnit;
 use Modules\Client\Models\Destination;
-
+use Modules\Core\Classes\Data\Response\SelectOptionData;
+use Modules\DispatchOperation\Classes\Data\Response\DispatchFormOptionsData;
+use Modules\Vendor\Models\Driver;
+use Modules\Vendor\Models\Vehicle;
 
 class DispatchFormOptionsController extends Controller
 {

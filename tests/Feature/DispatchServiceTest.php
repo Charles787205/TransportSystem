@@ -3,7 +3,7 @@
 use Modules\Client\Models\BusinessUnit;
 use Modules\Client\Models\Client;
 use Modules\Client\Models\Destination;
-use Modules\DispatchOperation\Classes\Data\EditTripLegData;
+use Modules\DispatchOperation\Classes\Data\Request\EditTripLegData;
 use Modules\DispatchOperation\Models\Dispatch;
 use Modules\DispatchOperation\Models\TripLeg;
 use Modules\DispatchOperation\Services\TripLegService;

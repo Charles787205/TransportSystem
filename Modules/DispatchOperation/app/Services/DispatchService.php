@@ -4,9 +4,9 @@ namespace Modules\DispatchOperation\Services;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Modules\Core\Classes\Data\PaginatedData;
-use Modules\DispatchOperation\Classes\Data\CreateDispatchData;
-use Modules\DispatchOperation\Classes\Data\DispatchData;
+use Modules\Core\Classes\Data\Response\PaginatedData;
+use Modules\DispatchOperation\Classes\Data\Request\CreateDispatchData;
+use Modules\DispatchOperation\Classes\Data\Response\DispatchData;
 use Modules\DispatchOperation\Repositories\DispatchRepository;
 use Modules\DispatchOperation\Repositories\TripLegRepository;
 

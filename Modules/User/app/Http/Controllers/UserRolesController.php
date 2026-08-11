@@ -5,8 +5,8 @@ namespace Modules\User\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
-use Modules\User\Classes\Data\CreateRoleData;
-use Modules\User\Classes\Data\UpdateRoleData;
+use Modules\User\Classes\Data\Request\CreateRoleData;
+use Modules\User\Classes\Data\Request\UpdateRoleData;
 use Modules\User\Models\Role;
 use Modules\User\Services\RolePermissionService;
 

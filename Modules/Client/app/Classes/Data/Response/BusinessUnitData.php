@@ -1,0 +1,19 @@
+<?php
+
+namespace Modules\Client\Classes\Data\Response;
+
+use Spatie\LaravelData\Data;
+use Spatie\TypeScriptTransformer\Attributes\TypeScript;
+
+#[TypeScript()]
+class BusinessUnitData extends Data
+{
+    public function __construct(
+        public int $id,
+        public int $clientId,
+        public string $name,
+        public string $touchpoint,
+        public string $active
+
+    ) {}
+}
