@@ -23,10 +23,10 @@ class DispatchFormOptionsData extends Data
 
         #[TypeScriptType('SelectOptionData[]')]
         #[DataCollectionOf(SelectOptionData::class)]
-        public DataCollection $businessUnits,
+        public DataCollection $clients,
 
         #[TypeScriptType('SelectOptionData[]')]
         #[DataCollectionOf(SelectOptionData::class)]
-        public DataCollection $destinations,
+        public DataCollection $locations,
     ) {}
 }

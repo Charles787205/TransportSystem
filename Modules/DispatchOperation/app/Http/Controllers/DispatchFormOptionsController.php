@@ -3,8 +3,8 @@
 namespace Modules\DispatchOperation\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use Modules\Client\Models\BusinessUnit;
-use Modules\Client\Models\Destination;
+use Modules\Client\Models\Client;
+use Modules\Client\Models\Location;
 use Modules\Core\Classes\Data\Response\SelectOptionData;
 use Modules\DispatchOperation\Classes\Data\Response\DispatchFormOptionsData;
 use Modules\Vendor\Models\Driver;
@@ -19,10 +19,10 @@ class DispatchFormOptionsController extends Controller
                 ->map(fn ($v) => new SelectOptionData($v->id, $v->label)),
             'drivers' => Driver::query()->get(['id', 'full_name as label'])
                 ->map(fn ($d) => new SelectOptionData($d->id, $d->label)),
-            'businessUnits' => BusinessUnit::query()->get(['id', 'name as label'])
-                ->map(fn ($b) => new SelectOptionData($b->id, $b->label)),
-            'destinations' => Destination::query()->get(['id', 'name as label'])
-                ->map(fn ($d) => new SelectOptionData($d->id, $d->label)),
+            'clients' => Client::query()->get(['id', 'name as label'])
+                ->map(fn ($c) => new SelectOptionData($c->id, $c->label)),
+            'locations' => Location::query()->get(['id', 'name as label'])
+                ->map(fn ($l) => new SelectOptionData($l->id, $l->label)),
         ]);
     }
 }

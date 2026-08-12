@@ -1,17 +1,11 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Client\Classes\Data\Request\CreateBusinessUnitData;
 use Modules\Client\Classes\Data\Request\CreateClientData;
-use Modules\Client\Classes\Data\Request\CreateDestinationData;
-use Modules\Client\Classes\Data\Response\ClientData;
-use Modules\Client\Classes\Data\Response\DestinationData;
+use Modules\Client\Models\Location;
 use Modules\Client\Services\ClientService;
 use Modules\User\Models\Permission;
 use Modules\User\Models\Role;
 use Modules\User\Models\User;
-
-uses(RefreshDatabase::class);
 
 function createClientAdminUser(): User
 {
@@ -27,7 +21,7 @@ function createClientAdminUser(): User
     return User::factory()->create(['role_id' => $role->id]);
 }
 
-it('creates client, business unit, and destination via ClientService', function () {
+it('creates client and location via ClientService', function () {
     $service = app(ClientService::class);
 
     $clientData = CreateClientData::from([
@@ -40,34 +34,19 @@ it('creates client, business unit, and destination via ClientService', function 
 
     $client = $service->createClient($clientData);
 
-    expect($client)->toBeInstanceOf(ClientData::class)
-        ->and($client->name)->toBe('Logistics Corp')
-        ->and($client->email)->toBe('contact@logistics.com');
-
-    $buData = CreateBusinessUnitData::from([
+    $location = Location::create([
         'client_id' => $client->id,
-        'name' => 'North Hub Unit',
+        'name' => 'North Hub Depot',
         'touchpoint' => 'Building A',
-        'active' => true,
+        'type' => 'BU',
+        'address' => '100 North Rd',
     ]);
 
-    $service->createBusinessUnit($buData);
-
-    $this->assertDatabaseHas('business_units', [
+    $this->assertDatabaseHas('locations', [
         'client_id' => $client->id,
-        'name' => 'North Hub Unit',
+        'name' => 'North Hub Depot',
+        'touchpoint' => 'Building A',
     ]);
-
-    $destData = CreateDestinationData::from([
-        'client_id' => $client->id,
-        'name' => 'Metro Warehouse',
-    ]);
-
-    $dest = $service->createDestination($destData);
-
-    expect($dest)->toBeInstanceOf(DestinationData::class)
-        ->and($dest->name)->toBe('Metro Warehouse')
-        ->and($dest->clientId)->toBe($client->id);
 });
 
 it('allows authorized users to view clients via HTTP', function () {

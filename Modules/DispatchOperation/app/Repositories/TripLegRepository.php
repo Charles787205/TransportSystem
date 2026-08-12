@@ -9,7 +9,6 @@ class TripLegRepository
     public function createTripLeg(array $data)
     {
         return TripLeg::create($data)->refresh();
-
     }
 
     public function editTripLeg(array $data, int $id): TripLeg
@@ -48,13 +47,11 @@ class TripLegRepository
         return TripLeg::with($with)->where($where)->get();
     }
 
-    public function getTripLegsByBusinessUnitAndDestination(int $businessUnitId, int $destinationId, array $with = [])
+    public function getTripLegsByLocations(int $originId, int $destinationId, array $with = [])
     {
         return TripLeg::with($with)
-            ->whereHas('dispatch', function ($query) use ($businessUnitId, $destinationId) {
-                $query
-                    ->where('business_unit_id', $businessUnitId)
-                    ->where('destination_id', $destinationId);
-            })->get();
+            ->where('origin_location_id', $originId)
+            ->where('destination_location_id', $destinationId)
+            ->get();
     }
 }

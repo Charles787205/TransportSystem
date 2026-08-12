@@ -14,8 +14,8 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScriptType;
 class PaginatedPlanData extends Data
 {
     public function __construct(
-        #[TypeScriptType('PlanWithBUandDestinationData[]')]
-        #[DataCollectionOf(PlanWithBUandDestinationData::class)]
+        #[TypeScriptType('PlanData[]')]
+        #[DataCollectionOf(PlanData::class)]
         #[MapInputName('data')]
         public DataCollection $plans,
         public int $currentPage,

@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Modules\DispatchOperation\Enums\TripStatus;
 
 return new class extends Migration
 {
@@ -12,22 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trip_legs', function (Blueprint $table) {
+        Schema::create('return_trips', function (Blueprint $table) {
             $table->id();
             $table->foreignId('dispatch_id')->constrained()->cascadeOnDelete();
-            $table->unsignedInteger('trip_sequence')->default(1);
             $table->foreignId('origin_location_id')->nullable()->constrained('locations')->nullOnDelete();
             $table->foreignId('destination_location_id')->nullable()->constrained('locations')->nullOnDelete();
-            $table->integer('total_parcel')->nullable();
             $table->decimal('odometer_start', 10, 2)->nullable();
             $table->decimal('odometer_end', 10, 2)->nullable();
-            $table->time('departure_time')->nullable();
-            $table->time('end_time')->nullable();
-            $table->time('arrived_time')->nullable();
-            $table->string('linehaul_trip_no');
-            $table->string('status')->default(TripStatus::Pending->value);
+            $table->integer('total_parcel')->nullable();
             $table->timestamps();
-            $table->unique(['dispatch_id', 'trip_sequence']);
         });
     }
 
@@ -36,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('trip_legs');
+        Schema::dropIfExists('return_trips');
     }
 };

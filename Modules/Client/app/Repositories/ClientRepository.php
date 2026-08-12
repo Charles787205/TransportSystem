@@ -1,28 +1,25 @@
 <?php
 
 namespace Modules\Client\Repositories;
+
 use Modules\Client\Models\Client;
 
 class ClientRepository
 {
-    
-    public function createClient(array $data){
+    public function createClient(array $data)
+    {
         return Client::create($data);
     }
+
     public function getClients()
     {
         return Client::where('active', true)
             ->orderBy('name')
             ->paginate(15);
     }
-    public function getClient($id){
+
+    public function getClient($id)
+    {
         return Client::find($id);
     }
-
-    public function associateBusinessUnit(Client $client,int $buid){
-        $client->businessUnits()->associate($buid);
-        $client->save();
-        return $client;
-    }
-
 }

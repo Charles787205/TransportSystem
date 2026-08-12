@@ -7,8 +7,8 @@ use Spatie\LaravelData\Data;
 class CreatePlanData extends Data
 {
     public function __construct(
-
-        public int $businessUnitId,
+        public int $clientId,
+        public int $originId,
         public int $destinationId,
         public int $numberOfVehicles,
         public string $dispatchDate,
@@ -17,10 +17,11 @@ class CreatePlanData extends Data
     public function planAttributes()
     {
         return [
-            'business_unit_id' => $this->businessUnitId,
+            'client_id' => $this->clientId,
+            'origin_id' => $this->originId,
+            'destination_id' => $this->destinationId,
             'number_of_vehicles' => $this->numberOfVehicles,
             'dispatch_date' => $this->dispatchDate,
-            'destination_id' => $this->destinationId,
         ];
     }
 }

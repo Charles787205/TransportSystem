@@ -10,11 +10,10 @@ class PlanData extends Data
 {
     public function __construct(
         public int $id,
-        public int $businessUnitId,
+        public int $clientId,
+        public int $originId,
         public int $destinationId,
-        public int $numberOfVehicles,
         public string $dispatchDate,
-        public string $createdAt,
-        public string $updatedAt
+        public int $numberOfVehicles,
     ) {}
 }

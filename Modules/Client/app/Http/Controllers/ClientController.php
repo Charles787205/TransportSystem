@@ -55,16 +55,12 @@ class ClientController extends Controller
     {
         Gate::authorize('view', $client);
 
-        $client = $this->clientService->getClient($client->id);
-        $businessUnits = $this->clientService->getPaginatedBusinessUnits($client->id, 10);
-        $destinations = $this->clientService->getPaginatedClientsDestination($client->id);
+        $clientData = $this->clientService->getClient($client->id);
 
         return Inertia::render(
             'client/show',
             [
-                'client' => $client,
-                'businessUnits' => $businessUnits,
-                'destinations' => $destinations,
+                'client' => $clientData,
             ]
         );
     }

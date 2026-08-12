@@ -4,7 +4,6 @@ namespace Modules\Dashboard\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 use Modules\Client\Models\Client;
 use Modules\DispatchOperation\Models\Dispatch;
@@ -54,22 +53,8 @@ class DashboardController extends Controller
             $statusBreakdownData[] = ['name' => ucfirst($key), 'value' => $val];
         }
 
-        // 2. Dispatches by Destination
-        $dispatchesByDestination = Dispatch::join('destinations', 'dispatches.destination_id', '=', 'destinations.id')
-            ->select('destinations.name as destination', DB::raw('count(dispatches.id) as count'))
-            ->groupBy('destinations.name')
-            ->orderByDesc('count')
-            ->take(5)
-            ->get();
-
-        // 3. Dispatches by Business Unit
-        $dispatchesByBU = Dispatch::join('business_units', 'dispatches.business_unit_id', '=', 'business_units.id')
-            ->select('business_units.name as name', DB::raw('count(dispatches.id) as value'))
-            ->groupBy('business_units.name')
-            ->get();
-
-        // 4. Recent Dispatches
-        $recentDispatches = Dispatch::with(['vehicle', 'driver', 'destination', 'businessUnit'])
+        // 2. Recent Dispatches
+        $recentDispatches = Dispatch::with(['vehicle', 'driver', 'client'])
             ->latest()
             ->take(5)
             ->get()
@@ -79,8 +64,7 @@ class DashboardController extends Controller
                     'dispatch_date' => $d->dispatch_date,
                     'vehicle' => $d->vehicle?->plate_number ?? 'N/A',
                     'driver' => $d->driver?->full_name ?? 'N/A',
-                    'destination' => $d->destination?->name ?? 'N/A',
-                    'business_unit' => $d->businessUnit?->name ?? 'N/A',
+                    'client' => $d->client?->name ?? 'N/A',
                     'status' => $d->currentStatus()?->value ?? 'pending',
                 ];
             });
@@ -97,8 +81,6 @@ class DashboardController extends Controller
                     'clients' => $clientsCount,
                 ],
                 'statusBreakdown' => $statusBreakdownData,
-                'dispatchesByDestination' => $dispatchesByDestination,
-                'dispatchesByBU' => $dispatchesByBU,
                 'recentDispatches' => $recentDispatches,
             ]
         );

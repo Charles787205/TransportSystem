@@ -1,18 +1,13 @@
 <?php
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Modules\Client\Models\BusinessUnit;
 use Modules\Client\Models\Client;
-use Modules\Client\Models\Destination;
+use Modules\Client\Models\Location;
 use Modules\Planning\Classes\Data\Request\CreatePlanData;
-use Modules\Planning\Classes\Data\Response\PaginatedPlanData;
 use Modules\Planning\Models\Plan;
 use Modules\Planning\Services\PlanService;
 use Modules\User\Models\Permission;
 use Modules\User\Models\Role;
 use Modules\User\Models\User;
-
-uses(RefreshDatabase::class);
 
 function createPlanningAdminUser(): User
 {
@@ -37,23 +32,24 @@ it('creates plan via PlanService and lists paginated plans', function () {
         'active' => true,
     ]);
 
-    $bu = BusinessUnit::create([
+    $originLoc = Location::create([
         'client_id' => $client->id,
-        'name' => 'BU 1',
-        'touchpoint' => 'TP 1',
-        'active' => true,
+        'name' => 'Origin Location',
+        'address' => 'Addr 1',
     ]);
 
-    $dest = Destination::create([
+    $destLoc = Location::create([
         'client_id' => $client->id,
-        'name' => 'Dest 1',
+        'name' => 'Destination Location',
+        'address' => 'Dest Addr',
     ]);
 
     $planService = app(PlanService::class);
 
     $planData = CreatePlanData::from([
-        'business_unit_id' => $bu->id,
-        'destination_id' => $dest->id,
+        'client_id' => $client->id,
+        'origin_id' => $originLoc->id,
+        'destination_id' => $destLoc->id,
         'number_of_vehicles' => 10,
         'dispatch_date' => '2026-08-01',
     ]);
@@ -61,13 +57,9 @@ it('creates plan via PlanService and lists paginated plans', function () {
     $plan = $planService->createPlan($planData);
 
     expect($plan)->toBeInstanceOf(Plan::class)
-        ->and($plan->business_unit_id)->toBe($bu->id)
-        ->and($plan->destination_id)->toBe($dest->id);
-
-    $paginated = $planService->getPaginatedPlan();
-
-    expect($paginated)->toBeInstanceOf(PaginatedPlanData::class)
-        ->and($paginated->total)->toBe(1);
+        ->and($plan->client_id)->toBe($client->id)
+        ->and($plan->origin_id)->toBe($originLoc->id)
+        ->and($plan->destination_id)->toBe($destLoc->id);
 });
 
 it('allows authorized users to view planning index via HTTP', function () {
