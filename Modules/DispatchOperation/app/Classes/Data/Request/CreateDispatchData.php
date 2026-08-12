@@ -14,7 +14,9 @@ class CreateDispatchData extends Data
         public ServiceType $serviceType,
         public string $dispatchDate,
         public string $assignedCallTime,
-        public string $linehaulTripNo
+        public string $linehaulTripNo,
+        public ?int $originLocationId = null,
+        public ?int $destinationLocationId = null,
     ) {}
 
     public function dispatchAttributes(): array
@@ -26,6 +28,16 @@ class CreateDispatchData extends Data
             'service_type' => $this->serviceType,
             'dispatch_date' => $this->dispatchDate,
             'assigned_call_time' => $this->assignedCallTime,
+        ];
+    }
+
+    public function initialTripLegAttributes(): array
+    {
+        return [
+            'origin_location_id' => $this->originLocationId,
+            'destination_location_id' => $this->destinationLocationId,
+            'linehaul_trip_no' => $this->linehaulTripNo,
+            'trip_sequence' => 1,
         ];
     }
 }

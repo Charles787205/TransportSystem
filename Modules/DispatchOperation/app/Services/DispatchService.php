@@ -45,7 +45,7 @@ class DispatchService
                 );
             }
             $dispatch = $this->dispatchRepo->createDispatch($data->dispatchAttributes());
-            $this->dispatchRepo->attachTripLegs($dispatch, ['linehaul_trip_no' => $data->linehaulTripNo]);
+            $this->dispatchRepo->attachTripLegs($dispatch, $data->initialTripLegAttributes());
 
             return DispatchData::from($dispatch->fresh());
         });
@@ -54,7 +54,7 @@ class DispatchService
     public function getPaginatedDispatches(array $filters = [])
     {
         $dispatches = $this->dispatchRepo->getPaginatedDispatches(
-            with: ['driver', 'client', 'vehicle', 'tripLegs'],
+            with: ['driver', 'client', 'vehicle', 'tripLegs.originLocation', 'tripLegs.destinationLocation'],
             filters: $filters
         );
 

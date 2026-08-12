@@ -7,6 +7,7 @@ use Modules\Client\Models\Client;
 use Modules\Client\Models\Location;
 use Modules\Core\Classes\Data\Response\SelectOptionData;
 use Modules\DispatchOperation\Classes\Data\Response\DispatchFormOptionsData;
+use Modules\DispatchOperation\Classes\Data\Response\LocationOptionData;
 use Modules\Vendor\Models\Driver;
 use Modules\Vendor\Models\Vehicle;
 
@@ -21,8 +22,8 @@ class DispatchFormOptionsController extends Controller
                 ->map(fn ($d) => new SelectOptionData($d->id, $d->label)),
             'clients' => Client::query()->get(['id', 'name as label'])
                 ->map(fn ($c) => new SelectOptionData($c->id, $c->label)),
-            'locations' => Location::query()->get(['id', 'name as label'])
-                ->map(fn ($l) => new SelectOptionData($l->id, $l->label)),
+            'locations' => Location::query()->get(['id', 'name as label', 'client_id'])
+                ->map(fn ($l) => new LocationOptionData($l->id, $l->label, $l->client_id)),
         ]);
     }
 }

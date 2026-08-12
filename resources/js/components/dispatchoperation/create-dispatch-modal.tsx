@@ -32,6 +32,9 @@ const CreateDispatchModal = () => {
         null,
     );
     const [loadingOptions, setLoadingOptions] = useState(false);
+    const [selectedClientId, setSelectedClientId] = useState<string>('');
+    const [selectedOriginId, setSelectedOriginId] = useState<string>('');
+    const [selectedDestinationId, setSelectedDestinationId] = useState<string>('');
 
     const handleOpenChange = (open: boolean) => {
         setOpen(open);
@@ -47,6 +50,25 @@ const CreateDispatchModal = () => {
             .finally(() => setLoadingOptions(false));
     };
 
+    const handleClientChange = (clientId: string) => {
+        setSelectedClientId(clientId);
+        setSelectedOriginId('');
+        setSelectedDestinationId('');
+    };
+
+    const availableLocations = options?.locations?.filter((loc: any) => {
+        if (!selectedClientId) return true;
+        return String(loc.clientId ?? loc.client_id) === String(selectedClientId);
+    }) || [];
+
+    const originOptions = availableLocations.filter((loc: any) => {
+        return String(loc.id) !== selectedDestinationId;
+    });
+
+    const destinationOptions = availableLocations.filter((loc: any) => {
+        return String(loc.id) !== selectedOriginId;
+    });
+
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
@@ -59,7 +81,7 @@ const CreateDispatchModal = () => {
                 <DialogHeader>
                     <DialogTitle>Create Dispatch</DialogTitle>
                     <DialogDescription>
-                        Fill in the details below to schedule a new dispatch.
+                        Fill in the details below to schedule a new dispatch and initial 1st trip leg.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -70,7 +92,12 @@ const CreateDispatchModal = () => {
                 ) : (
                     <Form
                         action={store()}
-                        onSuccess={() => setOpen(false)}
+                        onSuccess={() => {
+                            setOpen(false);
+                            setSelectedClientId('');
+                            setSelectedOriginId('');
+                            setSelectedDestinationId('');
+                        }}
                         onError={(e) => {
                             console.log(e);
                         }}
@@ -153,7 +180,11 @@ const CreateDispatchModal = () => {
                                         <Label htmlFor="client_id">
                                             Client
                                         </Label>
-                                        <Select name="client_id">
+                                        <Select
+                                            name="client_id"
+                                            value={selectedClientId}
+                                            onValueChange={handleClientChange}
+                                        >
                                             <SelectTrigger
                                                 id="client_id"
                                                 aria-invalid={
@@ -178,6 +209,98 @@ const CreateDispatchModal = () => {
                                         </Select>
                                         <InputError
                                             message={errors.client_id}
+                                        />
+                                    </div>
+
+                                    <div
+                                        className="space-y-1.5"
+                                        data-invalid={!!errors.origin_location_id}
+                                    >
+                                        <Label htmlFor="origin_location_id">
+                                            Origin Location
+                                        </Label>
+                                        <Select
+                                            name="origin_location_id"
+                                            value={selectedOriginId}
+                                            onValueChange={setSelectedOriginId}
+                                            disabled={!selectedClientId}
+                                        >
+                                            <SelectTrigger
+                                                id="origin_location_id"
+                                                aria-invalid={
+                                                    !!errors.origin_location_id
+                                                }
+                                                className="w-full"
+                                            >
+                                                <SelectValue
+                                                    placeholder={
+                                                        selectedClientId
+                                                            ? 'Select origin'
+                                                            : 'Select client first'
+                                                    }
+                                                />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {originOptions.map(
+                                                    (l: any) => (
+                                                        <SelectItem
+                                                            key={l.id}
+                                                            value={String(l.id)}
+                                                        >
+                                                            {l.label}
+                                                        </SelectItem>
+                                                    ),
+                                                )}
+                                            </SelectContent>
+                                        </Select>
+                                        <InputError
+                                            message={errors.origin_location_id}
+                                        />
+                                    </div>
+
+                                    <div
+                                        className="space-y-1.5"
+                                        data-invalid={!!errors.destination_location_id}
+                                    >
+                                        <Label htmlFor="destination_location_id">
+                                            Destination Location
+                                        </Label>
+                                        <Select
+                                            name="destination_location_id"
+                                            value={selectedDestinationId}
+                                            onValueChange={setSelectedDestinationId}
+                                            disabled={!selectedClientId}
+                                        >
+                                            <SelectTrigger
+                                                id="destination_location_id"
+                                                aria-invalid={
+                                                    !!errors.destination_location_id
+                                                }
+                                                className="w-full"
+                                            >
+                                                <SelectValue
+                                                    placeholder={
+                                                        selectedClientId
+                                                            ? 'Select destination'
+                                                            : 'Select client first'
+                                                    }
+                                                />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {destinationOptions.map(
+                                                    (l: any) => (
+                                                        <SelectItem
+                                                            key={l.id}
+                                                            value={String(l.id)}
+                                                        >
+                                                            {l.label}
+                                                        </SelectItem>
+                                                    ),
+                                                )}
+                                            </SelectContent>
+                                        </Select>
+                                        <InputError
+                                            message={errors.destination_location_id}
                                         />
                                     </div>
                                 </div>
