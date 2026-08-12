@@ -37,7 +37,7 @@ it('creates client and location via ClientService', function () {
     $location = Location::create([
         'client_id' => $client->id,
         'name' => 'North Hub Depot',
-        'touchpoint' => 'Building A',
+        'touchpoint' => 'FM',
         'type' => 'BU',
         'address' => '100 North Rd',
     ]);
@@ -45,7 +45,7 @@ it('creates client and location via ClientService', function () {
     $this->assertDatabaseHas('locations', [
         'client_id' => $client->id,
         'name' => 'North Hub Depot',
-        'touchpoint' => 'Building A',
+        'touchpoint' => 'FM',
     ]);
 });
 

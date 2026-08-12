@@ -22,7 +22,7 @@ it('updates an existing trip leg through dispatch service', function () {
     $location = Location::create([
         'client_id' => $client->id,
         'name' => 'Operations Hub',
-        'touchpoint' => 'North Hub',
+        'touchpoint' => 'MFM',
         'type' => 'BU',
     ]);
 

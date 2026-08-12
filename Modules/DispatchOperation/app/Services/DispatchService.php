@@ -26,7 +26,7 @@ class DispatchService
 
     public function getDispatchDetails(int $id)
     {
-        $dispatch = $this->dispatchRepo->getDispatch($id, with: ['tripLegs.cancellationDetail', 'driver', 'destination', 'businessUnit', 'vehicle']);
+        $dispatch = $this->dispatchRepo->getDispatch($id, with: ['tripLegs.cancellationDetail', 'driver', 'client', 'vehicle']);
 
         return DispatchData::from($dispatch);
     }
@@ -54,7 +54,7 @@ class DispatchService
     public function getPaginatedDispatches(array $filters = [])
     {
         $dispatches = $this->dispatchRepo->getPaginatedDispatches(
-            with: ['driver', 'destination', 'businessUnit', 'vehicle', 'tripLegs'],
+            with: ['driver', 'client', 'vehicle', 'tripLegs'],
             filters: $filters
         );
 

@@ -2,8 +2,6 @@ import { Form } from '@inertiajs/react';
 import axios from 'axios';
 import { Plus, Loader2 } from 'lucide-react';
 import { useState } from 'react';
-// TODO: replace with your actual Wayfinder-generated action import
-// import { store } from '@/actions/Modules/DispatchOperation/Http/Controllers/DispatchController';
 import { index } from '@/actions/Modules/DispatchOperation/Http/Controllers/DispatchFormOptionsController';
 import type { DispatchFormOptionsData } from '@/generated/DispatchOperation';
 import { store } from '@/routes/dispatchoperation';
@@ -149,72 +147,37 @@ const CreateDispatchModal = () => {
                                     </div>
 
                                     <div
-                                        className="space-y-1.5"
-                                        data-invalid={!!errors.business_unit_id}
+                                        className="col-span-2 space-y-1.5"
+                                        data-invalid={!!errors.client_id}
                                     >
-                                        <Label htmlFor="business_unit_id">
-                                            Business Unit
+                                        <Label htmlFor="client_id">
+                                            Client
                                         </Label>
-                                        <Select name="business_unit_id">
+                                        <Select name="client_id">
                                             <SelectTrigger
-                                                id="business_unit_id"
+                                                id="client_id"
                                                 aria-invalid={
-                                                    !!errors.business_unit_id
+                                                    !!errors.client_id
                                                 }
                                                 className="w-full"
                                             >
-                                                <SelectValue placeholder="Select business unit" />
+                                                <SelectValue placeholder="Select client" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {options.businessUnits.map(
-                                                    (b) => (
+                                                {options.clients.map(
+                                                    (c) => (
                                                         <SelectItem
-                                                            key={b.id}
-                                                            value={String(b.id)}
+                                                            key={c.id}
+                                                            value={String(c.id)}
                                                         >
-                                                            {b.label}
+                                                            {c.label}
                                                         </SelectItem>
                                                     ),
                                                 )}
                                             </SelectContent>
                                         </Select>
                                         <InputError
-                                            message={errors.business_unit_id}
-                                        />
-                                    </div>
-
-                                    <div
-                                        className="space-y-1.5"
-                                        data-invalid={!!errors.destination_id}
-                                    >
-                                        <Label htmlFor="destination_id">
-                                            Destination
-                                        </Label>
-                                        <Select name="destination_id">
-                                            <SelectTrigger
-                                                id="destination_id"
-                                                aria-invalid={
-                                                    !!errors.destination_id
-                                                }
-                                                className="w-full"
-                                            >
-                                                <SelectValue placeholder="Select destination" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {options.destinations.map(
-                                                    (d) => (
-                                                        <SelectItem
-                                                            key={d.id}
-                                                            value={String(d.id)}
-                                                        >
-                                                            {d.label}
-                                                        </SelectItem>
-                                                    ),
-                                                )}
-                                            </SelectContent>
-                                        </Select>
-                                        <InputError
-                                            message={errors.destination_id}
+                                            message={errors.client_id}
                                         />
                                     </div>
                                 </div>
@@ -299,7 +262,6 @@ const CreateDispatchModal = () => {
                                     <Input
                                         id="linehaul_trip_no"
                                         name="linehaul_trip_no"
-
                                         aria-invalid={!!errors.linehaul_trip_no}
                                     />
                                     <InputError
