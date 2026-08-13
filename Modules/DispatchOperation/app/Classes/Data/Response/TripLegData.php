@@ -2,6 +2,7 @@
 
 namespace Modules\DispatchOperation\Classes\Data\Response;
 
+use Modules\Client\Classes\Data\Response\LocationData;
 use Modules\DispatchOperation\Enums\TripStatus;
 use Spatie\LaravelData\Data;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
@@ -14,6 +15,8 @@ class TripLegData extends Data
         public int $id,
         public int $dispatchId,
         public int $tripSequence,
+        public ?int $originLocationId,
+        public ?int $destinationLocationId,
         public ?int $totalParcel,
         public ?float $odometerStart,
         public ?float $odometerEnd,
@@ -23,7 +26,9 @@ class TripLegData extends Data
         public string $linehaulTripNo,
         #[TypeScriptType('TripStatus')]
         public ?TripStatus $status,
-        public string $updatedAt,
-        public string $createdAt,
+        public ?LocationData $originLocation = null,
+        public ?LocationData $destinationLocation = null,
+        public string $updatedAt = '',
+        public string $createdAt = '',
     ) {}
 }

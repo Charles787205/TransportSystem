@@ -6,6 +6,7 @@ import CreateDispatchModal from '@/components/dispatchoperation/create-dispatch-
 import PlannedDispatchMetrics from '@/components/dispatchoperation/planned-disptatch-metrics';
 import type { DispatchMetrics } from '@/components/dispatchoperation/planned-disptatch-metrics';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
@@ -163,7 +164,10 @@ const DispatchOperation = ({
                                 </TableHeader>
                                 <TableBody>
                                     {data.map((dispatch: DispatchData) => {
-                                        const firstLeg = dispatch.tripLegs?.[0];
+                                        const sortedLegs = dispatch.tripLegs
+                                            ? [...dispatch.tripLegs].sort((a, b) => (a.tripSequence ?? 1) - (b.tripSequence ?? 1))
+                                            : [];
+                                        const firstLeg = sortedLegs[0];
 
                                         return (
                                             <TableRow
