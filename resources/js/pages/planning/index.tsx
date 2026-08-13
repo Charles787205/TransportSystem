@@ -313,7 +313,7 @@ export default function PlanningPage({
                                 disabled={!link.url}
                                 onClick={() => handlePageChange(link.url)}
                             >
-                                <span dangerouslySetInnerHTML={{ __html: link.label }} />
+                                <span dangerouslySetInnerHTML={{ __html: link.label! }} />
                             </Button>
                         ))}
                     </div>

@@ -213,17 +213,23 @@ const Show = ({
                                             Showing {locations.from ?? 0}–{locations.to ?? 0} of {locations.total}
                                         </p>
                                         <div className="flex flex-wrap gap-1">
-                                            {locations.links.map((link, index) => (
-                                                <Button
-                                                    key={`${link.label}-${index}`}
-                                                    variant={link.active ? 'default' : 'outline'}
-                                                    size="sm"
-                                                    disabled={!link.url}
-                                                    onClick={() => handlePageChange(link.url)}
-                                                >
-                                                    <span dangerouslySetInnerHTML={{ __html: link.label }} />
-                                                </Button>
-                                            ))}
+                                            {locations.links.map((link, index) => {
+                                                let label = link.label;
+                                                if (label.includes('&laquo;')) label = '« Prev';
+                                                if (label.includes('&raquo;')) label = 'Next »';
+
+                                                return (
+                                                    <Button
+                                                        key={`${link.label}-${index}`}
+                                                        variant={link.active ? 'default' : 'outline'}
+                                                        size="sm"
+                                                        disabled={!link.url}
+                                                        onClick={() => handlePageChange(link.url)}
+                                                    >
+                                                        {label}
+                                                    </Button>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 )}
