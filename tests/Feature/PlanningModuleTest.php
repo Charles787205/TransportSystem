@@ -3,7 +3,7 @@
 use Modules\Client\Models\Client;
 use Modules\Client\Models\Location;
 use Modules\Planning\Classes\Data\Request\CreatePlanData;
-use Modules\Planning\Models\Plan;
+use Modules\Planning\Classes\Data\Response\PlanData;
 use Modules\Planning\Services\PlanService;
 use Modules\User\Models\Permission;
 use Modules\User\Models\Role;
@@ -56,10 +56,10 @@ it('creates plan via PlanService and lists paginated plans', function () {
 
     $plan = $planService->createPlan($planData);
 
-    expect($plan)->toBeInstanceOf(Plan::class)
-        ->and($plan->client_id)->toBe($client->id)
-        ->and($plan->origin_id)->toBe($originLoc->id)
-        ->and($plan->destination_id)->toBe($destLoc->id);
+    expect($plan)->toBeInstanceOf(PlanData::class)
+        ->and($plan->clientId)->toBe($client->id)
+        ->and($plan->originId)->toBe($originLoc->id)
+        ->and($plan->destinationId)->toBe($destLoc->id);
 });
 
 it('allows authorized users to view planning index via HTTP', function () {

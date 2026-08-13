@@ -2,6 +2,8 @@
 
 namespace Modules\Planning\Classes\Data\Response;
 
+use Modules\Client\Classes\Data\Response\ClientData;
+use Modules\Client\Classes\Data\Response\LocationData;
 use Spatie\LaravelData\Data;
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
@@ -15,5 +17,8 @@ class PlanData extends Data
         public int $destinationId,
         public string $dispatchDate,
         public int $numberOfVehicles,
+        public ?ClientData $client = null,
+        public ?LocationData $origin = null,
+        public ?LocationData $destination = null,
     ) {}
 }

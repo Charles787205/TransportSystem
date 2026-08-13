@@ -14,8 +14,8 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScriptType;
 class PlanDetailPageData extends Data
 {
     public function __construct(
-
-        public PlanWithBUandDestinationData $plan,
+        public PlanData $plan,
+        #[TypeScriptType('TripLegData[]')]
         #[DataCollectionOf(TripLegData::class)]
         public DataCollection $tripLegs,
         #[TypeScriptType('DispatchData[]')]
