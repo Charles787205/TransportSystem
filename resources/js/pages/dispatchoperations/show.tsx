@@ -9,8 +9,12 @@ import {
     Truck,
     User,
     ArrowLeft,
+    RotateCcw,
+    MapPinOff,
 } from 'lucide-react';
 import { useState } from 'react';
+import CreateDropModal from '@/components/dispatchoperation/create-drop-modal';
+import CreateReturnTripModal from '@/components/dispatchoperation/create-return-trip-modal';
 import CreateTripLegModal from '@/components/dispatchoperation/create-trip-leg-modal';
 import TripLegModal from '@/components/dispatchoperation/trip-leg-modal';
 import { Badge } from '@/components/ui/badge';
@@ -34,8 +38,16 @@ import {
 import type { DispatchData, TripLegData } from '@/generated/DispatchOperation';
 import { index } from '@/routes/dispatchoperation';
 
+type LocationOption = {
+    id: number;
+    name: string;
+    touchpoint?: string;
+    type?: string;
+};
+
 type DispatchDetailsPagesProps = {
     dispatch: DispatchData;
+    locations?: LocationOption[];
     /** Wire this up to open the edit trip leg modal (separate file), pre-filled with the given leg. */
     onEditTripLeg?: (tripLeg: TripLegData) => void;
 };
@@ -95,6 +107,7 @@ const isTripLegComplete = (tripLeg: TripLegData) =>
 
 const DispatchDetailsPages = ({
     dispatch,
+    locations = [],
     onEditTripLeg,
 }: DispatchDetailsPagesProps) => {
     const [selectedTripLeg, setSelectedTripLeg] = useState<TripLegData | null>(
@@ -102,6 +115,7 @@ const DispatchDetailsPages = ({
     );
     const [tripLegModalOpen, setTripLegModalOpen] = useState(false);
     const tripLegs = dispatch.tripLegs ?? [];
+    const returnTrips = dispatch.returnTrips ?? [];
 
     const latestTripLeg = tripLegs.length
         ? [...tripLegs].sort((a, b) => b.tripSequence - a.tripSequence)[0]
@@ -148,77 +162,24 @@ const DispatchDetailsPages = ({
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-base">
-                            <Calendar className="h-4 w-4" />
-                            Dispatch Details
+                            <Building2 className="h-4 w-4" />
+                            Client Details
                         </CardTitle>
-                        <CardDescription>
-                            Schedule and routing information
-                        </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-3 text-sm">
-                        <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground">
-                                Dispatch Date
-                            </span>
-                            <span className="font-medium">
-                                {formatDate(dispatch.dispatchDate)}
-                            </span>
+                    <CardContent className="space-y-3">
+                        <div>
+                            <div className="text-xs text-muted-foreground">Client Name</div>
+                            <div className="text-base font-semibold">{dispatch.client?.name ?? '—'}</div>
                         </div>
-                        <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground">
-                                Assigned Call Time
-                            </span>
-                            <span className="font-medium">
-                                {formatTime(dispatch.assignedCallTime)}
-                            </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground">
-                                Number of Trips
-                            </span>
-                            <span className="font-medium">
-                                {dispatch.tripLegs.length}
-                            </span>
-                        </div>
-
-                        <Separator />
-
-                        <div className="flex items-center justify-between">
-                            <span className="flex items-center gap-1.5 text-muted-foreground">
-                                <Building2 className="h-3.5 w-3.5" />
-                                Business Unit
-                            </span>
-                            <span className="font-medium">
-                                {dispatch.businessUnit?.name ?? '—'}
-                            </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <span className="flex items-center gap-1.5 text-muted-foreground">
-                                <MapPin className="h-3.5 w-3.5" />
-                                Destination
-                            </span>
-                            <span className="font-medium">
-                                {dispatch.destination?.name ?? '—'}
-                            </span>
-                        </div>
-
-                        <Separator />
-
-                        <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground">
-                                Odometer Start
-                            </span>
-                            <span className="font-medium">
-                                {formatOdometer(dispatch.odometerStart)}
-                            </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground">
-                                Odometer End
-                            </span>
-                            <span className="font-medium">
-                                {formatOdometer(dispatch.odometerEnd)}
-                            </span>
+                        <div className="grid grid-cols-2 gap-2 text-sm">
+                            <div>
+                                <span className="text-muted-foreground">Email: </span>
+                                {dispatch.client?.email ?? '—'}
+                            </div>
+                            <div>
+                                <span className="text-muted-foreground">Phone: </span>
+                                {dispatch.client?.phoneNumber ?? '—'}
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
@@ -226,77 +187,32 @@ const DispatchDetailsPages = ({
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-base">
-                            <User className="h-4 w-4" />
-                            Driver & Vehicle
+                            <Truck className="h-4 w-4" />
+                            Vehicle & Driver Assignment
                         </CardTitle>
-                        <CardDescription>
-                            Assigned personnel and unit
-                        </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-3 text-sm">
-                        <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground">
-                                Driver
-                            </span>
-                            <span className="font-medium">
-                                {dispatch.driver?.fullName ?? '—'}
-                            </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <span className="flex items-center gap-1.5 text-muted-foreground">
-                                <Phone className="h-3.5 w-3.5" />
-                                Phone
-                            </span>
-                            <span className="font-medium">
-                                {dispatch.driver?.phoneNumber ?? '—'}
-                            </span>
-                        </div>
-
-                        <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground">
-                                Status
-                            </span>
-                            <Badge
-                                variant={
-                                    dispatch.driver?.status === 'active'
-                                        ? 'default'
-                                        : 'secondary'
-                                }
-                                className="capitalize"
-                            >
-                                {dispatch.driver?.status ?? '—'}
-                            </Badge>
-                        </div>
-
-                        <Separator />
-
-                        <div className="flex items-center justify-between">
-                            <span className="flex items-center gap-1.5 text-muted-foreground">
-                                <Truck className="h-3.5 w-3.5" />
-                                Vehicle
-                            </span>
-                            <span className="font-medium">
-                                {dispatch.vehicle?.make ?? '—'}
-                            </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground">
-                                Plate Number
-                            </span>
-                            <span className="font-medium">
-                                {dispatch.vehicle?.plateNumber ?? '—'}
-                            </span>
-                        </div>
-                        <div className="flex items-center justify-between">
-                            <span className="text-muted-foreground">Owner</span>
-                            <span className="font-medium">
-                                {dispatch.vehicle?.ownersName ?? '—'}
-                            </span>
+                    <CardContent className="space-y-3">
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <div className="text-xs text-muted-foreground">Plate Number</div>
+                                <div className="text-base font-semibold">{dispatch.vehicle?.plateNumber ?? '—'}</div>
+                                <div className="text-xs text-muted-foreground mt-0.5">
+                                    {dispatch.vehicle?.make} • {dispatch.vehicle?.yearModel}
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-xs text-muted-foreground">Driver Name</div>
+                                <div className="text-base font-semibold">{dispatch.driver?.fullName ?? '—'}</div>
+                                <div className="text-xs text-muted-foreground mt-0.5">
+                                    Call Time: {dispatch.assignedCallTime}
+                                </div>
+                            </div>
                         </div>
                     </CardContent>
                 </Card>
             </div>
 
+            {/* Trip Legs Table */}
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <div>
@@ -323,14 +239,13 @@ const DispatchDetailsPages = ({
                                 <TableRow>
                                     <TableHead>Seq</TableHead>
                                     <TableHead>Trip No</TableHead>
+                                    <TableHead>Origin / Destination</TableHead>
+                                    <TableHead>Drops</TableHead>
                                     <TableHead>Total Parcel</TableHead>
-                                    <TableHead>Odometer Start</TableHead>
-                                    <TableHead>Odometer End</TableHead>
-                                    <TableHead>Departure</TableHead>
-                                    <TableHead>Arrived</TableHead>
-                                    <TableHead>End</TableHead>
+                                    <TableHead>Odometer Start / End</TableHead>
+                                    <TableHead>Times (Dep/Arr/End)</TableHead>
                                     <TableHead>Status</TableHead>
-                                    <TableHead className="w-12 text-right">
+                                    <TableHead className="w-20 text-right">
                                         Action
                                     </TableHead>
                                 </TableRow>
@@ -341,60 +256,134 @@ const DispatchDetailsPages = ({
                                         (a, b) =>
                                             b.tripSequence - a.tripSequence,
                                     )
-                                    .map((leg) => (
-                                        <TableRow key={leg.id}>
-                                            <TableCell className="font-medium">
-                                                {leg.tripSequence}
-                                            </TableCell>
-                                            <TableCell>
-                                                {leg.linehaulTripNo}
-                                            </TableCell>
-                                            <TableCell>
-                                                {leg.totalParcel ?? '—'}
-                                            </TableCell>
-                                            <TableCell>
-                                                {leg.odometerStart}
-                                            </TableCell>
-                                            <TableCell>
-                                                {leg.odometerEnd}
-                                            </TableCell>
-                                            <TableCell>
-                                                {leg.departureTime}
-                                            </TableCell>
-                                            <TableCell>
-                                                {leg.arrivedTime}
-                                            </TableCell>
-                                            <TableCell>{leg.endTime}</TableCell>
-                                            <TableCell>
-                                                <Badge
-                                                    variant={
-                                                        isTripLegComplete(leg)
-                                                            ? 'default'
-                                                            : 'outline'
-                                                    }
-                                                    className="capitalize"
-                                                >
-                                                    {leg.status ??
-                                                        (isTripLegComplete(leg)
-                                                            ? 'Complete'
-                                                            : 'Pending')}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell className="text-right">
-                                                <Button
-                                                    type="button"
-                                                    variant="ghost"
-                                                    size="icon-sm"
-                                                    aria-label={`Edit trip leg ${leg.tripSequence}`}
-                                                    onClick={() =>
-                                                        openTripLegModal(leg)
-                                                    }
-                                                >
-                                                    <Pencil className="h-3.5 w-3.5" />
-                                                </Button>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
+                                    .map((leg) => {
+                                        const drops = leg.drops ?? [];
+
+                                        return (
+                                            <TableRow key={leg.id}>
+                                                <TableCell className="font-medium">
+                                                    {leg.tripSequence}
+                                                </TableCell>
+                                                <TableCell className="font-mono text-xs">
+                                                    {leg.linehaulTripNo}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="text-xs space-y-0.5">
+                                                        <div><span className="text-muted-foreground">From:</span> {leg.originLocation?.name ?? '—'}</div>
+                                                        <div><span className="text-muted-foreground">To:</span> {leg.destinationLocation?.name ?? '—'}</div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <div className="flex flex-col gap-1">
+                                                        {drops.length === 0 ? (
+                                                            <span className="text-xs text-muted-foreground">No drops</span>
+                                                        ) : (
+                                                            <div className="flex flex-wrap gap-1">
+                                                                {drops.map((drop, dIdx) => (
+                                                                    <Badge key={drop.id} variant="outline" className="text-[10px] py-0 px-1.5">
+                                                                        #{dIdx + 1}: {drop.location?.name ?? `Loc #${drop.locationId}`} ({drop.parcelCount ?? 0} pcls)
+                                                                    </Badge>
+                                                                ))}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell>
+                                                    {leg.totalParcel ?? '—'}
+                                                </TableCell>
+                                                <TableCell className="text-xs">
+                                                    {formatOdometer(leg.odometerStart)} / {formatOdometer(leg.odometerEnd)}
+                                                </TableCell>
+                                                <TableCell className="text-xs">
+                                                    {formatTime(leg.departureTime)} / {formatTime(leg.arrivedTime)} / {formatTime(leg.endTime)}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge
+                                                        variant={
+                                                            isTripLegComplete(leg)
+                                                                ? 'default'
+                                                                : 'outline'
+                                                        }
+                                                        className="capitalize"
+                                                    >
+                                                        {leg.status ??
+                                                            (isTripLegComplete(leg)
+                                                                ? 'Complete'
+                                                                : 'Pending')}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell className="text-right">
+                                                    <div className="flex items-center justify-end gap-1">
+                                                        <CreateDropModal tripLegId={leg.id} locations={locations} />
+                                                        <Button
+                                                            type="button"
+                                                            variant="ghost"
+                                                            size="icon-sm"
+                                                            aria-label={`Edit trip leg ${leg.tripSequence}`}
+                                                            onClick={() => openTripLegModal(leg)}
+                                                        >
+                                                            <Pencil className="h-3.5 w-3.5" />
+                                                        </Button>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
+                            </TableBody>
+                        </Table>
+                    )}
+                </CardContent>
+            </Card>
+
+            {/* Return Trips Card */}
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                    <div>
+                        <CardTitle className="flex items-center gap-2 text-base">
+                            <RotateCcw className="h-4 w-4" />
+                            Return Trips
+                        </CardTitle>
+                        <CardDescription>
+                            End-of-shift vehicle return legs or empty container returns for this dispatch
+                        </CardDescription>
+                    </div>
+                    <CreateReturnTripModal
+                        dispatchId={dispatch.id}
+                        locations={locations}
+                        defaultOriginLocationId={tripLegs[0]?.originLocationId}
+                        defaultDestinationLocationId={tripLegs[0]?.destinationLocationId}
+                    />
+                </CardHeader>
+                <CardContent>
+                    {returnTrips.length === 0 ? (
+                        <p className="py-6 text-center text-sm text-muted-foreground">
+                            No return trips recorded for this dispatch assignment yet.
+                        </p>
+                    ) : (
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Return #</TableHead>
+                                    <TableHead>Origin Location</TableHead>
+                                    <TableHead>Destination Location</TableHead>
+                                    <TableHead>Odometer Start</TableHead>
+                                    <TableHead>Odometer End</TableHead>
+                                    <TableHead>Total Parcels</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {returnTrips.map((rt, idx) => (
+                                    <TableRow key={rt.id}>
+                                        <TableCell className="font-medium">
+                                            Return #{idx + 1}
+                                        </TableCell>
+                                        <TableCell>{rt.originLocation?.name ?? '—'}</TableCell>
+                                        <TableCell>{rt.destinationLocation?.name ?? '—'}</TableCell>
+                                        <TableCell>{formatOdometer(rt.odometerStart)}</TableCell>
+                                        <TableCell>{formatOdometer(rt.odometerEnd)}</TableCell>
+                                        <TableCell>{rt.totalParcel ?? '—'}</TableCell>
+                                    </TableRow>
+                                ))}
                             </TableBody>
                         </Table>
                     )}

@@ -33,12 +33,15 @@ class TripLegService
                 'Cannot add a new trip leg while another trip leg is still in progress.'
             );
         }
+        $firstLeg = $dispatch->tripLegs->firstWhere('trip_sequence', 1);
         $tripSequence = $dispatch->tripLegs()->count() + 1;
 
         return $this->dispatchRepo->attachTripLegs($dispatch, [
             'dispatch_id' => $data->dispatchId,
             'linehaul_trip_no' => $data->linehaulTripNo,
             'trip_sequence' => $tripSequence,
+            'origin_location_id' => $firstLeg?->origin_location_id,
+            'destination_location_id' => $firstLeg?->destination_location_id,
         ]);
     }
 }

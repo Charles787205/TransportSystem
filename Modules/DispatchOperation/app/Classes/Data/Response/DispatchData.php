@@ -34,6 +34,10 @@ class DispatchData extends Data
 
         #[TypeScriptType('TripLegData[]')]
         #[DataCollectionOf(TripLegData::class)]
-        public ?DataCollection $tripLegs
+        public ?DataCollection $tripLegs,
+
+        #[TypeScriptType('ReturnTripData[]')]
+        #[DataCollectionOf(ReturnTripData::class)]
+        public ?DataCollection $returnTrips = null,
     ) {}
 }

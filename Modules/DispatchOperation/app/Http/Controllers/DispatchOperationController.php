@@ -80,11 +80,13 @@ class DispatchOperationController extends Controller
         Gate::authorize('view', $dispatchModel);
 
         $dispatch = $this->dispatchService->getDispatchDetails($id);
+        $locations = \Modules\Client\Models\Location::where('client_id', $dispatchModel->client_id)->get(['id', 'name', 'touchpoint', 'type']);
 
         return Inertia::render(
             'dispatchoperations/show',
             [
                 'dispatch' => $dispatch,
+                'locations' => $locations,
                 'tripStatuses' => Inertia::defer(fn () => collect(TripStatus::cases())->map(fn ($status) => [
                     'value' => $status->value,
                     'label' => str($status->value)->headline(),
