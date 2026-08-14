@@ -8,22 +8,20 @@ class CreateRegistrationData extends Data
 {
     public function __construct(
         public readonly string $crNumber,
-        public readonly string $crDate,
         public readonly string $orNumber,
-        public readonly string $orDate,
-        public readonly string $ltfrbDate,
-        public readonly string $caseNumber,
+        public readonly ?string $orDate = null,
+        public readonly ?string $ltfrbDate = null,
+        public readonly ?string $caseNumber = null,
     ) {}
 
-    public function registrationAttributes()
+    public function registrationAttributes(): array
     {
-        return [
+        return array_filter([
             'cr_number' => $this->crNumber,
-            'cr_date' => $this->crDate,
             'or_number' => $this->orNumber,
             'or_date' => $this->orDate,
             'ltfrb_date' => $this->ltfrbDate,
             'case_number' => $this->caseNumber,
-        ];
+        ], fn ($val) => $val !== null);
     }
 }

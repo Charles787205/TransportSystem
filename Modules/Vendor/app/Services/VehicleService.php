@@ -4,9 +4,14 @@ namespace Modules\Vendor\Services;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
+use Modules\DispatchOperation\Models\Dispatch;
+use Modules\Vendor\Classes\Data\Request\CreateInsuranceData;
+use Modules\Vendor\Classes\Data\Request\CreateRegistrationData;
 use Modules\Vendor\Classes\Data\Request\CreateVehicleData;
+use Modules\Vendor\Classes\Data\Request\UpdateVehicleData;
 use Modules\Vendor\Classes\Data\Response\VehicleData;
 use Modules\Vendor\Classes\Data\Response\VehicleDriverHistory;
+use Modules\Vendor\Models\Vehicle;
 use Modules\Vendor\Repositories\DriverRepository;
 use Modules\Vendor\Repositories\VehicleRepository;
 
@@ -37,14 +42,51 @@ class VehicleService
         });
     }
 
+    public function updateVehicle(int $vehicleId, UpdateVehicleData $data): VehicleData
+    {
+        $vehicle = Vehicle::findOrFail($vehicleId);
+        $vehicle->update($data->vehicleAttributes());
+
+        return VehicleData::from($vehicle->fresh(['insurances', 'registrations', 'driver']));
+    }
+
+    public function addInsurance(int $vehicleId, CreateInsuranceData $data)
+    {
+        $vehicle = Vehicle::findOrFail($vehicleId);
+
+        return $vehicle->insurances()->create($data->insuranceAttributes());
+    }
+
+    public function addRegistration(int $vehicleId, CreateRegistrationData $data)
+    {
+        $vehicle = Vehicle::findOrFail($vehicleId);
+
+        return $vehicle->registrations()->create($data->registrationAttributes());
+    }
+
+    public function getVehicleStats(int $vehicleId): array
+    {
+        $totalTrips = Dispatch::where('vehicle_id', $vehicleId)->count();
+        $completedTrips = Dispatch::where('vehicle_id', $vehicleId)
+            ->whereHas('tripLegs', fn ($q) => $q->where('status', 'delivered'))
+            ->count();
+
+        $successRate = $totalTrips > 0 ? (int) round(($completedTrips / $totalTrips) * 100) : 100;
+
+        return [
+            'totalTrips' => $totalTrips,
+            'successRate' => $successRate,
+        ];
+    }
+
     public function getVehicleWithInsurancesAndRegistration(int $vehicleId)
     {
-        $vehicle = VehicleData::from($this->vehicleRepo->getVehicleWithInsurancesAndRegistrations($vehicleId));
-        if (! $vehicle) {
+        $vehicleModel = $this->vehicleRepo->getVehicleWithInsurancesAndRegistrations($vehicleId);
+        if (! $vehicleModel) {
             throw new ModelNotFoundException('Vehicle not found.');
         }
 
-        return VehicleData::from($vehicle);
+        return VehicleData::from($vehicleModel);
     }
 
     public function getDriverHistory(int $vehicleId)
@@ -76,7 +118,6 @@ class VehicleService
 
     public function attachDriver(int $vehicleId, int $driverId)
     {
-
         $this->vehicleRepo->attachDriver(vehicleId: $vehicleId, driverId: $driverId);
     }
 }

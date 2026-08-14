@@ -6,7 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use Modules\Vendor\Classes\Data\Request\CreateInsuranceData;
+use Modules\Vendor\Classes\Data\Request\CreateRegistrationData;
 use Modules\Vendor\Classes\Data\Request\CreateVehicleData;
+use Modules\Vendor\Classes\Data\Request\UpdateVehicleData;
 use Modules\Vendor\Models\Vehicle;
 use Modules\Vendor\Models\Vendor;
 use Modules\Vendor\Services\DriverService;
@@ -32,7 +35,7 @@ class VendorVehicleController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.`
+     * Store a newly created resource in storage.
      */
     public function store(CreateVehicleData $data)
     {
@@ -46,19 +49,41 @@ class VendorVehicleController extends Controller
      */
     public function show(Vendor $vendor, Vehicle $vehicle)
     {
-        $vehicle = $this->vehicleService->getVehicleWithInsurancesAndRegistration($vehicle->id);
+        $vehicleData = $this->vehicleService->getVehicleWithInsurancesAndRegistration($vehicle->id);
         $history = $this->vehicleService->getDriverHistory($vehicle->id);
+        $stats = $this->vehicleService->getVehicleStats($vehicle->id);
 
         return Inertia::render(
             'vendor/vehicles/show',
             [
                 'vendorId' => $vendor->id,
-                'drivers' => Inertia::optional(fn () => $this->driverService->getDriversFromVendor($vendor->id)
-                ),
+                'drivers' => Inertia::optional(fn () => $this->driverService->getDriversFromVendor($vendor->id)),
                 'history' => $history,
-                'vehicle' => $vehicle,
+                'vehicle' => $vehicleData,
+                'stats' => $stats,
             ]
         );
+    }
+
+    public function update(UpdateVehicleData $data, Vendor $vendor, Vehicle $vehicle)
+    {
+        $this->vehicleService->updateVehicle($vehicle->id, $data);
+
+        return back()->with('success', 'Vehicle updated successfully.');
+    }
+
+    public function addInsurance(CreateInsuranceData $data, Vendor $vendor, Vehicle $vehicle)
+    {
+        $this->vehicleService->addInsurance($vehicle->id, $data);
+
+        return back()->with('success', 'Insurance policy added.');
+    }
+
+    public function addRegistration(CreateRegistrationData $data, Vendor $vendor, Vehicle $vehicle)
+    {
+        $this->vehicleService->addRegistration($vehicle->id, $data);
+
+        return back()->with('success', 'Registration added.');
     }
 
     public function attachDriver(string $vehicleId, string $vendorId, Request $request)
@@ -82,11 +107,6 @@ class VendorVehicleController extends Controller
     {
         return Inertia::render('vendors/vehicles/edit');
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
 
     /**
      * Remove the specified resource from storage.

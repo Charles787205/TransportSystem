@@ -13,7 +13,7 @@ class CreateInsuranceData extends Data
         public readonly string $endDate,
     ) {}
 
-    public function insuranceAttributes()
+    public function insuranceAttributes(): array
     {
         return [
             'provider_name' => $this->providerName,
