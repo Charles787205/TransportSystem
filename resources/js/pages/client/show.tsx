@@ -215,8 +215,8 @@ const Show = ({
                                         <div className="flex flex-wrap gap-1">
                                             {locations.links.map((link, index) => {
                                                 let label = link.label;
-                                                if (label.includes('&laquo;')) label = '« Prev';
-                                                if (label.includes('&raquo;')) label = 'Next »';
+                                                if (label?.includes('&laquo;')) label = '« Prev';
+                                                if (label?.includes('&raquo;')) label = 'Next »';
 
                                                 return (
                                                     <Button

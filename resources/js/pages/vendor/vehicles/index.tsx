@@ -15,7 +15,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import type { VehicleData } from '@/generated/Vendor';
-import { show as vendorShow } from '@/routes/vendor';
+import { destroy, show as vendorShow } from '@/routes/vendor';
 import { show, create } from '@/routes/vendor/vehicle';
 
 interface PaginatedVehicles {
@@ -35,20 +35,6 @@ interface IndexProps {
 
 const Index = ({ data, vendorId }: IndexProps) => {
     const vehicles = data.data;
-
-    const handleDelete = (id: number) => {
-        if (!confirm('Delete this vehicle? This cannot be undone.')) {
-return;
-}
-
-        router.delete(
-            destroy({
-                vendor: vendorId,
-                vehicle: id,
-            }).url,
-            { preserveScroll: true },
-        );
-    };
 
     return (
         <div className="space-y-6 p-6">
@@ -163,10 +149,7 @@ return;
                                                 asChild
                                             >
                                                 <Link
-                                                    href={show.url({
-                                                        vendor: vendorId,
-                                                        vehicle: vehicle.id,
-                                                    })}
+                                                    href={show.url([vendorId, vehicle.id])}
                                                 >
                                                     <Eye className="mr-1 h-4 w-4" />
                                                     View
