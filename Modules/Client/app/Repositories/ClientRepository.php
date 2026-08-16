@@ -18,6 +18,13 @@ class ClientRepository
             ->paginate(15);
     }
 
+    public function getAllClients()
+    {
+        return Client::where('active', true)
+            ->orderBy('name')
+            ->get();
+    }
+
     public function getClient($id)
     {
         return Client::find($id);
