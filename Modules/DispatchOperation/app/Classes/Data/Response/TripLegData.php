@@ -33,6 +33,9 @@ class TripLegData extends Data
         #[TypeScriptType('DropData[]')]
         #[DataCollectionOf(DropData::class)]
         public ?DataCollection $drops = null,
+        #[TypeScriptType('TripLegCargoData[]')]
+        #[DataCollectionOf(TripLegCargoData::class)]
+        public ?DataCollection $cargoes = null,
         public string $updatedAt = '',
         public string $createdAt = '',
     ) {}

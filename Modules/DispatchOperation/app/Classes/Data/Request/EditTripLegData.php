@@ -27,6 +27,14 @@ class EditTripLegData extends Data
         public string|Optional|null $cancellationDetail,
         #[AttributesOptional]
         public string|Optional|null $cancellationRemark,
+        #[AttributesOptional]
+        public float|Optional|null $cargoParcel,
+        #[AttributesOptional]
+        public float|Optional|null $cargoBox,
+        #[AttributesOptional]
+        public float|Optional|null $cargoLoose,
+        #[AttributesOptional]
+        public float|Optional|null $cargoWeight,
     ) {}
 
     public static function rules(): array
@@ -40,7 +48,6 @@ class EditTripLegData extends Data
     public function toModelAttributes()
     {
         return array_filter([
-
             'total_parcel' => $this->totalParcel,
             'odometer_start' => $this->odometerStart,
             'odometer_end' => $this->odometerEnd,
@@ -50,6 +57,10 @@ class EditTripLegData extends Data
             'status' => $this->status,
             'cancellation_detail' => $this->cancellationDetail,
             'cancellation_remark' => $this->cancellationRemark,
+            'cargo_parcel' => $this->cargoParcel,
+            'cargo_box' => $this->cargoBox,
+            'cargo_loose' => $this->cargoLoose,
+            'cargo_weight' => $this->cargoWeight,
         ], fn ($value) => ! $value instanceof Optional);
     }
 }

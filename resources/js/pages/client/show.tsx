@@ -18,6 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import ClientCargoConfig from '@/components/client/client-cargo-config';
 import CreateLocationModal from '@/components/client/create-location-modal';
 import type { ClientData, PaginatedLocationData } from '@/generated/Client';
 import type { DispatchData } from '@/generated/DispatchOperation';
@@ -104,6 +105,9 @@ const Show = ({
                         </div>
                     </CardContent>
                 </Card>
+
+                {/* Cargo Configuration */}
+                <ClientCargoConfig client={client} />
 
                 {/* Contact info */}
                 <Card>

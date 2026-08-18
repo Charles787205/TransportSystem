@@ -28,6 +28,7 @@ type TripLegModalProps = {
     dispatchId: number;
     open: boolean;
     onOpenChange?: (open: boolean) => void;
+    clientAllowedCargoUnits?: string[] | null;
 };
 
 const normalizeTimeValue = (value: string | null | undefined) => {
@@ -74,6 +75,7 @@ const TripLegModal = ({
     dispatchId,
     open,
     onOpenChange,
+    clientAllowedCargoUnits,
 }: TripLegModalProps) => {
     const [status, setStatus] = useState(tripLeg?.status ?? 'pending');
     console.log(tripLeg);
@@ -111,23 +113,66 @@ const TripLegModal = ({
                             ) : null}
 
                             <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="total-parcel">
-                                        Total Parcel
-                                    </Label>
-                                    <Input
-                                        id="total-parcel"
-                                        name="total_parcel"
-                                        type="number"
-                                        min={0}
-                                        defaultValue={
-                                            tripLeg?.totalParcel ?? undefined
-                                        }
-                                        aria-invalid={!!errors.total_parcel}
-                                        data-invalid={!!errors.total_parcel}
-                                    />
-                                    <InputError message={errors.total_parcel} />
-                                </div>
+                                {(!clientAllowedCargoUnits || clientAllowedCargoUnits.length === 0 || clientAllowedCargoUnits.includes('per_parcel')) && (
+                                    <div className="space-y-2">
+                                        <Label htmlFor="cargo-parcel">Parcels Count</Label>
+                                        <Input
+                                            id="cargo-parcel"
+                                            name="cargo_parcel"
+                                            type="number"
+                                            min={0}
+                                            defaultValue={
+                                                tripLeg?.cargoes?.find((c: any) => c.cargoType === 'per_parcel')?.quantity ?? tripLeg?.totalParcel ?? undefined
+                                            }
+                                        />
+                                    </div>
+                                )}
+
+                                {clientAllowedCargoUnits?.includes('per_box') && (
+                                    <div className="space-y-2">
+                                        <Label htmlFor="cargo-box">Box Count</Label>
+                                        <Input
+                                            id="cargo-box"
+                                            name="cargo_box"
+                                            type="number"
+                                            min={0}
+                                            defaultValue={
+                                                tripLeg?.cargoes?.find((c: any) => c.cargoType === 'per_box')?.quantity ?? undefined
+                                            }
+                                        />
+                                    </div>
+                                )}
+
+                                {clientAllowedCargoUnits?.includes('loose_items') && (
+                                    <div className="space-y-2">
+                                        <Label htmlFor="cargo-loose">Loose Items Count</Label>
+                                        <Input
+                                            id="cargo-loose"
+                                            name="cargo_loose"
+                                            type="number"
+                                            min={0}
+                                            defaultValue={
+                                                tripLeg?.cargoes?.find((c: any) => c.cargoType === 'loose_items')?.quantity ?? undefined
+                                            }
+                                        />
+                                    </div>
+                                )}
+
+                                {clientAllowedCargoUnits?.includes('by_weight') && (
+                                    <div className="space-y-2">
+                                        <Label htmlFor="cargo-weight">Total Weight (kg)</Label>
+                                        <Input
+                                            id="cargo-weight"
+                                            name="cargo_weight"
+                                            type="number"
+                                            step="0.01"
+                                            min={0}
+                                            defaultValue={
+                                                tripLeg?.cargoes?.find((c: any) => c.cargoType === 'by_weight')?.quantity ?? undefined
+                                            }
+                                        />
+                                    </div>
+                                )}
 
                                 <div className="space-y-2">
                                     <Label htmlFor="odometer-start">

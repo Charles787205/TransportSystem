@@ -18,12 +18,33 @@ class TripLegRepository
         $cancellationDetail = $data['cancellation_detail'] ?? null;
         $cancellationRemark = $data['cancellation_remark'] ?? null;
 
+        $cargoTypes = ['per_parcel', 'per_box', 'loose_items', 'by_weight'];
+        $cargoInputs = [
+            'per_parcel' => $data['cargo_parcel'] ?? null,
+            'per_box' => $data['cargo_box'] ?? null,
+            'loose_items' => $data['cargo_loose'] ?? null,
+            'by_weight' => $data['cargo_weight'] ?? null,
+        ];
+
         $tripLegData = array_diff_key($data, [
             'cancellation_detail' => true,
             'cancellation_remark' => true,
+            'cargo_parcel' => true,
+            'cargo_box' => true,
+            'cargo_loose' => true,
+            'cargo_weight' => true,
         ]);
 
         $tripLeg->update($tripLegData);
+
+        foreach ($cargoInputs as $type => $qty) {
+            if ($qty !== null && $qty !== '') {
+                $tripLeg->cargoes()->updateOrCreate(
+                    ['cargo_type' => $type],
+                    ['quantity' => (float) $qty]
+                );
+            }
+        }
 
         if ($tripLeg->status->value === 'cancelled' && $cancellationDetail) {
             $tripLeg->cancellationDetail()->updateOrCreate(

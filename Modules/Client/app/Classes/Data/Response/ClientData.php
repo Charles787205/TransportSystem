@@ -14,7 +14,8 @@ class ClientData extends Data
         public string $name,
         public string $phoneNumber,
         public string $active,
-        public string $createdAt,
-        public string $updatedAt,
+        public ?array $allowedCargoUnits = null,
+        public string $createdAt = '',
+        public string $updatedAt = '',
     ) {}
 }

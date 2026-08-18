@@ -52,6 +52,11 @@ class TripLeg extends Model
         return $this->hasMany(Drop::class);
     }
 
+    public function cargoes(): HasMany
+    {
+        return $this->hasMany(TripLegCargo::class);
+    }
+
     public function cancellationDetail()
     {
         return $this->hasOne(CancellationDetail::class);

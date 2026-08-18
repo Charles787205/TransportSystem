@@ -242,7 +242,7 @@ const DispatchDetailsPages = ({
                                     <TableHead>Trip No</TableHead>
                                     <TableHead>Origin / Destination</TableHead>
                                     <TableHead>Drops</TableHead>
-                                    <TableHead>Total Parcel</TableHead>
+                                    <TableHead>Cargo Details</TableHead>
                                     <TableHead>Odometer Start / End</TableHead>
                                     <TableHead>Times (Dep/Arr/End)</TableHead>
                                     <TableHead>Status</TableHead>
@@ -294,8 +294,21 @@ const DispatchDetailsPages = ({
                                                         )}
                                                     </div>
                                                 </TableCell>
-                                                <TableCell>
-                                                    {leg.totalParcel ?? '—'}
+                                                <TableCell className="text-xs">
+                                                    {leg.cargoes && leg.cargoes.length > 0 ? (
+                                                        <div className="flex flex-col gap-0.5 font-medium">
+                                                            {leg.cargoes.map((c) => (
+                                                                <span key={c.id} className="text-slate-800">
+                                                                    {c.cargoType === 'per_parcel' && `${c.quantity} pcls`}
+                                                                    {c.cargoType === 'per_box' && `${c.quantity} boxes`}
+                                                                    {c.cargoType === 'loose_items' && `${c.quantity} loose`}
+                                                                    {c.cargoType === 'by_weight' && `${c.quantity} kg`}
+                                                                </span>
+                                                            ))}
+                                                        </div>
+                                                    ) : (
+                                                        leg.totalParcel ?? '—'
+                                                    )}
                                                 </TableCell>
                                                 <TableCell className="text-xs">
                                                     {formatOdometer(leg.odometerStart)} / {formatOdometer(leg.odometerEnd)}
@@ -402,6 +415,7 @@ const DispatchDetailsPages = ({
                     tripLeg={selectedTripLeg!}
                     open={tripLegModalOpen}
                     dispatchId={dispatch.id}
+                    clientAllowedCargoUnits={dispatch.client?.allowedCargoUnits}
                     onOpenChange={handleTripLegModalOpenChange}
                 />
             )}

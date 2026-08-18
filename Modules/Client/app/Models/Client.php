@@ -8,10 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Modules\DispatchOperation\Models\Dispatch;
 
-#[Fillable(['email', 'name', 'phone_number'])]
+#[Fillable(['email', 'name', 'phone_number', 'allowed_cargo_units'])]
 class Client extends Model
 {
     use HasFactory;
+
+    protected $casts = [
+        'allowed_cargo_units' => 'array',
+    ];
 
     public function locations(): HasMany
     {

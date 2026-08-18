@@ -91,6 +91,22 @@ class ClientController extends Controller
         Gate::authorize('update', $clientModel);
     }
 
+    public function updateAllowedCargoUnits(Request $request, Client $client)
+    {
+        Gate::authorize('update', $client);
+
+        $validated = $request->validate([
+            'allowed_cargo_units' => ['nullable', 'array'],
+            'allowed_cargo_units.*' => ['string', 'in:per_parcel,per_box,loose_items,by_weight'],
+        ]);
+
+        $client->update([
+            'allowed_cargo_units' => $validated['allowed_cargo_units'] ?? [],
+        ]);
+
+        return back()->with('success', 'Cargo calculation configuration updated.');
+    }
+
     /**
      * Remove the specified resource from storage.
      */

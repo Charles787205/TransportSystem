@@ -31,6 +31,7 @@ class DispatchService
             'tripLegs.originLocation',
             'tripLegs.destinationLocation',
             'tripLegs.drops.location',
+            'tripLegs.cargoes',
             'returnTrips.originLocation',
             'returnTrips.destinationLocation',
             'driver',
