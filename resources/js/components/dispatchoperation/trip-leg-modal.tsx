@@ -3,6 +3,7 @@ import { Loader2 } from 'lucide-react';
 import { useState } from 'react';
 import TripLegController from '@/actions/Modules/DispatchOperation/Http/Controllers/TripLegController';
 import InputError from '../input-error';
+import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import {
     Dialog,
@@ -284,6 +285,20 @@ const TripLegModal = ({
                                                 }
                                             />
                                             <InputError message={errors.cancellation_remark} />
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Drop Stops list */}
+                                {isEditing && tripLeg?.drops && tripLeg.drops.length > 0 && (
+                                    <div className="col-span-2 space-y-2 rounded-lg border bg-slate-50 p-3">
+                                        <div className="text-xs font-semibold text-slate-700 uppercase tracking-wider">Intermediate Drop Stops ({tripLeg.drops.length})</div>
+                                        <div className="flex flex-wrap gap-1.5">
+                                            {tripLeg.drops.map((drop: any, idx: number) => (
+                                                <Badge key={drop.id} variant="secondary" className="text-xs py-1 px-2 flex items-center gap-1 bg-white border">
+                                                    <span>#{idx + 1}: {drop.location?.name ?? `Loc #${drop.locationId}`} ({drop.parcelCount ?? 0} pcls)</span>
+                                                </Badge>
+                                            ))}
                                         </div>
                                     </div>
                                 )}

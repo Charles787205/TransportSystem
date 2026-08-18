@@ -178,14 +178,14 @@ export default function Dashboard({
                                     type="date"
                                     value={dateFrom}
                                     onChange={(e) => setDateFrom(e.target.value)}
-                                    className="h-8 text-xs w-32"
+                                    className="h-8 text-xs w-[145px] px-1.5"
                                 />
                                 <span className="text-xs text-slate-400">to</span>
                                 <Input
                                     type="date"
                                     value={dateTo}
                                     onChange={(e) => setDateTo(e.target.value)}
-                                    className="h-8 text-xs w-32"
+                                    className="h-8 text-xs w-[145px] px-1.5"
                                 />
                             </div>
                         )}

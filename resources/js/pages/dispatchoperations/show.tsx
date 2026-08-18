@@ -16,6 +16,7 @@ import { useState } from 'react';
 import CreateDropModal from '@/components/dispatchoperation/create-drop-modal';
 import CreateReturnTripModal from '@/components/dispatchoperation/create-return-trip-modal';
 import CreateTripLegModal from '@/components/dispatchoperation/create-trip-leg-modal';
+import EditDropModal from '@/components/dispatchoperation/edit-drop-modal';
 import TripLegModal from '@/components/dispatchoperation/trip-leg-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -280,9 +281,14 @@ const DispatchDetailsPages = ({
                                                         ) : (
                                                             <div className="flex flex-wrap gap-1">
                                                                 {drops.map((drop, dIdx) => (
-                                                                    <Badge key={drop.id} variant="outline" className="text-[10px] py-0 px-1.5">
-                                                                        #{dIdx + 1}: {drop.location?.name ?? `Loc #${drop.locationId}`} ({drop.parcelCount ?? 0} pcls)
-                                                                    </Badge>
+                                                                    <EditDropModal key={drop.id} drop={drop} locations={locations}>
+                                                                        <Badge
+                                                                            variant="outline"
+                                                                            className="text-[10px] py-0 px-1.5 cursor-pointer hover:bg-slate-100 transition-colors"
+                                                                        >
+                                                                            #{dIdx + 1}: {drop.location?.name ?? `Loc #${drop.locationId}`} ({drop.parcelCount ?? 0} pcls)
+                                                                        </Badge>
+                                                                    </EditDropModal>
                                                                 ))}
                                                             </div>
                                                         )}

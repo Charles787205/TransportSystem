@@ -4,6 +4,7 @@ namespace Modules\DispatchOperation\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Modules\DispatchOperation\Classes\Data\Request\CreateDropData;
+use Modules\DispatchOperation\Classes\Data\Request\EditDropData;
 use Modules\DispatchOperation\Models\Drop;
 use Modules\DispatchOperation\Models\TripLeg;
 
@@ -21,5 +22,21 @@ class DropController extends Controller
         Drop::create($attributes);
 
         return back()->with('success', 'Drop added successfully.');
+    }
+
+    public function update(EditDropData $data, int $id)
+    {
+        $drop = Drop::findOrFail($id);
+        $drop->update($data->dropAttributes());
+
+        return back()->with('success', 'Drop updated successfully.');
+    }
+
+    public function destroy(int $id)
+    {
+        $drop = Drop::findOrFail($id);
+        $drop->delete();
+
+        return back()->with('success', 'Drop deleted successfully.');
     }
 }
