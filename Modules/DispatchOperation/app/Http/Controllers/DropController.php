@@ -14,6 +14,12 @@ class DropController extends Controller
     {
         $tripLeg = TripLeg::findOrFail($data->tripLegId);
 
+        if ($data->locationId === $tripLeg->origin_location_id || $data->locationId === $tripLeg->destination_location_id) {
+            return back()->withErrors([
+                'location_id' => 'Drop location cannot be the trip origin or destination location.',
+            ]);
+        }
+
         $nextSequence = $tripLeg->drops()->count() + 1;
 
         $attributes = $data->dropAttributes();
@@ -26,7 +32,15 @@ class DropController extends Controller
 
     public function update(EditDropData $data, int $id)
     {
-        $drop = Drop::findOrFail($id);
+        $drop = Drop::with('tripLeg')->findOrFail($id);
+        $tripLeg = $drop->tripLeg;
+
+        if ($tripLeg && ($data->locationId === $tripLeg->origin_location_id || $data->locationId === $tripLeg->destination_location_id)) {
+            return back()->withErrors([
+                'location_id' => 'Drop location cannot be the trip origin or destination location.',
+            ]);
+        }
+
         $drop->update($data->dropAttributes());
 
         return back()->with('success', 'Drop updated successfully.');

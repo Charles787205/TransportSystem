@@ -13,6 +13,9 @@ use Modules\Client\Models\Location;
     'location_id',
     'drop_sequence',
     'parcel_count',
+    'box_count',
+    'loose_items_count',
+    'weight_kg',
     'arrived_time',
     'departed_time',
 ])]

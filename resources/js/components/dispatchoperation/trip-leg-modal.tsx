@@ -113,7 +113,9 @@ const TripLegModal = ({
                             ) : null}
 
                             <div className="grid grid-cols-2 gap-4">
-                                {(!clientAllowedCargoUnits || clientAllowedCargoUnits.length === 0 || clientAllowedCargoUnits.includes('per_parcel')) && (
+                                {(clientAllowedCargoUnits && clientAllowedCargoUnits.length > 0
+                                    ? clientAllowedCargoUnits.includes('per_parcel')
+                                    : true) && (
                                     <div className="space-y-2">
                                         <Label htmlFor="cargo-parcel">Parcels Count</Label>
                                         <Input
@@ -338,12 +340,23 @@ const TripLegModal = ({
                                 {isEditing && tripLeg?.drops && tripLeg.drops.length > 0 && (
                                     <div className="col-span-2 space-y-2 rounded-lg border bg-slate-50 p-3">
                                         <div className="text-xs font-semibold text-slate-700 uppercase tracking-wider">Intermediate Drop Stops ({tripLeg.drops.length})</div>
-                                        <div className="flex flex-wrap gap-1.5">
-                                            {tripLeg.drops.map((drop: any, idx: number) => (
-                                                <Badge key={drop.id} variant="secondary" className="text-xs py-1 px-2 flex items-center gap-1 bg-white border">
-                                                    <span>#{idx + 1}: {drop.location?.name ?? `Loc #${drop.locationId}`} ({drop.parcelCount ?? 0} pcls)</span>
-                                                </Badge>
-                                            ))}
+                                        <div className="flex flex-col gap-1 items-start">
+                                            {tripLeg.drops.map((drop: any, idx: number) => {
+                                                const isDropFilled = Boolean(drop.arrivedTime && drop.departedTime);
+                                                return (
+                                                    <Badge
+                                                        key={drop.id}
+                                                        variant="outline"
+                                                        className={`text-xs py-1 px-2.5 flex items-center gap-1 border ${
+                                                            isDropFilled
+                                                                ? 'bg-emerald-50 text-emerald-700 border-emerald-300'
+                                                                : 'bg-amber-50 text-amber-700 border-amber-300'
+                                                        }`}
+                                                    >
+                                                        <span>#{idx + 1}: {drop.location?.name ?? `Loc #${drop.locationId}`}</span>
+                                                    </Badge>
+                                                );
+                                            })}
                                         </div>
                                     </div>
                                 )}

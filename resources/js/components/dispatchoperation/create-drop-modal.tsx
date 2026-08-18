@@ -34,18 +34,31 @@ type LocationOption = {
 type CreateDropModalProps = {
     tripLegId: number;
     locations: LocationOption[];
+    originLocationId?: number | null;
+    destinationLocationId?: number | null;
+    clientAllowedCargoUnits?: string[] | null;
 };
 
 export default function CreateDropModal({
     tripLegId,
     locations,
+    originLocationId,
+    destinationLocationId,
+    clientAllowedCargoUnits,
 }: CreateDropModalProps) {
     const [open, setOpen] = useState(false);
+
+    const availableLocations = locations.filter(
+        (loc) => loc.id !== originLocationId && loc.id !== destinationLocationId
+    );
 
     const { data, setData, post, processing, errors, reset } = useForm({
         trip_leg_id: tripLegId,
         location_id: '',
         parcel_count: '',
+        box_count: '',
+        loose_items_count: '',
+        weight_kg: '',
         arrived_time: '',
         departed_time: '',
     });
@@ -88,7 +101,7 @@ export default function CreateDropModal({
                                 <SelectValue placeholder="Select location..." />
                             </SelectTrigger>
                             <SelectContent>
-                                {locations.map((loc) => (
+                                {availableLocations.map((loc) => (
                                     <SelectItem key={loc.id} value={String(loc.id)}>
                                         {loc.name}
                                     </SelectItem>
@@ -98,18 +111,63 @@ export default function CreateDropModal({
                         <InputError message={errors.location_id} />
                     </div>
 
-                    {/* Parcel count */}
-                    <div className="grid gap-1.5">
-                        <Label htmlFor="parcel_count">Parcel Count</Label>
-                        <Input
-                            id="parcel_count"
-                            type="number"
-                            placeholder="e.g. 10"
-                            value={data.parcel_count}
-                            onChange={(e) => setData('parcel_count', e.target.value)}
-                        />
-                        <InputError message={errors.parcel_count} />
-                    </div>
+                    {/* Multi-unit Cargo inputs */}
+                    {(!clientAllowedCargoUnits || clientAllowedCargoUnits.length === 0 || clientAllowedCargoUnits.includes('per_parcel')) && (
+                        <div className="grid gap-1.5">
+                            <Label htmlFor="parcel_count">Parcel Count</Label>
+                            <Input
+                                id="parcel_count"
+                                type="number"
+                                placeholder="e.g. 10"
+                                value={data.parcel_count}
+                                onChange={(e) => setData('parcel_count', e.target.value)}
+                            />
+                            <InputError message={errors.parcel_count} />
+                        </div>
+                    )}
+
+                    {clientAllowedCargoUnits?.includes('per_box') && (
+                        <div className="grid gap-1.5">
+                            <Label htmlFor="box_count">Box Count</Label>
+                            <Input
+                                id="box_count"
+                                type="number"
+                                placeholder="e.g. 5"
+                                value={data.box_count}
+                                onChange={(e) => setData('box_count', e.target.value)}
+                            />
+                            <InputError message={errors.box_count} />
+                        </div>
+                    )}
+
+                    {clientAllowedCargoUnits?.includes('loose_items') && (
+                        <div className="grid gap-1.5">
+                            <Label htmlFor="loose_items_count">Loose Items Count</Label>
+                            <Input
+                                id="loose_items_count"
+                                type="number"
+                                placeholder="e.g. 12"
+                                value={data.loose_items_count}
+                                onChange={(e) => setData('loose_items_count', e.target.value)}
+                            />
+                            <InputError message={errors.loose_items_count} />
+                        </div>
+                    )}
+
+                    {clientAllowedCargoUnits?.includes('by_weight') && (
+                        <div className="grid gap-1.5">
+                            <Label htmlFor="weight_kg">Total Weight (kg)</Label>
+                            <Input
+                                id="weight_kg"
+                                type="number"
+                                step="0.01"
+                                placeholder="e.g. 150.5"
+                                value={data.weight_kg}
+                                onChange={(e) => setData('weight_kg', e.target.value)}
+                            />
+                            <InputError message={errors.weight_kg} />
+                        </div>
+                    )}
 
                     {/* Arrival & Departure Time */}
                     <div className="grid grid-cols-2 gap-3">

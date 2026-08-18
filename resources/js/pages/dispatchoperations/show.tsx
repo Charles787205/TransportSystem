@@ -5,6 +5,7 @@ import {
     Gauge,
     MapPin,
     Pencil,
+    Eye,
     Phone,
     Truck,
     User,
@@ -18,6 +19,7 @@ import CreateReturnTripModal from '@/components/dispatchoperation/create-return-
 import CreateTripLegModal from '@/components/dispatchoperation/create-trip-leg-modal';
 import EditDropModal from '@/components/dispatchoperation/edit-drop-modal';
 import TripLegModal from '@/components/dispatchoperation/trip-leg-modal';
+import ViewTripLegModal from '@/components/dispatchoperation/view-trip-leg-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -114,6 +116,8 @@ const DispatchDetailsPages = ({
     const [selectedTripLeg, setSelectedTripLeg] = useState<TripLegData | null>(
         null,
     );
+    const [viewTripLeg, setViewTripLeg] = useState<TripLegData | null>(null);
+    const [viewModalOpen, setViewModalOpen] = useState(false);
     const [tripLegModalOpen, setTripLegModalOpen] = useState(false);
     const tripLegs = dispatch.tripLegs ?? [];
     const returnTrips = dispatch.returnTrips ?? [];
@@ -128,6 +132,11 @@ const DispatchDetailsPages = ({
         onEditTripLeg?.(tripLeg);
         setSelectedTripLeg(tripLeg);
         setTripLegModalOpen(true);
+    };
+
+    const openViewTripLegModal = (tripLeg: TripLegData) => {
+        setViewTripLeg(tripLeg);
+        setViewModalOpen(true);
     };
 
     const handleTripLegModalOpenChange = (open: boolean) => {
@@ -279,17 +288,40 @@ const DispatchDetailsPages = ({
                                                         {drops.length === 0 ? (
                                                             <span className="text-xs text-muted-foreground">No drops</span>
                                                         ) : (
-                                                            <div className="flex flex-wrap gap-1">
-                                                                {drops.map((drop, dIdx) => (
-                                                                    <EditDropModal key={drop.id} drop={drop} locations={locations}>
-                                                                        <Badge
-                                                                            variant="outline"
-                                                                            className="text-[10px] py-0 px-1.5 cursor-pointer hover:bg-slate-100 transition-colors"
+                                                            <div className="flex flex-col gap-1 items-start">
+                                                                {drops.map((drop, dIdx) => {
+                                                                    const isDropFilled = Boolean(drop.arrivedTime && drop.departedTime);
+
+                                                                    return (
+                                                                        <EditDropModal 
+                                                                            key={drop.id} 
+                                                                            drop={drop} 
+                                                                            locations={locations}
+                                                                            originLocationId={leg.originLocationId}
+                                                                            destinationLocationId={leg.destinationLocationId}
+                                                                            clientAllowedCargoUnits={dispatch.client?.allowedCargoUnits}
                                                                         >
-                                                                            #{dIdx + 1}: {drop.location?.name ?? `Loc #${drop.locationId}`} ({drop.parcelCount ?? 0} pcls)
-                                                                        </Badge>
-                                                                    </EditDropModal>
-                                                                ))}
+                                                                            <Badge
+                                                                                variant="outline"
+                                                                                className={`text-[10px] py-0.5 px-2 cursor-pointer transition-colors ${
+                                                                                    isDropFilled
+                                                                                        ? 'bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100'
+                                                                                        : 'bg-amber-50 text-amber-700 border-amber-300 hover:bg-amber-100'
+                                                                                }`}
+                                                                            >
+                                                                                #{dIdx + 1}: {drop.location?.name ?? `Loc #${drop.locationId}`} (
+                                                                                {dispatch.client?.allowedCargoUnits?.includes('by_weight')
+                                                                                     ? `${drop.weightKg ?? 0} kg`
+                                                                                     : dispatch.client?.allowedCargoUnits?.includes('per_box')
+                                                                                       ? `${drop.boxCount ?? 0} boxes`
+                                                                                       : dispatch.client?.allowedCargoUnits?.includes('loose_items')
+                                                                                         ? `${drop.looseItemsCount ?? 0} loose`
+                                                                                         : `${drop.parcelCount ?? 0} pcls`}
+                                                                                )
+                                                                            </Badge>
+                                                                        </EditDropModal>
+                                                                    );
+                                                                })}
                                                             </div>
                                                         )}
                                                     </div>
@@ -333,7 +365,23 @@ const DispatchDetailsPages = ({
                                                 </TableCell>
                                                 <TableCell className="text-right">
                                                     <div className="flex items-center justify-end gap-1">
-                                                        <CreateDropModal tripLegId={leg.id} locations={locations} />
+                                                        <Button
+                                                            type="button"
+                                                            variant="ghost"
+                                                            size="icon-sm"
+                                                            aria-label={`View trip leg ${leg.tripSequence}`}
+                                                            title="View Trip Leg Details"
+                                                            onClick={() => openViewTripLegModal(leg)}
+                                                        >
+                                                            <Eye className="h-3.5 w-3.5" />
+                                                        </Button>
+                                                        <CreateDropModal 
+                                                            tripLegId={leg.id} 
+                                                            locations={locations} 
+                                                            originLocationId={leg.originLocationId}
+                                                            destinationLocationId={leg.destinationLocationId}
+                                                            clientAllowedCargoUnits={dispatch.client?.allowedCargoUnits} 
+                                                        />
                                                         <Button
                                                             type="button"
                                                             variant="ghost"
@@ -419,6 +467,13 @@ const DispatchDetailsPages = ({
                     onOpenChange={handleTripLegModalOpenChange}
                 />
             )}
+
+            <ViewTripLegModal
+                tripLeg={viewTripLeg}
+                open={viewModalOpen}
+                onOpenChange={setViewModalOpen}
+                clientAllowedCargoUnits={dispatch.client?.allowedCargoUnits}
+            />
         </div>
     );
 };

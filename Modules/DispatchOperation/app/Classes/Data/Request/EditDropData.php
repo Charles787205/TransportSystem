@@ -9,6 +9,9 @@ class EditDropData extends Data
     public function __construct(
         public int $locationId,
         public ?int $parcelCount = null,
+        public ?int $boxCount = null,
+        public ?int $looseItemsCount = null,
+        public ?float $weightKg = null,
         public ?string $arrivedTime = null,
         public ?string $departedTime = null,
     ) {}
@@ -18,6 +21,9 @@ class EditDropData extends Data
         return array_filter([
             'location_id' => $this->locationId,
             'parcel_count' => $this->parcelCount,
+            'box_count' => $this->boxCount,
+            'loose_items_count' => $this->looseItemsCount,
+            'weight_kg' => $this->weightKg,
             'arrived_time' => $this->arrivedTime,
             'departed_time' => $this->departedTime,
         ], fn ($value) => $value !== null);
