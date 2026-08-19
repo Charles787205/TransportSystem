@@ -6,6 +6,7 @@ use Modules\DispatchOperation\Http\Controllers\DispatchOperationController;
 use Modules\DispatchOperation\Http\Controllers\DropController;
 use Modules\DispatchOperation\Http\Controllers\ReturnTripController;
 use Modules\DispatchOperation\Http\Controllers\TripLegController;
+use Modules\DispatchOperation\Http\Controllers\TripRemarkController;
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dispatchoperations/form-options', [DispatchFormOptionsController::class, 'index'])
@@ -16,4 +17,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('drops', [DropController::class, 'store'])->name('drops.store');
     Route::put('drops/{drop}', [DropController::class, 'update'])->name('drops.update');
     Route::delete('drops/{drop}', [DropController::class, 'destroy'])->name('drops.destroy');
+    Route::post('trip-remarks', [TripRemarkController::class, 'store'])->name('trip-remarks.store');
 });

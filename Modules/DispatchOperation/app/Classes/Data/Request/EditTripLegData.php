@@ -18,9 +18,23 @@ class EditTripLegData extends Data
         #[AttributesOptional]
         public string|Optional|null $departureTime,
         #[AttributesOptional]
-        public string|Optional|null $endTime,
+        public string|Optional|null $originArrivedTime,
+        #[AttributesOptional]
+        public string|Optional|null $originStartLoadingTime,
+        #[AttributesOptional]
+        public string|Optional|null $originEndLoadingTime,
         #[AttributesOptional]
         public string|Optional|null $arrivedTime,
+        #[AttributesOptional]
+        public string|Optional|null $destinationArrivedTime,
+        #[AttributesOptional]
+        public string|Optional|null $destinationStartUnloadingTime,
+        #[AttributesOptional]
+        public string|Optional|null $destinationEndUnloadingTime,
+        #[AttributesOptional]
+        public string|Optional|null $destinationDepartedTime,
+        #[AttributesOptional]
+        public string|Optional|null $endTime,
         #[AttributesOptional]
         public string|Optional|null $status,
         #[AttributesOptional]
@@ -52,8 +66,15 @@ class EditTripLegData extends Data
             'odometer_start' => $this->odometerStart,
             'odometer_end' => $this->odometerEnd,
             'departure_time' => $this->departureTime,
+            'origin_arrived_time' => $this->originArrivedTime,
+            'origin_start_loading_time' => $this->originStartLoadingTime,
+            'origin_end_loading_time' => $this->originEndLoadingTime,
+            'arrived_time' => $this->arrivedTime ?? $this->destinationArrivedTime,
+            'destination_arrived_time' => $this->destinationArrivedTime ?? $this->arrivedTime,
+            'destination_start_unloading_time' => $this->destinationStartUnloadingTime,
+            'destination_end_unloading_time' => $this->destinationEndUnloadingTime,
+            'destination_departed_time' => $this->destinationDepartedTime,
             'end_time' => $this->endTime,
-            'arrived_time' => $this->arrivedTime,
             'status' => $this->status,
             'cancellation_detail' => $this->cancellationDetail,
             'cancellation_remark' => $this->cancellationRemark,

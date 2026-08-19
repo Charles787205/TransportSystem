@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use Modules\Client\Models\Location;
 use Modules\DispatchOperation\Classes\Data\Request\CreateDispatchData;
 use Modules\DispatchOperation\Classes\Data\Request\EditTripLegData;
 use Modules\DispatchOperation\Enums\TripStatus;
@@ -80,7 +81,7 @@ class DispatchOperationController extends Controller
         Gate::authorize('view', $dispatchModel);
 
         $dispatch = $this->dispatchService->getDispatchDetails($id);
-        $locations = \Modules\Client\Models\Location::where('client_id', $dispatchModel->client_id)->get(['id', 'name', 'touchpoint', 'type']);
+        $locations = Location::where('client_id', $dispatchModel->client_id)->get(['id', 'name', 'touchpoint', 'type']);
 
         return Inertia::render(
             'dispatchoperations/show',

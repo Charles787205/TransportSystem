@@ -37,6 +37,7 @@ type CreateDropModalProps = {
     originLocationId?: number | null;
     destinationLocationId?: number | null;
     clientAllowedCargoUnits?: string[] | null;
+    children?: React.ReactNode;
 };
 
 export default function CreateDropModal({
@@ -45,6 +46,7 @@ export default function CreateDropModal({
     originLocationId,
     destinationLocationId,
     clientAllowedCargoUnits,
+    children,
 }: CreateDropModalProps) {
     const [open, setOpen] = useState(false);
 
@@ -76,9 +78,11 @@ export default function CreateDropModal({
     return (
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-                <Button size="icon-sm" variant="ghost" title="Add drop to leg">
-                    <Plus className="h-4 w-4" />
-                </Button>
+                {children ?? (
+                    <Button size="icon-sm" variant="ghost" title="Add drop to leg">
+                        <Plus className="h-4 w-4" />
+                    </Button>
+                )}
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>

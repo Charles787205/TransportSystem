@@ -12,6 +12,7 @@ import {
     ArrowLeft,
     RotateCcw,
     MapPinOff,
+    Plus,
 } from 'lucide-react';
 import { useState } from 'react';
 import CreateDropModal from '@/components/dispatchoperation/create-drop-modal';
@@ -252,8 +253,10 @@ const DispatchDetailsPages = ({
                                     <TableHead>Origin / Destination</TableHead>
                                     <TableHead>Drops</TableHead>
                                     <TableHead>Cargo Details</TableHead>
-                                    <TableHead>Odometer Start / End</TableHead>
-                                    <TableHead>Times (Dep/Arr/End)</TableHead>
+                                    <TableHead>Odometer (Start/End)</TableHead>
+                                    <TableHead>Origin Timestamps</TableHead>
+                                    <TableHead>Destination Timestamps</TableHead>
+                                    <TableHead>Remarks Log</TableHead>
                                     <TableHead>Status</TableHead>
                                     <TableHead className="w-20 text-right">
                                         Action
@@ -268,6 +271,7 @@ const DispatchDetailsPages = ({
                                     )
                                     .map((leg) => {
                                         const drops = leg.drops ?? [];
+                                        const remarks = (leg as any).remarks ?? [];
 
                                         return (
                                             <TableRow key={leg.id}>
@@ -284,7 +288,7 @@ const DispatchDetailsPages = ({
                                                     </div>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <div className="flex flex-col gap-1">
+                                                    <div className="flex flex-col gap-1 items-start">
                                                         {drops.length === 0 ? (
                                                             <span className="text-xs text-muted-foreground">No drops</span>
                                                         ) : (
@@ -324,6 +328,23 @@ const DispatchDetailsPages = ({
                                                                 })}
                                                             </div>
                                                         )}
+                                                        <CreateDropModal 
+                                                            tripLegId={leg.id} 
+                                                            locations={locations} 
+                                                            originLocationId={leg.originLocationId}
+                                                            destinationLocationId={leg.destinationLocationId}
+                                                            clientAllowedCargoUnits={dispatch.client?.allowedCargoUnits} 
+                                                        >
+                                                            <Button
+                                                                type="button"
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className="h-6 text-[11px] gap-1 px-2 mt-1 border-dashed text-blue-700 border-blue-300 hover:bg-blue-50"
+                                                            >
+                                                                <Plus className="h-3 w-3" />
+                                                                Add Drop
+                                                            </Button>
+                                                        </CreateDropModal>
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="text-xs">
@@ -346,7 +367,27 @@ const DispatchDetailsPages = ({
                                                     {formatOdometer(leg.odometerStart)} / {formatOdometer(leg.odometerEnd)}
                                                 </TableCell>
                                                 <TableCell className="text-xs">
-                                                    {formatTime(leg.departureTime)} / {formatTime(leg.arrivedTime)} / {formatTime(leg.endTime)}
+                                                    <div className="space-y-0.5">
+                                                        <div><span className="text-muted-foreground">Arr:</span> {formatTime((leg as any).originArrivedTime)}</div>
+                                                        <div><span className="text-muted-foreground">Load:</span> {formatTime((leg as any).originStartLoadingTime)} - {formatTime((leg as any).originEndLoadingTime)}</div>
+                                                        <div><span className="text-muted-foreground">Dep:</span> {formatTime(leg.departureTime)}</div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="text-xs">
+                                                    <div className="space-y-0.5">
+                                                        <div><span className="text-muted-foreground">Arr:</span> {formatTime((leg as any).destinationArrivedTime ?? leg.arrivedTime)}</div>
+                                                        <div><span className="text-muted-foreground">Unload:</span> {formatTime((leg as any).destinationStartUnloadingTime)} - {formatTime((leg as any).destinationEndUnloadingTime)}</div>
+                                                        <div><span className="text-muted-foreground">Dep:</span> {formatTime((leg as any).destinationDepartedTime ?? leg.endTime)}</div>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="text-xs">
+                                                    {remarks.length > 0 ? (
+                                                        <span className="inline-flex items-center gap-1 rounded bg-blue-50 px-2 py-1 text-[11px] font-medium text-blue-700 border border-blue-200">
+                                                            {remarks.length} remark{remarks.length > 1 ? 's' : ''}
+                                                        </span>
+                                                    ) : (
+                                                        <span className="text-muted-foreground">—</span>
+                                                    )}
                                                 </TableCell>
                                                 <TableCell>
                                                     <Badge
@@ -375,13 +416,6 @@ const DispatchDetailsPages = ({
                                                         >
                                                             <Eye className="h-3.5 w-3.5" />
                                                         </Button>
-                                                        <CreateDropModal 
-                                                            tripLegId={leg.id} 
-                                                            locations={locations} 
-                                                            originLocationId={leg.originLocationId}
-                                                            destinationLocationId={leg.destinationLocationId}
-                                                            clientAllowedCargoUnits={dispatch.client?.allowedCargoUnits} 
-                                                        />
                                                         <Button
                                                             type="button"
                                                             variant="ghost"
@@ -473,6 +507,7 @@ const DispatchDetailsPages = ({
                 open={viewModalOpen}
                 onOpenChange={setViewModalOpen}
                 clientAllowedCargoUnits={dispatch.client?.allowedCargoUnits}
+                locations={locations}
             />
         </div>
     );

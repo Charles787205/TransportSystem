@@ -23,8 +23,15 @@ class TripLegData extends Data
         public ?float $odometerStart,
         public ?float $odometerEnd,
         public ?string $departureTime,
-        public ?string $endTime,
+        public ?string $originArrivedTime,
+        public ?string $originStartLoadingTime,
+        public ?string $originEndLoadingTime,
         public ?string $arrivedTime,
+        public ?string $destinationArrivedTime,
+        public ?string $destinationStartUnloadingTime,
+        public ?string $destinationEndUnloadingTime,
+        public ?string $destinationDepartedTime,
+        public ?string $endTime,
         public string $linehaulTripNo,
         #[TypeScriptType('TripStatus')]
         public ?TripStatus $status,
@@ -36,6 +43,9 @@ class TripLegData extends Data
         #[TypeScriptType('TripLegCargoData[]')]
         #[DataCollectionOf(TripLegCargoData::class)]
         public ?DataCollection $cargoes = null,
+        #[TypeScriptType('TripRemarkData[]')]
+        #[DataCollectionOf(TripRemarkData::class)]
+        public ?DataCollection $remarks = null,
         public string $updatedAt = '',
         public string $createdAt = '',
     ) {}
