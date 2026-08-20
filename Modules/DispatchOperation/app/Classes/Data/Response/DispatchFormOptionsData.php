@@ -13,12 +13,12 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScriptType;
 class DispatchFormOptionsData extends Data
 {
     public function __construct(
-        #[TypeScriptType('SelectOptionData[]')]
-        #[DataCollectionOf(SelectOptionData::class)]
+        #[TypeScriptType('ResourceStatusOptionData[]')]
+        #[DataCollectionOf(ResourceStatusOptionData::class)]
         public DataCollection $vehicles,
 
-        #[TypeScriptType('SelectOptionData[]')]
-        #[DataCollectionOf(SelectOptionData::class)]
+        #[TypeScriptType('ResourceStatusOptionData[]')]
+        #[DataCollectionOf(ResourceStatusOptionData::class)]
         public DataCollection $drivers,
 
         #[TypeScriptType('SelectOptionData[]')]

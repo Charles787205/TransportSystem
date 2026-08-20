@@ -17,6 +17,7 @@ class PlanData extends Data
         public int $destinationId,
         public string $dispatchDate,
         public int $numberOfVehicles,
+        public int $dispatchedCount = 0,
         public ?ClientData $client = null,
         public ?LocationData $origin = null,
         public ?LocationData $destination = null,

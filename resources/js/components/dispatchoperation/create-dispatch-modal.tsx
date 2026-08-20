@@ -6,6 +6,7 @@ import { index } from '@/actions/Modules/DispatchOperation/Http/Controllers/Disp
 import type { DispatchFormOptionsData } from '@/generated/DispatchOperation';
 import { store } from '@/routes/dispatchoperation';
 import InputError from '../input-error';
+import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import {
     Dialog,
@@ -26,28 +27,60 @@ import {
     SelectValue,
 } from '../ui/select';
 
-const CreateDispatchModal = () => {
+type CreateDispatchModalProps = {
+    defaultValues?: {
+        clientId?: number | string;
+        originLocationId?: number | string;
+        destinationLocationId?: number | string;
+        dispatchDate?: string;
+    };
+    lockFields?: boolean;
+    trigger?: React.ReactNode;
+};
+
+const CreateDispatchModal = ({ defaultValues, lockFields = false, trigger }: CreateDispatchModalProps = {}) => {
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState<DispatchFormOptionsData | null>(
         null,
     );
     const [loadingOptions, setLoadingOptions] = useState(false);
-    const [selectedClientId, setSelectedClientId] = useState<string>('');
-    const [selectedOriginId, setSelectedOriginId] = useState<string>('');
-    const [selectedDestinationId, setSelectedDestinationId] = useState<string>('');
+    const [selectedVehicleId, setSelectedVehicleId] = useState<string>('');
+    const [selectedDriverId, setSelectedDriverId] = useState<string>('');
+    const [selectedClientId, setSelectedClientId] = useState<string>(
+        defaultValues?.clientId ? String(defaultValues.clientId) : ''
+    );
+    const [selectedOriginId, setSelectedOriginId] = useState<string>(
+        defaultValues?.originLocationId ? String(defaultValues.originLocationId) : ''
+    );
+    const [selectedDestinationId, setSelectedDestinationId] = useState<string>(
+        defaultValues?.destinationLocationId ? String(defaultValues.destinationLocationId) : ''
+    );
 
-    const handleOpenChange = (open: boolean) => {
-        setOpen(open);
+    const handleOpenChange = (isOpen: boolean) => {
+        setOpen(isOpen);
 
-        if (!open || options) {
-            return;
+        if (isOpen) {
+            setSelectedVehicleId('');
+            setSelectedDriverId('');
+
+            if (defaultValues?.clientId) {
+                setSelectedClientId(String(defaultValues.clientId));
+            }
+            if (defaultValues?.originLocationId) {
+                setSelectedOriginId(String(defaultValues.originLocationId));
+            }
+            if (defaultValues?.destinationLocationId) {
+                setSelectedDestinationId(String(defaultValues.destinationLocationId));
+            }
+
+            if (!options) {
+                setLoadingOptions(true);
+                axios
+                    .get<DispatchFormOptionsData>(index.url())
+                    .then((res) => setOptions(res.data))
+                    .finally(() => setLoadingOptions(false));
+            }
         }
-
-        setLoadingOptions(true);
-        axios
-            .get<DispatchFormOptionsData>(index.url())
-            .then((res) => setOptions(res.data))
-            .finally(() => setLoadingOptions(false));
     };
 
     const handleClientChange = (clientId: string) => {
@@ -55,6 +88,26 @@ const CreateDispatchModal = () => {
         setSelectedOriginId('');
         setSelectedDestinationId('');
     };
+
+    const selectedVehicleObj = options?.vehicles?.find(
+        (v: any) => String(v.id) === selectedVehicleId
+    );
+    const selectedDriverObj = options?.drivers?.find(
+        (d: any) => String(d.id) === selectedDriverId
+    );
+
+    const activeVendorId =
+        selectedVehicleObj?.vendorId ?? selectedDriverObj?.vendorId ?? null;
+
+    const availableVehicles = options?.vehicles?.filter((v: any) => {
+        if (!activeVendorId) return true;
+        return v.vendorId === activeVendorId;
+    }) || [];
+
+    const availableDrivers = options?.drivers?.filter((d: any) => {
+        if (!activeVendorId) return true;
+        return d.vendorId === activeVendorId;
+    }) || [];
 
     const availableLocations = options?.locations?.filter((loc: any) => {
         if (!selectedClientId) return true;
@@ -72,10 +125,12 @@ const CreateDispatchModal = () => {
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
-                <Button className="bg-blue-800 text-white hover:bg-blue-900">
-                    <Plus className="mr-2 h-4 w-4" />
-                    New Dispatch
-                </Button>
+                {trigger ?? (
+                    <Button className="bg-blue-800 text-white hover:bg-blue-900">
+                        <Plus className="mr-2 h-4 w-4" />
+                        New Dispatch
+                    </Button>
+                )}
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
                 <DialogHeader>
@@ -114,7 +169,11 @@ const CreateDispatchModal = () => {
                                         <Label htmlFor="vehicle_id">
                                             Vehicle
                                         </Label>
-                                        <Select name="vehicle_id">
+                                        <Select
+                                            name="vehicle_id"
+                                            value={selectedVehicleId}
+                                            onValueChange={setSelectedVehicleId}
+                                        >
                                             <SelectTrigger
                                                 id="vehicle_id"
                                                 aria-invalid={
@@ -125,12 +184,20 @@ const CreateDispatchModal = () => {
                                                 <SelectValue placeholder="Select vehicle" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {options.vehicles.map((v) => (
+                                                {availableVehicles.map((v: any) => (
                                                     <SelectItem
                                                         key={v.id}
                                                         value={String(v.id)}
+                                                        disabled={v.isAvailable === false}
                                                     >
-                                                        {v.label}
+                                                        <div className="flex items-center justify-between gap-2 w-full">
+                                                            <span>{v.label}</span>
+                                                            {v.isAvailable === false && v.activeStatus && (
+                                                                <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-amber-50 text-amber-700 border-amber-300 capitalize">
+                                                                    {v.activeStatus}
+                                                                </Badge>
+                                                            )}
+                                                        </div>
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
@@ -147,7 +214,11 @@ const CreateDispatchModal = () => {
                                         <Label htmlFor="driver_id">
                                             Driver
                                         </Label>
-                                        <Select name="driver_id">
+                                        <Select
+                                            name="driver_id"
+                                            value={selectedDriverId}
+                                            onValueChange={setSelectedDriverId}
+                                        >
                                             <SelectTrigger
                                                 id="driver_id"
                                                 aria-invalid={
@@ -158,12 +229,20 @@ const CreateDispatchModal = () => {
                                                 <SelectValue placeholder="Select driver" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {options.drivers.map((d) => (
+                                                {availableDrivers.map((d: any) => (
                                                     <SelectItem
                                                         key={d.id}
                                                         value={String(d.id)}
+                                                        disabled={d.isAvailable === false}
                                                     >
-                                                        {d.label}
+                                                        <div className="flex items-center justify-between gap-2 w-full">
+                                                            <span>{d.label}</span>
+                                                            {d.isAvailable === false && d.activeStatus && (
+                                                                <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-amber-50 text-amber-700 border-amber-300 capitalize">
+                                                                    {d.activeStatus}
+                                                                </Badge>
+                                                            )}
+                                                        </div>
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
@@ -180,10 +259,12 @@ const CreateDispatchModal = () => {
                                         <Label htmlFor="client_id">
                                             Client
                                         </Label>
+                                        {lockFields && <input type="hidden" name="client_id" value={selectedClientId} />}
                                         <Select
                                             name="client_id"
                                             value={selectedClientId}
                                             onValueChange={handleClientChange}
+                                            disabled={lockFields}
                                         >
                                             <SelectTrigger
                                                 id="client_id"
@@ -219,11 +300,12 @@ const CreateDispatchModal = () => {
                                         <Label htmlFor="origin_location_id">
                                             Origin Location
                                         </Label>
+                                        {lockFields && <input type="hidden" name="origin_location_id" value={selectedOriginId} />}
                                         <Select
                                             name="origin_location_id"
                                             value={selectedOriginId}
                                             onValueChange={setSelectedOriginId}
-                                            disabled={!selectedClientId}
+                                            disabled={lockFields || !selectedClientId}
                                         >
                                             <SelectTrigger
                                                 id="origin_location_id"
@@ -265,11 +347,12 @@ const CreateDispatchModal = () => {
                                         <Label htmlFor="destination_location_id">
                                             Destination Location
                                         </Label>
+                                        {lockFields && <input type="hidden" name="destination_location_id" value={selectedDestinationId} />}
                                         <Select
                                             name="destination_location_id"
                                             value={selectedDestinationId}
                                             onValueChange={setSelectedDestinationId}
-                                            disabled={!selectedClientId}
+                                            disabled={lockFields || !selectedClientId}
                                         >
                                             <SelectTrigger
                                                 id="destination_location_id"
@@ -343,6 +426,7 @@ const CreateDispatchModal = () => {
                                             id="dispatch_date"
                                             name="dispatch_date"
                                             type="date"
+                                            defaultValue={defaultValues?.dispatchDate ?? ''}
                                             aria-invalid={
                                                 !!errors.dispatch_date
                                             }

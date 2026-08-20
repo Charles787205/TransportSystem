@@ -1,7 +1,9 @@
 import { format } from 'date-fns';
-import { Route, Truck, MapPin, Calendar, ArrowLeft } from 'lucide-react';
+import { Route, Truck, MapPin, Calendar, ArrowLeft, Plus } from 'lucide-react';
 import { Link } from '@inertiajs/react';
+import CreateDispatchModal from '@/components/dispatchoperation/create-dispatch-modal';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
@@ -129,11 +131,26 @@ const PlanningDetailPage = ({
 
             {/* Dispatches Table */}
             <Card>
-                <CardHeader>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <CardTitle className="flex items-center gap-2">
                         <Truck className="size-4" />
                         Dispatches Assigned To This Plan
                     </CardTitle>
+                    <CreateDispatchModal
+                        defaultValues={{
+                            clientId: plan.clientId,
+                            originLocationId: plan.originId,
+                            destinationLocationId: plan.destinationId,
+                            dispatchDate: plan.dispatchDate,
+                        }}
+                        lockFields={true}
+                        trigger={
+                            <Button className="bg-blue-800 text-white hover:bg-blue-900">
+                                <Plus className="mr-2 h-4 w-4" />
+                                Add Dispatch
+                            </Button>
+                        }
+                    />
                 </CardHeader>
                 <CardContent>
                     {dispatches.length === 0 ? (
@@ -147,26 +164,44 @@ const PlanningDetailPage = ({
                         <Table>
                             <TableHeader>
                                 <TableRow>
+                                    <TableHead>Dispatch #</TableHead>
                                     <TableHead>Vehicle</TableHead>
                                     <TableHead>Driver</TableHead>
                                     <TableHead>Call Time</TableHead>
                                     <TableHead>Service Type</TableHead>
                                     <TableHead>Trip Legs</TableHead>
+                                    <TableHead className="text-right">Actions</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {dispatches.map((dispatch) => (
-                                    <TableRow key={dispatch.id}>
+                                {dispatches.map((dispatchItem) => (
+                                    <TableRow key={dispatchItem.id}>
+                                        <TableCell className="font-semibold">
+                                            <Link
+                                                href={`/dispatchoperations/${dispatchItem.id}`}
+                                                className="text-blue-600 hover:underline font-mono"
+                                            >
+                                                #{dispatchItem.id}
+                                            </Link>
+                                        </TableCell>
                                         <TableCell className="font-medium">
-                                            {dispatch.vehicle?.plateNumber ?? 'Vehicle N/A'}
+                                            {dispatchItem.vehicle?.plateNumber ?? 'Vehicle N/A'}
                                         </TableCell>
-                                        <TableCell>{dispatch.driver?.fullName ?? 'Driver N/A'}</TableCell>
-                                        <TableCell>{dispatch.assignedCallTime}</TableCell>
+                                        <TableCell>{dispatchItem.driver?.fullName ?? 'Driver N/A'}</TableCell>
+                                        <TableCell>{dispatchItem.assignedCallTime}</TableCell>
                                         <TableCell>
-                                            <Badge variant="outline">{dispatch.serviceType}</Badge>
+                                            <Badge variant="outline" className="capitalize">{dispatchItem.serviceType}</Badge>
                                         </TableCell>
                                         <TableCell>
-                                            {dispatch.tripLegs?.length ?? 0} leg(s)
+                                            {dispatchItem.tripLegs?.length ?? 0} leg(s)
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <Link
+                                                href={`/dispatchoperations/${dispatchItem.id}`}
+                                                className="inline-flex items-center justify-center rounded-md text-xs font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 px-3"
+                                            >
+                                                View Dispatch
+                                            </Link>
                                         </TableCell>
                                     </TableRow>
                                 ))}

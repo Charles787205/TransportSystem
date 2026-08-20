@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\DispatchOperation\Models\Dispatch;
 use Modules\Vendor\Enums\VehicleType;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
@@ -64,5 +65,10 @@ class Vehicle extends Model
     public function driver(): BelongsTo
     {
         return $this->belongsTo(Driver::class);
+    }
+
+    public function dispatches(): HasMany
+    {
+        return $this->hasMany(Dispatch::class);
     }
 }

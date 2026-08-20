@@ -68,8 +68,12 @@ export default function PlanningPage({
     const [search, setSearch] = useState(filters?.search ?? '');
     const [clientId, setClientId] = useState(filters?.client_id ?? ALL);
     const [originId, setOriginId] = useState(filters?.origin_id ?? ALL);
-    const [destinationId, setDestinationId] = useState(filters?.destination_id ?? ALL);
-    const [dispatchDate, setDispatchDate] = useState(filters?.dispatch_date ?? '');
+    const [destinationId, setDestinationId] = useState(
+        filters?.destination_id ?? ALL,
+    );
+    const [dispatchDate, setDispatchDate] = useState(
+        filters?.dispatch_date ?? '',
+    );
     const isFirstRender = useRef(true);
 
     const applyFilters = (next: {
@@ -83,23 +87,39 @@ export default function PlanningPage({
             index().url,
             {
                 search: next.search || undefined,
-                client_id: next.client_id && next.client_id !== ALL ? next.client_id : undefined,
-                origin_id: next.origin_id && next.origin_id !== ALL ? next.origin_id : undefined,
-                destination_id: next.destination_id && next.destination_id !== ALL ? next.destination_id : undefined,
+                client_id:
+                    next.client_id && next.client_id !== ALL
+                        ? next.client_id
+                        : undefined,
+                origin_id:
+                    next.origin_id && next.origin_id !== ALL
+                        ? next.origin_id
+                        : undefined,
+                destination_id:
+                    next.destination_id && next.destination_id !== ALL
+                        ? next.destination_id
+                        : undefined,
                 dispatch_date: next.dispatch_date || undefined,
             },
-            { preserveState: true, replace: true }
+            { preserveState: true, replace: true },
         );
     };
 
     useEffect(() => {
         if (isFirstRender.current) {
             isFirstRender.current = false;
+
             return;
         }
 
         const timer = setTimeout(() => {
-            applyFilters({ search, client_id: clientId, origin_id: originId, destination_id: destinationId, dispatch_date: dispatchDate });
+            applyFilters({
+                search,
+                client_id: clientId,
+                origin_id: originId,
+                destination_id: destinationId,
+                dispatch_date: dispatchDate,
+            });
         }, 300);
 
         return () => clearTimeout(timer);
@@ -122,7 +142,10 @@ export default function PlanningPage({
         Boolean(dispatchDate);
 
     const filteredLocations = locations.filter((loc) => {
-        if (clientId === ALL) return true;
+        if (clientId === ALL) {
+            return true;
+        }
+
         return String(loc.client_id) === String(clientId);
     });
 
@@ -137,9 +160,12 @@ export default function PlanningPage({
             {/* Header */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="text-2xl font-semibold tracking-tight">Planning</h1>
+                    <h1 className="text-2xl font-semibold tracking-tight">
+                        Planning
+                    </h1>
                     <p className="text-sm text-muted-foreground">
-                        Manage vehicle capacity planning by client route and dispatch date.
+                        Manage vehicle capacity planning by client route and
+                        dispatch date.
                     </p>
                 </div>
 
@@ -151,7 +177,7 @@ export default function PlanningPage({
                 <CardContent className="p-4">
                     <div className="flex flex-wrap items-center gap-3">
                         <div className="relative min-w-[200px] flex-1">
-                            <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+                            <Search className="absolute top-2.5 left-2.5 size-4 text-muted-foreground" />
                             <Input
                                 placeholder="Search client or location..."
                                 value={search}
@@ -188,12 +214,17 @@ export default function PlanningPage({
                             </SelectContent>
                         </Select>
 
-                        <Select value={destinationId} onValueChange={setDestinationId}>
+                        <Select
+                            value={destinationId}
+                            onValueChange={setDestinationId}
+                        >
                             <SelectTrigger className="w-[180px]">
                                 <SelectValue placeholder="All Destinations" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value={ALL}>All Destinations</SelectItem>
+                                <SelectItem value={ALL}>
+                                    All Destinations
+                                </SelectItem>
                                 {filteredLocations.map((l) => (
                                     <SelectItem key={l.id} value={String(l.id)}>
                                         {l.label}
@@ -210,7 +241,12 @@ export default function PlanningPage({
                         />
 
                         {hasActiveFilters && (
-                            <Button variant="ghost" size="sm" onClick={clearFilters} className="h-9 px-2">
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={clearFilters}
+                                className="h-9 px-2"
+                            >
                                 <X className="mr-1 size-4" /> Reset
                             </Button>
                         )}
@@ -226,15 +262,22 @@ export default function PlanningPage({
                             <TableHead>Client</TableHead>
                             <TableHead>Origin Location</TableHead>
                             <TableHead>Destination Location</TableHead>
-                            <TableHead className="text-center">Vehicles</TableHead>
+                            <TableHead className="text-center">
+                                Vehicles / Fulfillment
+                            </TableHead>
                             <TableHead>Dispatch Date</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                            <TableHead className="text-right">
+                                Actions
+                            </TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {plans.length === 0 ? (
                             <TableRow>
-                                <TableCell colSpan={6} className="h-32 text-center text-muted-foreground">
+                                <TableCell
+                                    colSpan={6}
+                                    className="h-32 text-center text-muted-foreground"
+                                >
                                     <div className="flex flex-col items-center justify-center gap-1">
                                         <ClipboardList className="size-8 text-muted-foreground/60" />
                                         <p>No plans found.</p>
@@ -245,25 +288,53 @@ export default function PlanningPage({
                             plans.map((plan) => (
                                 <TableRow key={plan.id}>
                                     <TableCell className="font-medium">
-                                        {plan.client?.name ?? `Client #${plan.clientId}`}
+                                        {plan.client?.name ??
+                                            `Client #${plan.clientId}`}
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-1.5">
                                             <MapPin className="size-3.5 text-muted-foreground" />
-                                            <span>{plan.origin?.name ?? `Location #${plan.originId}`}</span>
+                                            <span>
+                                                {plan.origin?.name ??
+                                                    `Location #${plan.originId}`}
+                                            </span>
                                         </div>
                                     </TableCell>
                                     <TableCell>
                                         <div className="flex items-center gap-1.5">
                                             <MapPin className="size-3.5 text-muted-foreground" />
-                                            <span>{plan.destination?.name ?? `Location #${plan.destinationId}`}</span>
+                                            <span>
+                                                {plan.destination?.name ??
+                                                    `Location #${plan.destinationId}`}
+                                            </span>
                                         </div>
                                     </TableCell>
                                     <TableCell className="text-center font-semibold">
-                                        <Badge variant="outline">{plan.numberOfVehicles} vehicles</Badge>
+                                        <div className="flex flex-col items-center gap-1">
+                                            <Badge
+                                                variant={
+                                                    (plan.dispatchedCount ?? 0) >= plan.numberOfVehicles
+                                                        ? 'default'
+                                                        : (plan.dispatchedCount ?? 0) > 0
+                                                          ? 'outline'
+                                                          : 'secondary'
+                                                }
+                                                className={
+                                                    (plan.dispatchedCount ?? 0) >= plan.numberOfVehicles
+                                                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                                                        : (plan.dispatchedCount ?? 0) > 0
+                                                          ? 'border-amber-500 text-amber-700 bg-amber-50'
+                                                          : ''
+                                                }
+                                            >
+                                                {plan.dispatchedCount ?? 0}/{plan.numberOfVehicles} fulfilled
+                                            </Badge>
+                                        </div>
                                     </TableCell>
                                     <TableCell>
-                                        {new Date(plan.dispatchDate).toLocaleDateString('en-US', {
+                                        {new Date(
+                                            plan.dispatchDate,
+                                        ).toLocaleDateString('en-US', {
                                             month: 'short',
                                             day: 'numeric',
                                             year: 'numeric',
@@ -272,21 +343,42 @@ export default function PlanningPage({
                                     <TableCell className="text-right">
                                         <DropdownMenu>
                                             <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="icon" className="size-8">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="size-8"
+                                                >
                                                     <MoreHorizontal className="size-4" />
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                                 <DropdownMenuItem asChild>
-                                                    <Link href={show({ planning: plan.id }).url} className="cursor-pointer">
-                                                        <Eye className="mr-2 size-4" /> View Details
+                                                    <Link
+                                                        href={
+                                                            show({
+                                                                planning:
+                                                                    plan.id,
+                                                            }).url
+                                                        }
+                                                        className="cursor-pointer"
+                                                    >
+                                                        <Eye className="mr-2 size-4" />{' '}
+                                                        View Details
                                                     </Link>
                                                 </DropdownMenuItem>
                                                 <DropdownMenuItem
-                                                    className="text-destructive focus:text-destructive cursor-pointer"
-                                                    onClick={() => router.delete(destroy({ planning: plan.id }).url)}
+                                                    className="cursor-pointer text-destructive focus:text-destructive"
+                                                    onClick={() =>
+                                                        router.delete(
+                                                            destroy({
+                                                                planning:
+                                                                    plan.id,
+                                                            }).url,
+                                                        )
+                                                    }
                                                 >
-                                                    <Trash2 className="mr-2 size-4" /> Delete Plan
+                                                    <Trash2 className="mr-2 size-4" />{' '}
+                                                    Delete Plan
                                                 </DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
@@ -313,7 +405,11 @@ export default function PlanningPage({
                                 disabled={!link.url}
                                 onClick={() => handlePageChange(link.url)}
                             >
-                                <span dangerouslySetInnerHTML={{ __html: link.label! }} />
+                                <span
+                                    dangerouslySetInnerHTML={{
+                                        __html: link.label!,
+                                    }}
+                                />
                             </Button>
                         ))}
                     </div>

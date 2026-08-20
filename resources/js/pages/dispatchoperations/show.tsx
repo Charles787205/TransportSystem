@@ -152,16 +152,22 @@ const DispatchDetailsPages = ({
         <div className="space-y-6 p-4">
             <div className="flex items-center justify-between">
                 <div>
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-3">
                         <Link
                             href={index()}
                             className="cursor-pointer hover:scale-105"
                         >
-                            <ArrowLeft />
+                            <ArrowLeft className="h-5 w-5" />
                         </Link>
-                        <h1 className="text-xl font-semibold">
-                            Dispatch #{dispatch.id}
-                        </h1>
+                        <div>
+                            <h1 className="text-xl font-semibold">
+                                Dispatch #{dispatch.id}
+                            </h1>
+                            <p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                                <Calendar className="h-3.5 w-3.5" />
+                                Dispatch Date: <span className="font-medium text-slate-800">{formatDate(dispatch.dispatchDate)}</span>
+                            </p>
+                        </div>
                     </div>
                 </div>
                 <Badge variant="outline" className="capitalize">
