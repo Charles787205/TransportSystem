@@ -20,7 +20,7 @@ class ModuleFolderWriter implements Writer
         protected SplitTransformedPerLocationAction $split = new SplitTransformedPerLocationAction,
         protected ResolveImportsAndResolvedReferenceMapAction $resolver = new ResolveImportsAndResolvedReferenceMapAction,
     ) {}
- 
+
     public function output(
         array $transformed,
         TransformedCollection $collection,
@@ -91,9 +91,27 @@ class ModuleFolderWriter implements Writer
             $exports[] = "export type { {$transformed->getName()} } from './{$transformed->getName()}';";
         }
 
+        $indexFile = "{$folder}/index.ts";
+
+        // Collect existing exports if writing to the same folder across multiple locations
+        $existingExports = [];
+        foreach ($files as $f) {
+            if ($f->path === $indexFile) {
+                foreach (explode(PHP_EOL, $f->contents) as $line) {
+                    if (trim($line) !== '') {
+                        $existingExports[trim($line)] = true;
+                    }
+                }
+            }
+        }
+
+        foreach ($exports as $exp) {
+            $existingExports[$exp] = true;
+        }
+
         $files[] = new WriteableFile(
-            "{$folder}/index.ts",
-            implode(PHP_EOL, $exports)
+            $indexFile,
+            implode(PHP_EOL, array_keys($existingExports))
         );
     }
 

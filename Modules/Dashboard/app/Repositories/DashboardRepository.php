@@ -2,30 +2,42 @@
 
 namespace Modules\Dashboard\Repositories;
 
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Modules\Client\Classes\Data\Response\ClientData;
+use Modules\Client\Classes\Data\Response\LocationData;
 use Modules\Client\Models\Client;
+use Modules\Client\Models\Location;
+use Modules\Dashboard\Classes\Data\Request\DashboardFilterData;
+use Modules\Dashboard\Classes\Data\Response\ClientDispatchItemData;
+use Modules\Dashboard\Classes\Data\Response\DashboardMetricsData;
+use Modules\Dashboard\Classes\Data\Response\RecentDispatchItemData;
+use Modules\Dashboard\Classes\Data\Response\StatusBreakdownItemData;
+use Modules\Dashboard\Classes\Data\Response\TopDestinationItemData;
 use Modules\DispatchOperation\Models\Dispatch;
 use Modules\Planning\Models\Plan;
 use Modules\Vendor\Models\Driver;
 use Modules\Vendor\Models\Vehicle;
 use Modules\Vendor\Models\Vendor;
+use Spatie\LaravelData\DataCollection;
 
 class DashboardRepository
 {
-    public function getMetrics(array $filters): array
+    public function getMetrics(DashboardFilterData $filters): DashboardMetricsData
     {
-        return [
-            'plans' => Plan::count(),
-            'dispatches' => $this->applyFilters(Dispatch::query(), $filters)->count(),
-            'vendors' => Vendor::count(),
-            'drivers' => Driver::count(),
-            'vehicles' => Vehicle::count(),
-            'clients' => Client::count(),
-        ];
+        return new DashboardMetricsData(
+            plans: Plan::count(),
+            dispatches: $this->applyFilters(Dispatch::query(), $filters)->count(),
+            vendors: Vendor::count(),
+            drivers: Driver::count(),
+            vehicles: Vehicle::count(),
+            clients: Client::count(),
+        );
     }
 
-    public function getStatusBreakdown(array $filters): array
+    /**
+     * @return DataCollection<int, StatusBreakdownItemData>
+     */
+    public function getStatusBreakdown(DashboardFilterData $filters): DataCollection
     {
         $dispatches = $this->applyFilters(Dispatch::with(['tripLegs']), $filters)->get();
 
@@ -50,15 +62,18 @@ class DashboardRepository
             }
         }
 
-        $result = [];
+        $items = [];
         foreach ($statusCounts as $key => $val) {
-            $result[] = ['name' => ucfirst($key), 'value' => $val];
+            $items[] = new StatusBreakdownItemData(name: ucfirst($key), value: $val);
         }
 
-        return $result;
+        return StatusBreakdownItemData::collect($items, DataCollection::class);
     }
 
-    public function getTopDestinations(array $filters, int $limit = 5): Collection
+    /**
+     * @return DataCollection<int, TopDestinationItemData>
+     */
+    public function getTopDestinations(DashboardFilterData $filters, int $limit = 5): DataCollection
     {
         $query = DB::table('trip_legs')
             ->join('dispatches', 'trip_legs.dispatch_id', '=', 'dispatches.id')
@@ -67,13 +82,19 @@ class DashboardRepository
 
         $this->applyQueryFilters($query, $filters);
 
-        return $query->groupBy('locations.name')
+        $results = $query->groupBy('locations.name')
             ->orderByDesc('count')
             ->limit($limit)
-            ->get();
+            ->get()
+            ->map(fn ($row) => new TopDestinationItemData(destination: $row->destination, count: (int) $row->count));
+
+        return TopDestinationItemData::collect($results, DataCollection::class);
     }
 
-    public function getDispatchesByClient(array $filters): Collection
+    /**
+     * @return DataCollection<int, ClientDispatchItemData>
+     */
+    public function getDispatchesByClient(DashboardFilterData $filters): DataCollection
     {
         $query = DB::table('dispatches')
             ->join('clients', 'dispatches.client_id', '=', 'clients.id')
@@ -81,53 +102,77 @@ class DashboardRepository
 
         $this->applyQueryFilters($query, $filters);
 
-        return $query->groupBy('clients.name')
+        $results = $query->groupBy('clients.name')
             ->orderByDesc('value')
-            ->get();
+            ->get()
+            ->map(fn ($row) => new ClientDispatchItemData(name: $row->name, value: (int) $row->value));
+
+        return ClientDispatchItemData::collect($results, DataCollection::class);
     }
 
-    public function getRecentDispatches(array $filters, int $limit = 5): Collection
+    /**
+     * @return DataCollection<int, RecentDispatchItemData>
+     */
+    public function getRecentDispatches(DashboardFilterData $filters, int $limit = 5): DataCollection
     {
         $query = Dispatch::with(['vehicle', 'driver', 'client', 'tripLegs.originLocation', 'tripLegs.destinationLocation']);
         $this->applyFilters($query, $filters);
 
-        return $query->latest()
+        $results = $query->latest()
             ->take($limit)
             ->get()
             ->map(function ($d) {
                 $firstLeg = $d->tripLegs->firstWhere('trip_sequence', 1) ?? $d->tripLegs->first();
 
-                return [
-                    'id' => $d->id,
-                    'dispatch_date' => $d->dispatch_date,
-                    'vehicle' => $d->vehicle?->plate_number ?? 'N/A',
-                    'driver' => $d->driver?->full_name ?? 'N/A',
-                    'client' => $d->client?->name ?? 'N/A',
-                    'origin' => $firstLeg?->originLocation?->name ?? '—',
-                    'destination' => $firstLeg?->destinationLocation?->name ?? '—',
-                    'status' => $d->currentStatus()?->value ?? 'pending',
-                ];
+                return new RecentDispatchItemData(
+                    id: $d->id,
+                    dispatchDate: $d->dispatch_date,
+                    vehicle: $d->vehicle?->plate_number ?? 'N/A',
+                    driver: $d->driver?->full_name ?? 'N/A',
+                    client: $d->client?->name ?? 'N/A',
+                    origin: $firstLeg?->originLocation?->name ?? '—',
+                    destination: $firstLeg?->destinationLocation?->name ?? '—',
+                    status: $d->currentStatus()?->value ?? 'pending',
+                );
             });
+
+        return RecentDispatchItemData::collect($results, DataCollection::class);
     }
 
-    protected function applyFilters($query, array $filters)
+    /**
+     * @return DataCollection<int, LocationData>
+     */
+    public function getLocations(): DataCollection
     {
-        if (! empty($filters['date_from'])) {
-            $query->whereDate('dispatch_date', '>=', $filters['date_from']);
+        return LocationData::collect(Location::orderBy('name')->get(), DataCollection::class);
+    }
+
+    /**
+     * @return DataCollection<int, ClientData>
+     */
+    public function getClients(): DataCollection
+    {
+        return ClientData::collect(Client::orderBy('name')->get(), DataCollection::class);
+    }
+
+    protected function applyFilters($query, DashboardFilterData $filters)
+    {
+        if (! empty($filters->dateFrom)) {
+            $query->whereDate('dispatch_date', '>=', $filters->dateFrom);
         }
-        if (! empty($filters['date_to'])) {
-            $query->whereDate('dispatch_date', '<=', $filters['date_to']);
+        if (! empty($filters->dateTo)) {
+            $query->whereDate('dispatch_date', '<=', $filters->dateTo);
         }
-        if (! empty($filters['client_id'])) {
-            $query->where('client_id', $filters['client_id']);
+        if (! empty($filters->clientId)) {
+            $query->where('client_id', $filters->clientId);
         }
-        if (! empty($filters['origin_location_id']) || ! empty($filters['destination_location_id'])) {
+        if (! empty($filters->originLocationId) || ! empty($filters->destinationLocationId)) {
             $query->whereHas('tripLegs', function ($q) use ($filters) {
-                if (! empty($filters['origin_location_id'])) {
-                    $q->where('origin_location_id', $filters['origin_location_id']);
+                if (! empty($filters->originLocationId)) {
+                    $q->where('origin_location_id', $filters->originLocationId);
                 }
-                if (! empty($filters['destination_location_id'])) {
-                    $q->where('destination_location_id', $filters['destination_location_id']);
+                if (! empty($filters->destinationLocationId)) {
+                    $q->where('destination_location_id', $filters->destinationLocationId);
                 }
             });
         }
@@ -135,31 +180,31 @@ class DashboardRepository
         return $query;
     }
 
-    protected function applyQueryFilters($query, array $filters)
+    protected function applyQueryFilters($query, DashboardFilterData $filters)
     {
-        if (! empty($filters['date_from'])) {
-            $query->whereDate('dispatches.dispatch_date', '>=', $filters['date_from']);
+        if (! empty($filters->dateFrom)) {
+            $query->whereDate('dispatches.dispatch_date', '>=', $filters->dateFrom);
         }
-        if (! empty($filters['date_to'])) {
-            $query->whereDate('dispatches.dispatch_date', '<=', $filters['date_to']);
+        if (! empty($filters->dateTo)) {
+            $query->whereDate('dispatches.dispatch_date', '<=', $filters->dateTo);
         }
-        if (! empty($filters['client_id'])) {
-            $query->where('dispatches.client_id', $filters['client_id']);
+        if (! empty($filters->clientId)) {
+            $query->where('dispatches.client_id', $filters->clientId);
         }
-        if (! empty($filters['origin_location_id'])) {
+        if (! empty($filters->originLocationId)) {
             $query->whereExists(function ($q) use ($filters) {
                 $q->select(DB::raw(1))
                     ->from('trip_legs as tl')
                     ->whereColumn('tl.dispatch_id', 'dispatches.id')
-                    ->where('tl.origin_location_id', $filters['origin_location_id']);
+                    ->where('tl.origin_location_id', $filters->originLocationId);
             });
         }
-        if (! empty($filters['destination_location_id'])) {
+        if (! empty($filters->destinationLocationId)) {
             $query->whereExists(function ($q) use ($filters) {
                 $q->select(DB::raw(1))
                     ->from('trip_legs as tl')
                     ->whereColumn('tl.dispatch_id', 'dispatches.id')
-                    ->where('tl.destination_location_id', $filters['destination_location_id']);
+                    ->where('tl.destination_location_id', $filters->destinationLocationId);
             });
         }
     }
