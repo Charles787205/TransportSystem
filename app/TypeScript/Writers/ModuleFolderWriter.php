@@ -32,6 +32,26 @@ class ModuleFolderWriter implements Writer
 
         $this->walk($root, $collection, $files);
 
+        // Group transformed type files by directory to construct complete index.ts export files
+        $dirExports = [];
+        foreach ($files as $file) {
+            $dir = dirname($file->path);
+            $filename = basename($file->path);
+
+            if ($filename !== 'index.ts' && str_ends_with($filename, '.ts')) {
+                $typeName = substr($filename, 0, -3);
+                $dirExports[$dir][$typeName] = "export type { {$typeName} } from './{$typeName}';";
+            }
+        }
+
+        foreach ($dirExports as $dir => $exports) {
+            $indexFile = "{$dir}/index.ts";
+            $files[] = new WriteableFile(
+                $indexFile,
+                implode(PHP_EOL, array_values($exports))
+            );
+        }
+
         return $files;
     }
 
@@ -64,11 +84,9 @@ class ModuleFolderWriter implements Writer
 
         $folder = $this->folder($location->path);
 
-        $exports = [];
-
         foreach ($location->transformed as $transformed) {
 
-            $file = "{$folder}/{$transformed->getName()}.ts";
+            $file = $folder !== '' ? "{$folder}/{$transformed->getName()}.ts" : "{$transformed->getName()}.ts";
 
             [$imports, $map] = $this->resolver->execute(
                 $file,
@@ -87,32 +105,7 @@ class ModuleFolderWriter implements Writer
             $content .= $transformed->write($context).PHP_EOL;
 
             $files[] = new WriteableFile($file, $content);
-
-            $exports[] = "export type { {$transformed->getName()} } from './{$transformed->getName()}';";
         }
-
-        $indexFile = "{$folder}/index.ts";
-
-        // Collect existing exports if writing to the same folder across multiple locations
-        $existingExports = [];
-        foreach ($files as $f) {
-            if ($f->path === $indexFile) {
-                foreach (explode(PHP_EOL, $f->contents) as $line) {
-                    if (trim($line) !== '') {
-                        $existingExports[trim($line)] = true;
-                    }
-                }
-            }
-        }
-
-        foreach ($exports as $exp) {
-            $existingExports[$exp] = true;
-        }
-
-        $files[] = new WriteableFile(
-            $indexFile,
-            implode(PHP_EOL, array_keys($existingExports))
-        );
     }
 
     protected function toTypeImport(string $importStatement): string
@@ -132,25 +125,26 @@ class ModuleFolderWriter implements Writer
      */
     protected function folder(array $segments): string
     {
-        // Remove unwanted namespace segments
-        $segments = array_values(array_filter(
+        // Find module name by excluding root namespace keywords
+        $filtered = array_values(array_filter(
             $segments,
             fn (string $segment) => ! in_array($segment, [
                 'Modules',
+                'App',
                 'Classes',
                 'Data',
                 'DTO',
                 'Models',
+                'Request',
+                'Response',
             ], true)
         ));
 
-        // Keep only the module name
-        $module = $segments[0] ?? 'Common';
+        $module = $filtered[0] ?? 'Common';
 
-        return $this->path === null
-        ? $module
-        : implode(DIRECTORY_SEPARATOR, [$this->path, $module]);
-
+        return $this->path === null || $this->path === ''
+            ? $module
+            : $this->path . DIRECTORY_SEPARATOR . $module;
     }
 
     public function resolveReference(
