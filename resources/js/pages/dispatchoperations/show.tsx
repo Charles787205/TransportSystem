@@ -3,15 +3,11 @@ import {
     Building2,
     Calendar,
     Gauge,
-    MapPin,
     Pencil,
     Eye,
-    Phone,
     Truck,
-    User,
     ArrowLeft,
     RotateCcw,
-    MapPinOff,
     Plus,
 } from 'lucide-react';
 import { useState } from 'react';
@@ -30,7 +26,6 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
 import {
     Table,
     TableBody,
@@ -163,9 +158,12 @@ const DispatchDetailsPages = ({
                             <h1 className="text-xl font-semibold">
                                 Dispatch #{dispatch.id}
                             </h1>
-                            <p className="text-xs text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                            <p className="mt-0.5 flex items-center gap-1.5 text-xs text-muted-foreground">
                                 <Calendar className="h-3.5 w-3.5" />
-                                Dispatch Date: <span className="font-medium text-slate-800">{formatDate(dispatch.dispatchDate)}</span>
+                                Dispatch Date:{' '}
+                                <span className="font-medium text-slate-800">
+                                    {formatDate(dispatch.dispatchDate)}
+                                </span>
                             </p>
                         </div>
                     </div>
@@ -185,16 +183,24 @@ const DispatchDetailsPages = ({
                     </CardHeader>
                     <CardContent className="space-y-3">
                         <div>
-                            <div className="text-xs text-muted-foreground">Client Name</div>
-                            <div className="text-base font-semibold">{dispatch.client?.name ?? '—'}</div>
+                            <div className="text-xs text-muted-foreground">
+                                Client Name
+                            </div>
+                            <div className="text-base font-semibold">
+                                {dispatch.client?.name ?? '—'}
+                            </div>
                         </div>
                         <div className="grid grid-cols-2 gap-2 text-sm">
                             <div>
-                                <span className="text-muted-foreground">Email: </span>
+                                <span className="text-muted-foreground">
+                                    Email:{' '}
+                                </span>
                                 {dispatch.client?.email ?? '—'}
                             </div>
                             <div>
-                                <span className="text-muted-foreground">Phone: </span>
+                                <span className="text-muted-foreground">
+                                    Phone:{' '}
+                                </span>
                                 {dispatch.client?.phoneNumber ?? '—'}
                             </div>
                         </div>
@@ -211,16 +217,25 @@ const DispatchDetailsPages = ({
                     <CardContent className="space-y-3">
                         <div className="grid grid-cols-2 gap-4">
                             <div>
-                                <div className="text-xs text-muted-foreground">Plate Number</div>
-                                <div className="text-base font-semibold">{dispatch.vehicle?.plateNumber ?? '—'}</div>
-                                <div className="text-xs text-muted-foreground mt-0.5">
-                                    {dispatch.vehicle?.make} • {dispatch.vehicle?.yearModel}
+                                <div className="text-xs text-muted-foreground">
+                                    Plate Number
+                                </div>
+                                <div className="text-base font-semibold">
+                                    {dispatch.vehicle?.plateNumber ?? '—'}
+                                </div>
+                                <div className="mt-0.5 text-xs text-muted-foreground">
+                                    {dispatch.vehicle?.make} •{' '}
+                                    {dispatch.vehicle?.yearModel}
                                 </div>
                             </div>
                             <div>
-                                <div className="text-xs text-muted-foreground">Driver Name</div>
-                                <div className="text-base font-semibold">{dispatch.driver?.fullName ?? '—'}</div>
-                                <div className="text-xs text-muted-foreground mt-0.5">
+                                <div className="text-xs text-muted-foreground">
+                                    Driver Name
+                                </div>
+                                <div className="text-base font-semibold">
+                                    {dispatch.driver?.fullName ?? '—'}
+                                </div>
+                                <div className="mt-0.5 text-xs text-muted-foreground">
                                     Call Time: {dispatch.assignedCallTime}
                                 </div>
                             </div>
@@ -261,7 +276,9 @@ const DispatchDetailsPages = ({
                                     <TableHead>Cargo Details</TableHead>
                                     <TableHead>Odometer (Start/End)</TableHead>
                                     <TableHead>Origin Timestamps</TableHead>
-                                    <TableHead>Destination Timestamps</TableHead>
+                                    <TableHead>
+                                        Destination Timestamps
+                                    </TableHead>
                                     <TableHead>Remarks Log</TableHead>
                                     <TableHead>Status</TableHead>
                                     <TableHead className="w-20 text-right">
@@ -277,7 +294,8 @@ const DispatchDetailsPages = ({
                                     )
                                     .map((leg) => {
                                         const drops = leg.drops ?? [];
-                                        const remarks = (leg as any).remarks ?? [];
+                                        const remarks =
+                                            (leg as any).remarks ?? [];
 
                                         return (
                                             <TableRow key={leg.id}>
@@ -288,64 +306,127 @@ const DispatchDetailsPages = ({
                                                     {leg.linehaulTripNo}
                                                 </TableCell>
                                                 <TableCell>
-                                                    <div className="text-xs space-y-0.5">
-                                                        <div><span className="text-muted-foreground">From:</span> {leg.originLocation?.name ?? '—'}</div>
-                                                        <div><span className="text-muted-foreground">To:</span> {leg.destinationLocation?.name ?? '—'}</div>
+                                                    <div className="space-y-0.5 text-xs">
+                                                        <div>
+                                                            <span className="text-muted-foreground">
+                                                                From:
+                                                            </span>{' '}
+                                                            {leg.originLocation
+                                                                ?.name ?? '—'}
+                                                        </div>
+                                                        <div>
+                                                            <span className="text-muted-foreground">
+                                                                To:
+                                                            </span>{' '}
+                                                            {leg
+                                                                .destinationLocation
+                                                                ?.name ?? '—'}
+                                                        </div>
                                                     </div>
                                                 </TableCell>
                                                 <TableCell>
-                                                    <div className="flex flex-col gap-1 items-start">
+                                                    <div className="flex flex-col items-start gap-1">
                                                         {drops.length === 0 ? (
-                                                            <span className="text-xs text-muted-foreground">No drops</span>
+                                                            <span className="text-xs text-muted-foreground">
+                                                                No drops
+                                                            </span>
                                                         ) : (
-                                                            <div className="flex flex-col gap-1 items-start">
-                                                                {drops.map((drop, dIdx) => {
-                                                                    const isDropFilled = Boolean(drop.arrivedTime && drop.departedTime);
+                                                            <div className="flex flex-col items-start gap-1">
+                                                                {drops.map(
+                                                                    (
+                                                                        drop,
+                                                                        dIdx,
+                                                                    ) => {
+                                                                        const isDropFilled =
+                                                                            Boolean(
+                                                                                drop.arrivedTime &&
+                                                                                drop.departedTime,
+                                                                            );
 
-                                                                    return (
-                                                                        <EditDropModal 
-                                                                            key={drop.id} 
-                                                                            drop={drop} 
-                                                                            locations={locations}
-                                                                            originLocationId={leg.originLocationId}
-                                                                            destinationLocationId={leg.destinationLocationId}
-                                                                            clientAllowedCargoUnits={dispatch.client?.allowedCargoUnits}
-                                                                        >
-                                                                            <Badge
-                                                                                variant="outline"
-                                                                                className={`text-[10px] py-0.5 px-2 cursor-pointer transition-colors ${
-                                                                                    isDropFilled
-                                                                                        ? 'bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100'
-                                                                                        : 'bg-amber-50 text-amber-700 border-amber-300 hover:bg-amber-100'
-                                                                                }`}
+                                                                        return (
+                                                                            <EditDropModal
+                                                                                key={
+                                                                                    drop.id
+                                                                                }
+                                                                                drop={
+                                                                                    drop
+                                                                                }
+                                                                                locations={
+                                                                                    locations
+                                                                                }
+                                                                                originLocationId={
+                                                                                    leg.originLocationId
+                                                                                }
+                                                                                destinationLocationId={
+                                                                                    leg.destinationLocationId
+                                                                                }
+                                                                                clientAllowedCargoUnits={
+                                                                                    dispatch
+                                                                                        .client
+                                                                                        ?.allowedCargoUnits
+                                                                                }
                                                                             >
-                                                                                #{dIdx + 1}: {drop.location?.name ?? `Loc #${drop.locationId}`} (
-                                                                                {dispatch.client?.allowedCargoUnits?.includes('by_weight')
-                                                                                     ? `${drop.weightKg ?? 0} kg`
-                                                                                     : dispatch.client?.allowedCargoUnits?.includes('per_box')
-                                                                                       ? `${drop.boxCount ?? 0} boxes`
-                                                                                       : dispatch.client?.allowedCargoUnits?.includes('loose_items')
-                                                                                         ? `${drop.looseItemsCount ?? 0} loose`
-                                                                                         : `${drop.parcelCount ?? 0} pcls`}
-                                                                                )
-                                                                            </Badge>
-                                                                        </EditDropModal>
-                                                                    );
-                                                                })}
+                                                                                <Badge
+                                                                                    variant="outline"
+                                                                                    className={`cursor-pointer px-2 py-0.5 text-[10px] transition-colors ${
+                                                                                        isDropFilled
+                                                                                            ? 'border-emerald-300 bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                                                                                            : 'border-amber-300 bg-amber-50 text-amber-700 hover:bg-amber-100'
+                                                                                    }`}
+                                                                                >
+                                                                                    #
+                                                                                    {dIdx +
+                                                                                        1}
+
+                                                                                    :{' '}
+                                                                                    {drop
+                                                                                        .location
+                                                                                        ?.name ??
+                                                                                        `Loc #${drop.locationId}`}{' '}
+                                                                                    (
+                                                                                    {dispatch.client?.allowedCargoUnits?.includes(
+                                                                                        'by_weight',
+                                                                                    )
+                                                                                        ? `${drop.weightKg ?? 0} kg`
+                                                                                        : dispatch.client?.allowedCargoUnits?.includes(
+                                                                                                'per_box',
+                                                                                            )
+                                                                                          ? `${drop.boxCount ?? 0} boxes`
+                                                                                          : dispatch.client?.allowedCargoUnits?.includes(
+                                                                                                  'loose_items',
+                                                                                              )
+                                                                                            ? `${drop.looseItemsCount ?? 0} loose`
+                                                                                            : `${drop.parcelCount ?? 0} pcls`}
+
+                                                                                    )
+                                                                                </Badge>
+                                                                            </EditDropModal>
+                                                                        );
+                                                                    },
+                                                                )}
                                                             </div>
                                                         )}
-                                                        <CreateDropModal 
-                                                            tripLegId={leg.id} 
-                                                            locations={locations} 
-                                                            originLocationId={leg.originLocationId}
-                                                            destinationLocationId={leg.destinationLocationId}
-                                                            clientAllowedCargoUnits={dispatch.client?.allowedCargoUnits} 
+                                                        <CreateDropModal
+                                                            tripLegId={leg.id}
+                                                            locations={
+                                                                locations
+                                                            }
+                                                            originLocationId={
+                                                                leg.originLocationId
+                                                            }
+                                                            destinationLocationId={
+                                                                leg.destinationLocationId
+                                                            }
+                                                            clientAllowedCargoUnits={
+                                                                dispatch.client
+                                                                    ?.allowedCargoUnits
+                                                            }
                                                         >
                                                             <Button
                                                                 type="button"
                                                                 variant="outline"
                                                                 size="sm"
-                                                                className="h-6 text-[11px] gap-1 px-2 mt-1 border-dashed text-blue-700 border-blue-300 hover:bg-blue-50"
+                                                                className="mt-1 h-6 gap-1 border-dashed border-blue-300 px-2 text-[11px] text-blue-700 hover:bg-blue-50"
                                                             >
                                                                 <Plus className="h-3 w-3" />
                                                                 Add Drop
@@ -354,58 +435,149 @@ const DispatchDetailsPages = ({
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="text-xs">
-                                                    {leg.cargoes && leg.cargoes.length > 0 ? (
+                                                    {leg.cargoes &&
+                                                    leg.cargoes.length > 0 ? (
                                                         <div className="flex flex-col gap-0.5 font-medium">
-                                                            {leg.cargoes.map((c) => (
-                                                                <span key={c.id} className="text-slate-800">
-                                                                    {c.cargoType === 'per_parcel' && `${c.quantity} pcls`}
-                                                                    {c.cargoType === 'per_box' && `${c.quantity} boxes`}
-                                                                    {c.cargoType === 'loose_items' && `${c.quantity} loose`}
-                                                                    {c.cargoType === 'by_weight' && `${c.quantity} kg`}
-                                                                </span>
-                                                            ))}
+                                                            {leg.cargoes.map(
+                                                                (c) => (
+                                                                    <span
+                                                                        key={
+                                                                            c.id
+                                                                        }
+                                                                        className="text-slate-800"
+                                                                    >
+                                                                        {c.cargoType ===
+                                                                            'per_parcel' &&
+                                                                            `${c.quantity} pcls`}
+                                                                        {c.cargoType ===
+                                                                            'per_box' &&
+                                                                            `${c.quantity} boxes`}
+                                                                        {c.cargoType ===
+                                                                            'loose_items' &&
+                                                                            `${c.quantity} loose`}
+                                                                        {c.cargoType ===
+                                                                            'by_weight' &&
+                                                                            `${c.quantity} kg`}
+                                                                    </span>
+                                                                ),
+                                                            )}
                                                         </div>
                                                     ) : (
-                                                        leg.totalParcel ?? '—'
+                                                        (leg.totalParcel ?? '—')
                                                     )}
                                                 </TableCell>
                                                 <TableCell className="text-xs">
-                                                    {formatOdometer(leg.odometerStart)} / {formatOdometer(leg.odometerEnd)}
+                                                    {formatOdometer(
+                                                        leg.odometerStart,
+                                                    )}{' '}
+                                                    /{' '}
+                                                    {formatOdometer(
+                                                        leg.odometerEnd,
+                                                    )}
                                                 </TableCell>
                                                 <TableCell className="text-xs">
                                                     <div className="space-y-0.5">
-                                                        <div><span className="text-muted-foreground">Arr:</span> {formatTime((leg as any).originArrivedTime)}</div>
-                                                        <div><span className="text-muted-foreground">Load:</span> {formatTime((leg as any).originStartLoadingTime)} - {formatTime((leg as any).originEndLoadingTime)}</div>
-                                                        <div><span className="text-muted-foreground">Dep:</span> {formatTime(leg.departureTime)}</div>
+                                                        <div>
+                                                            <span className="text-muted-foreground">
+                                                                Arr:
+                                                            </span>{' '}
+                                                            {formatTime(
+                                                                (leg as any)
+                                                                    .originArrivedTime,
+                                                            )}
+                                                        </div>
+                                                        <div>
+                                                            <span className="text-muted-foreground">
+                                                                Load:
+                                                            </span>{' '}
+                                                            {formatTime(
+                                                                (leg as any)
+                                                                    .originStartLoadingTime,
+                                                            )}{' '}
+                                                            -{' '}
+                                                            {formatTime(
+                                                                (leg as any)
+                                                                    .originEndLoadingTime,
+                                                            )}
+                                                        </div>
+                                                        <div>
+                                                            <span className="text-muted-foreground">
+                                                                Dep:
+                                                            </span>{' '}
+                                                            {formatTime(
+                                                                leg.departureTime,
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="text-xs">
                                                     <div className="space-y-0.5">
-                                                        <div><span className="text-muted-foreground">Arr:</span> {formatTime((leg as any).destinationArrivedTime ?? leg.arrivedTime)}</div>
-                                                        <div><span className="text-muted-foreground">Unload:</span> {formatTime((leg as any).destinationStartUnloadingTime)} - {formatTime((leg as any).destinationEndUnloadingTime)}</div>
-                                                        <div><span className="text-muted-foreground">Dep:</span> {formatTime((leg as any).destinationDepartedTime ?? leg.endTime)}</div>
+                                                        <div>
+                                                            <span className="text-muted-foreground">
+                                                                Arr:
+                                                            </span>{' '}
+                                                            {formatTime(
+                                                                (leg as any)
+                                                                    .destinationArrivedTime ??
+                                                                    leg.arrivedTime,
+                                                            )}
+                                                        </div>
+                                                        <div>
+                                                            <span className="text-muted-foreground">
+                                                                Unload:
+                                                            </span>{' '}
+                                                            {formatTime(
+                                                                (leg as any)
+                                                                    .destinationStartUnloadingTime,
+                                                            )}{' '}
+                                                            -{' '}
+                                                            {formatTime(
+                                                                (leg as any)
+                                                                    .destinationEndUnloadingTime,
+                                                            )}
+                                                        </div>
+                                                        <div>
+                                                            <span className="text-muted-foreground">
+                                                                Dep:
+                                                            </span>{' '}
+                                                            {formatTime(
+                                                                (leg as any)
+                                                                    .destinationDepartedTime ??
+                                                                    leg.endTime,
+                                                            )}
+                                                        </div>
                                                     </div>
                                                 </TableCell>
                                                 <TableCell className="text-xs">
                                                     {remarks.length > 0 ? (
-                                                        <span className="inline-flex items-center gap-1 rounded bg-blue-50 px-2 py-1 text-[11px] font-medium text-blue-700 border border-blue-200">
-                                                            {remarks.length} remark{remarks.length > 1 ? 's' : ''}
+                                                        <span className="inline-flex items-center gap-1 rounded border border-blue-200 bg-blue-50 px-2 py-1 text-[11px] font-medium text-blue-700">
+                                                            {remarks.length}{' '}
+                                                            remark
+                                                            {remarks.length > 1
+                                                                ? 's'
+                                                                : ''}
                                                         </span>
                                                     ) : (
-                                                        <span className="text-muted-foreground">—</span>
+                                                        <span className="text-muted-foreground">
+                                                            —
+                                                        </span>
                                                     )}
                                                 </TableCell>
                                                 <TableCell>
                                                     <Badge
                                                         variant={
-                                                            isTripLegComplete(leg)
+                                                            isTripLegComplete(
+                                                                leg,
+                                                            )
                                                                 ? 'default'
                                                                 : 'outline'
                                                         }
                                                         className="capitalize"
                                                     >
                                                         {leg.status ??
-                                                            (isTripLegComplete(leg)
+                                                            (isTripLegComplete(
+                                                                leg,
+                                                            )
                                                                 ? 'Complete'
                                                                 : 'Pending')}
                                                     </Badge>
@@ -418,7 +590,11 @@ const DispatchDetailsPages = ({
                                                             size="icon-sm"
                                                             aria-label={`View trip leg ${leg.tripSequence}`}
                                                             title="View Trip Leg Details"
-                                                            onClick={() => openViewTripLegModal(leg)}
+                                                            onClick={() =>
+                                                                openViewTripLegModal(
+                                                                    leg,
+                                                                )
+                                                            }
                                                         >
                                                             <Eye className="h-3.5 w-3.5" />
                                                         </Button>
@@ -427,7 +603,11 @@ const DispatchDetailsPages = ({
                                                             variant="ghost"
                                                             size="icon-sm"
                                                             aria-label={`Edit trip leg ${leg.tripSequence}`}
-                                                            onClick={() => openTripLegModal(leg)}
+                                                            onClick={() =>
+                                                                openTripLegModal(
+                                                                    leg,
+                                                                )
+                                                            }
                                                         >
                                                             <Pencil className="h-3.5 w-3.5" />
                                                         </Button>
@@ -442,55 +622,146 @@ const DispatchDetailsPages = ({
                 </CardContent>
             </Card>
 
-            {/* Return Trips Card */}
+            {/* Return & Backload Trips Card */}
             <Card>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0">
                     <div>
                         <CardTitle className="flex items-center gap-2 text-base">
-                            <RotateCcw className="h-4 w-4" />
-                            Return Trips
+                            <RotateCcw className="h-4 w-4 text-blue-800" />
+                            Return & Backload Trips
                         </CardTitle>
                         <CardDescription>
-                            End-of-shift vehicle return legs or empty container returns for this dispatch
+                            Record return trips for old/rejected items or new
+                            backload cargo assignments
                         </CardDescription>
                     </div>
                     <CreateReturnTripModal
                         dispatchId={dispatch.id}
                         locations={locations}
                         defaultOriginLocationId={tripLegs[0]?.originLocationId}
-                        defaultDestinationLocationId={tripLegs[0]?.destinationLocationId}
+                        defaultDestinationLocationId={
+                            tripLegs[0]?.destinationLocationId
+                        }
+                        clientAllowedCargoUnits={
+                            dispatch.client?.allowedCargoUnits
+                        }
                     />
                 </CardHeader>
                 <CardContent>
                     {returnTrips.length === 0 ? (
                         <p className="py-6 text-center text-sm text-muted-foreground">
-                            No return trips recorded for this dispatch assignment yet.
+                            No return or backload trips recorded for this
+                            dispatch assignment yet.
                         </p>
                     ) : (
                         <Table>
                             <TableHeader>
                                 <TableRow>
-                                    <TableHead>Return #</TableHead>
-                                    <TableHead>Origin Location</TableHead>
-                                    <TableHead>Destination Location</TableHead>
-                                    <TableHead>Odometer Start</TableHead>
-                                    <TableHead>Odometer End</TableHead>
-                                    <TableHead>Total Parcels</TableHead>
+                                    <TableHead>Type</TableHead>
+                                    <TableHead>Origin</TableHead>
+                                    <TableHead>Destination</TableHead>
+                                    <TableHead>Cargo Quantities</TableHead>
+                                    <TableHead>Received By</TableHead>
+                                    <TableHead>
+                                        Odometer (Start / End)
+                                    </TableHead>
+                                    <TableHead>Departed / Arrived</TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {returnTrips.map((rt, idx) => (
-                                    <TableRow key={rt.id}>
-                                        <TableCell className="font-medium">
-                                            Return #{idx + 1}
-                                        </TableCell>
-                                        <TableCell>{rt.originLocation?.name ?? '—'}</TableCell>
-                                        <TableCell>{rt.destinationLocation?.name ?? '—'}</TableCell>
-                                        <TableCell>{formatOdometer(rt.odometerStart)}</TableCell>
-                                        <TableCell>{formatOdometer(rt.odometerEnd)}</TableCell>
-                                        <TableCell>{rt.totalParcel ?? '—'}</TableCell>
-                                    </TableRow>
-                                ))}
+                                {returnTrips.map((rt) => {
+                                    const cargoItems: string[] = [];
+
+                                    if (rt.totalParcel) {
+                                        cargoItems.push(
+                                            `${rt.totalParcel} pcls`,
+                                        );
+                                    }
+
+                                    if (rt.boxCount) {
+                                        cargoItems.push(`${rt.boxCount} boxes`);
+                                    }
+
+                                    if (rt.looseItemsCount) {
+                                        cargoItems.push(
+                                            `${rt.looseItemsCount} loose`,
+                                        );
+                                    }
+
+                                    if (rt.weightKg) {
+                                        const weightKg = Number(rt.weightKg);
+                                        cargoItems.push(
+                                            `${weightKg} kg (${(weightKg / 1000).toFixed(3)} tons)`,
+                                        );
+                                    }
+
+                                    return (
+                                        <TableRow key={rt.id}>
+                                            <TableCell>
+                                                <Badge
+                                                    variant="secondary"
+                                                    className={`text-[11px] font-semibold capitalize ${
+                                                        rt.tripType ===
+                                                        'backload'
+                                                            ? 'border-blue-200 bg-blue-100 text-blue-800'
+                                                            : 'border-amber-200 bg-amber-100 text-amber-900'
+                                                    }`}
+                                                >
+                                                    {rt.tripType === 'backload'
+                                                        ? 'Backload'
+                                                        : 'Return'}
+                                                </Badge>
+                                            </TableCell>
+                                            <TableCell className="font-medium text-slate-900">
+                                                {rt.originLocation?.name ?? '—'}
+                                            </TableCell>
+                                            <TableCell className="font-medium text-slate-900">
+                                                {rt.destinationLocation?.name ??
+                                                    '—'}
+                                            </TableCell>
+                                            <TableCell>
+                                                {cargoItems.length > 0 ? (
+                                                    <span className="font-medium text-slate-800">
+                                                        {cargoItems.join(', ')}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-muted-foreground">
+                                                        —
+                                                    </span>
+                                                )}
+                                            </TableCell>
+                                            <TableCell className="text-slate-700">
+                                                {rt.receivedBy ?? '—'}
+                                            </TableCell>
+                                            <TableCell className="text-xs text-slate-600">
+                                                {formatOdometer(
+                                                    rt.odometerStart,
+                                                )}{' '}
+                                                /{' '}
+                                                {formatOdometer(rt.odometerEnd)}
+                                            </TableCell>
+                                            <TableCell className="text-xs text-slate-600">
+                                                {rt.departedAt
+                                                    ? new Date(
+                                                          rt.departedAt,
+                                                      ).toLocaleString([], {
+                                                          dateStyle: 'short',
+                                                          timeStyle: 'short',
+                                                      })
+                                                    : '—'}
+                                                {' → '}
+                                                {rt.arrivedAt
+                                                    ? new Date(
+                                                          rt.arrivedAt,
+                                                      ).toLocaleString([], {
+                                                          dateStyle: 'short',
+                                                          timeStyle: 'short',
+                                                      })
+                                                    : '—'}
+                                            </TableCell>
+                                        </TableRow>
+                                    );
+                                })}
                             </TableBody>
                         </Table>
                     )}

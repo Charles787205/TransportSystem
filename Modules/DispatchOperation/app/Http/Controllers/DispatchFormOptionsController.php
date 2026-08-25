@@ -20,40 +20,66 @@ class DispatchFormOptionsController extends Controller
 
         $vehicles = Vehicle::with(['dispatches.tripLegs' => function ($q) {
             $q->latest();
-        }])->get(['id', 'plate_number as label', 'vendor_id'])->map(function ($v) use ($terminalStatuses) {
+        }])->get(['id', 'plate_number as label', 'vendor_id', 'driver_id', 'is_active'])->map(function ($v) use ($terminalStatuses) {
             $latestTripLeg = $v->dispatches
                 ->flatMap->tripLegs
                 ->sortByDesc('created_at')
                 ->first();
 
-            $status = $latestTripLeg?->status?->value;
-            $isAvailable = ! $status || in_array($status, $terminalStatuses, true);
+            $tripStatus = $latestTripLeg?->status?->value;
+            $hasActiveTrip = $tripStatus && ! in_array($tripStatus, $terminalStatuses, true);
+
+            if ($hasActiveTrip) {
+                $isAvailable = false;
+                $activeStatus = $tripStatus;
+            } elseif (! $v->is_active) {
+                $isAvailable = false;
+                $activeStatus = 'Inactive';
+            } else {
+                $isAvailable = true;
+                $activeStatus = null;
+            }
 
             return new ResourceStatusOptionData(
                 id: $v->id,
                 label: $v->label,
                 isAvailable: $isAvailable,
-                activeStatus: $isAvailable ? null : $status,
-                vendorId: $v->vendor_id
+                activeStatus: $activeStatus,
+                vendorId: $v->vendor_id,
+                driverId: $v->driver_id
             );
         });
 
         $drivers = Driver::with(['dispatches.tripLegs' => function ($q) {
             $q->latest();
-        }])->get(['id', 'full_name as label', 'vendor_id'])->map(function ($d) use ($terminalStatuses) {
+        }])->get(['id', 'full_name as label', 'vendor_id', 'status'])->map(function ($d) use ($terminalStatuses) {
             $latestTripLeg = $d->dispatches
                 ->flatMap->tripLegs
                 ->sortByDesc('created_at')
                 ->first();
 
-            $status = $latestTripLeg?->status?->value;
-            $isAvailable = ! $status || in_array($status, $terminalStatuses, true);
+            $tripStatus = $latestTripLeg?->status?->value;
+            $hasActiveTrip = $tripStatus && ! in_array($tripStatus, $terminalStatuses, true);
+
+            $driverStatus = $d->status?->value ?? (string) $d->status;
+            $isDriverActive = ($driverStatus === 'Active');
+
+            if ($hasActiveTrip) {
+                $isAvailable = false;
+                $activeStatus = $tripStatus;
+            } elseif (! $isDriverActive) {
+                $isAvailable = false;
+                $activeStatus = $driverStatus;
+            } else {
+                $isAvailable = true;
+                $activeStatus = null;
+            }
 
             return new ResourceStatusOptionData(
                 id: $d->id,
                 label: $d->label,
                 isAvailable: $isAvailable,
-                activeStatus: $isAvailable ? null : $status,
+                activeStatus: $activeStatus,
                 vendorId: $d->vendor_id
             );
         });

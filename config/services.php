@@ -27,6 +27,10 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
+    'aws' => [
+        'region' => env('AWS_DEFAULT_REGION', 'ap-southeast-1'),
+        'secret_name' => env('AWS_SECRETS_MANAGER_ARN'),
+    ],
 
     'slack' => [
         'notifications' => [

@@ -14,7 +14,14 @@ use Modules\Client\Models\Location;
     'destination_location_id',
     'odometer_start',
     'odometer_end',
+    'trip_type',
     'total_parcel',
+    'box_count',
+    'loose_items_count',
+    'weight_kg',
+    'departed_at',
+    'arrived_at',
+    'received_by',
 ])]
 class ReturnTrip extends Model
 {

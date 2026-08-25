@@ -14,5 +14,6 @@ class ResourceStatusOptionData extends Data
         public bool $isAvailable,
         public ?string $activeStatus = null,
         public ?int $vendorId = null,
+        public ?int $driverId = null,
     ) {}
 }

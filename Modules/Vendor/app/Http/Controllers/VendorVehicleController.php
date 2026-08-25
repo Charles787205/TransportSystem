@@ -10,6 +10,7 @@ use Modules\Vendor\Classes\Data\Request\CreateInsuranceData;
 use Modules\Vendor\Classes\Data\Request\CreateRegistrationData;
 use Modules\Vendor\Classes\Data\Request\CreateVehicleData;
 use Modules\Vendor\Classes\Data\Request\UpdateVehicleData;
+use Modules\Vendor\Classes\Data\Request\UpdateVehicleStatusData;
 use Modules\Vendor\Models\Vehicle;
 use Modules\Vendor\Models\Vendor;
 use Modules\Vendor\Services\DriverService;
@@ -70,6 +71,13 @@ class VendorVehicleController extends Controller
         $this->vehicleService->updateVehicle($vehicle->id, $data);
 
         return back()->with('success', 'Vehicle updated successfully.');
+    }
+
+    public function updateStatus(UpdateVehicleStatusData $data, Vendor $vendor, Vehicle $vehicle)
+    {
+        $this->vehicleService->updateVehicleStatus($vehicle->id, $data->isActive);
+
+        return back()->with('success', 'Vehicle status updated successfully.');
     }
 
     public function addInsurance(CreateInsuranceData $data, Vendor $vendor, Vehicle $vehicle)

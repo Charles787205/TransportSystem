@@ -16,6 +16,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('vendors.vehicles.registrations.store');
 
     Route::patch(
+        'vendors/{vendor}/vehicles/{vehicle}/status',
+        [VendorVehicleController::class, 'updateStatus']
+    )->name('vendor.vehicle.status.update');
+
+    Route::patch(
         'vendors/{vendor}/vehicles/{vehicle}/attach-vehicle-to-driver',
         [VendorVehicleController::class, 'attachDriver']
     )->name('vendors.attach-vehicle-to-driver');

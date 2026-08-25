@@ -29,6 +29,8 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import type { VehicleData, VehicleDriverHistory } from '@/generated/Vendor';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { updateStatus } from '@/actions/Modules/Vendor/Http/Controllers/VendorVehicleController';
 import { index } from '@/routes/vendor/vehicle';
 
 type ShowProps = {
@@ -55,6 +57,7 @@ const Show = ({
     const totalTrips = stats?.totalTrips ?? 0;
     const successRate = stats?.successRate ?? 100;
     const [isOpenDialog, setIsOpenDialog] = useState(false);
+    const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
     function openDialog() {
         setIsOpenDialog(true);
@@ -62,6 +65,18 @@ const Show = ({
             only: ['drivers'],
         });
     }
+
+    const handleStatusChange = (val: string) => {
+        setIsUpdatingStatus(true);
+        router.patch(
+            updateStatus({ vendor: vendorId, vehicle: vehicle.id }).url,
+            { is_active: val === 'active' },
+            {
+                preserveScroll: true,
+                onFinish: () => setIsUpdatingStatus(false),
+            }
+        );
+    };
 
     return (
         <div className="space-y-6 p-6">
@@ -91,7 +106,27 @@ const Show = ({
                     </div>
                 </div>
 
-                <EditVehicleModal vendorId={vendorId} vehicle={vehicle} />
+                <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2">
+                        <span className="text-xs font-medium text-muted-foreground">
+                            Status:
+                        </span>
+                        <Select
+                            value={vehicle.isActive ? 'active' : 'inactive'}
+                            onValueChange={handleStatusChange}
+                            disabled={isUpdatingStatus}
+                        >
+                            <SelectTrigger className="w-[130px]">
+                                <SelectValue placeholder="Status" />
+                            </SelectTrigger>
+                            <SelectContent position="popper">
+                                <SelectItem value="active">Active</SelectItem>
+                                <SelectItem value="inactive">Inactive</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <EditVehicleModal vendorId={vendorId} vehicle={vehicle} />
+                </div>
             </div>
 
             {/* Main grid */}
