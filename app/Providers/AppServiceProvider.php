@@ -14,33 +14,34 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        // Load AWS Secrets BEFORE database connections boot
         if ($this->app->isProduction() || $this->app->environment('staging')) {
             try {
                 $client = new SecretsManagerClient([
                     'version' => 'latest',
-                    'region'  => config('services.aws.region', 'ap-southeast-1'),
+                    'region' => config('services.aws.region', 'ap-southeast-1'),
                 ]);
 
                 $result = $client->getSecretValue([
-                    'SecretId' => config('services.aws.secret_name', 'TransportSystem/Prod'),
+                    'SecretId' => config('services.aws.secret_name'),
                 ]);
 
                 if (isset($result['SecretString'])) {
                     $secrets = json_decode($result['SecretString'], true);
-                    foreach ($secrets as $key => $value) {
-                        config([$key => $value]);
-                    }
 
-                    // Force Laravel to drop initial connections and re-connect using updated credentials
+                    config([
+                        'database.connections.mysql.username' => $secrets['username'],
+                        'database.connections.mysql.password' => $secrets['password'],
+                    ]);
+
                     DB::purge('mysql');
                 }
             } catch (\Exception $e) {
-                logger()->error('Failed to load AWS Secrets: ' . $e->getMessage());
+                logger()->error(
+                    'Failed to load AWS Secrets: ' . $e->getMessage()
+                );
             }
         }
     }
-
     /**
      * Bootstrap any application services.
      */
