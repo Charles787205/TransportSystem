@@ -38,16 +38,6 @@ class DatabaseSeeder extends Seeder
             'role_id' => $adminRole?->id,
         ]);
 
-        // 5. Seed Client Module
-        $this->call(ClientDatabaseSeeder::class);
-
-        // 6. Seed Vendor Module
-        $this->call(VendorDatabaseSeeder::class);
-
-        // 7. Seed Planning Module
-        $this->call(PlanningDatabaseSeeder::class);
-
-        // 8. Seed DispatchOperation Module
-        $this->call(DispatchOperationDatabaseSeeder::class);
+       
     }
 }
