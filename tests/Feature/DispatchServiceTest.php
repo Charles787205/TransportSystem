@@ -1,9 +1,8 @@
 <?php
 
-use Modules\Client\Models\BusinessUnit;
 use Modules\Client\Models\Client;
-use Modules\Client\Models\Destination;
-use Modules\DispatchOperation\Classes\Data\EditTripLegData;
+use Modules\Client\Models\Location;
+use Modules\DispatchOperation\Classes\Data\Request\EditTripLegData;
 use Modules\DispatchOperation\Models\Dispatch;
 use Modules\DispatchOperation\Models\TripLeg;
 use Modules\DispatchOperation\Services\TripLegService;
@@ -20,16 +19,11 @@ it('updates an existing trip leg through dispatch service', function () {
         'active' => true,
     ]);
 
-    $businessUnit = BusinessUnit::create([
+    $location = Location::create([
         'client_id' => $client->id,
-        'name' => 'Operations',
-        'touchpoint' => 'North Hub',
-        'active' => true,
-    ]);
-
-    $destination = Destination::create([
-        'client_id' => $client->id,
-        'name' => 'Phoenix Depot',
+        'name' => 'Operations Hub',
+        'touchpoint' => 'MFM',
+        'type' => 'BU',
     ]);
 
     $vendor = Vendor::create([
@@ -67,14 +61,12 @@ it('updates an existing trip leg through dispatch service', function () {
     ]);
 
     $dispatch = Dispatch::create([
+        'client_id' => $client->id,
         'vehicle_id' => $vehicle->id,
         'driver_id' => $driver->id,
-        'business_unit_id' => $businessUnit->id,
-        'destination_id' => $destination->id,
         'service_type' => 'oncall',
         'dispatch_date' => '2026-07-24',
         'assigned_call_time' => '08:00:00',
-        'linehaul_trip_no' => 'LH-100',
         'odometer_start' => 100.0,
         'odometer_end' => 250.0,
     ]);

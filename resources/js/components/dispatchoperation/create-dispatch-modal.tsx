@@ -2,12 +2,11 @@ import { Form } from '@inertiajs/react';
 import axios from 'axios';
 import { Plus, Loader2 } from 'lucide-react';
 import { useState } from 'react';
-// TODO: replace with your actual Wayfinder-generated action import
-// import { store } from '@/actions/Modules/DispatchOperation/Http/Controllers/DispatchController';
 import { index } from '@/actions/Modules/DispatchOperation/Http/Controllers/DispatchFormOptionsController';
 import type { DispatchFormOptionsData } from '@/generated/DispatchOperation';
 import { store } from '@/routes/dispatchoperation';
 import InputError from '../input-error';
+import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import {
     Dialog,
@@ -28,40 +27,116 @@ import {
     SelectValue,
 } from '../ui/select';
 
-const CreateDispatchModal = () => {
+type CreateDispatchModalProps = {
+    defaultValues?: {
+        clientId?: number | string;
+        originLocationId?: number | string;
+        destinationLocationId?: number | string;
+        dispatchDate?: string;
+    };
+    lockFields?: boolean;
+    trigger?: React.ReactNode;
+};
+
+const CreateDispatchModal = ({ defaultValues, lockFields = false, trigger }: CreateDispatchModalProps = {}) => {
     const [open, setOpen] = useState(false);
     const [options, setOptions] = useState<DispatchFormOptionsData | null>(
         null,
     );
     const [loadingOptions, setLoadingOptions] = useState(false);
+    const [selectedVehicleId, setSelectedVehicleId] = useState<string>('');
+    const [selectedDriverId, setSelectedDriverId] = useState<string>('');
+    const [selectedClientId, setSelectedClientId] = useState<string>(
+        defaultValues?.clientId ? String(defaultValues.clientId) : ''
+    );
+    const [selectedOriginId, setSelectedOriginId] = useState<string>(
+        defaultValues?.originLocationId ? String(defaultValues.originLocationId) : ''
+    );
+    const [selectedDestinationId, setSelectedDestinationId] = useState<string>(
+        defaultValues?.destinationLocationId ? String(defaultValues.destinationLocationId) : ''
+    );
 
-    const handleOpenChange = (open: boolean) => {
-        setOpen(open);
+    const handleOpenChange = (isOpen: boolean) => {
+        setOpen(isOpen);
 
-        if (!open || options) {
-            return;
+        if (isOpen) {
+            setSelectedVehicleId('');
+            setSelectedDriverId('');
+
+            if (defaultValues?.clientId) {
+                setSelectedClientId(String(defaultValues.clientId));
+            }
+            if (defaultValues?.originLocationId) {
+                setSelectedOriginId(String(defaultValues.originLocationId));
+            }
+            if (defaultValues?.destinationLocationId) {
+                setSelectedDestinationId(String(defaultValues.destinationLocationId));
+            }
+
+            if (!options) {
+                setLoadingOptions(true);
+                axios
+                    .get<DispatchFormOptionsData>(index.url())
+                    .then((res) => setOptions(res.data))
+                    .finally(() => setLoadingOptions(false));
+            }
         }
-
-        setLoadingOptions(true);
-        axios
-            .get<DispatchFormOptionsData>(index.url())
-            .then((res) => setOptions(res.data))
-            .finally(() => setLoadingOptions(false));
     };
+
+    const handleClientChange = (clientId: string) => {
+        setSelectedClientId(clientId);
+        setSelectedOriginId('');
+        setSelectedDestinationId('');
+    };
+
+    const selectedVehicleObj = options?.vehicles?.find(
+        (v: any) => String(v.id) === selectedVehicleId
+    );
+    const selectedDriverObj = options?.drivers?.find(
+        (d: any) => String(d.id) === selectedDriverId
+    );
+
+    const activeVendorId =
+        selectedVehicleObj?.vendorId ?? selectedDriverObj?.vendorId ?? null;
+
+    const availableVehicles = options?.vehicles?.filter((v: any) => {
+        if (!activeVendorId) return true;
+        return v.vendorId === activeVendorId;
+    }) || [];
+
+    const availableDrivers = options?.drivers?.filter((d: any) => {
+        if (!activeVendorId) return true;
+        return d.vendorId === activeVendorId;
+    }) || [];
+
+    const availableLocations = options?.locations?.filter((loc: any) => {
+        if (!selectedClientId) return true;
+        return String(loc.clientId ?? loc.client_id) === String(selectedClientId);
+    }) || [];
+
+    const originOptions = availableLocations.filter((loc: any) => {
+        return String(loc.id) !== selectedDestinationId;
+    });
+
+    const destinationOptions = availableLocations.filter((loc: any) => {
+        return String(loc.id) !== selectedOriginId;
+    });
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
             <DialogTrigger asChild>
-                <Button className="bg-blue-800 text-white hover:bg-blue-900">
-                    <Plus className="mr-2 h-4 w-4" />
-                    New Dispatch
-                </Button>
+                {trigger ?? (
+                    <Button className="bg-blue-800 text-white hover:bg-blue-900">
+                        <Plus className="mr-2 h-4 w-4" />
+                        New Dispatch
+                    </Button>
+                )}
             </DialogTrigger>
             <DialogContent className="sm:max-w-lg">
                 <DialogHeader>
                     <DialogTitle>Create Dispatch</DialogTitle>
                     <DialogDescription>
-                        Fill in the details below to schedule a new dispatch.
+                        Fill in the details below to schedule a new dispatch and initial 1st trip leg.
                     </DialogDescription>
                 </DialogHeader>
 
@@ -72,7 +147,12 @@ const CreateDispatchModal = () => {
                 ) : (
                     <Form
                         action={store()}
-                        onSuccess={() => setOpen(false)}
+                        onSuccess={() => {
+                            setOpen(false);
+                            setSelectedClientId('');
+                            setSelectedOriginId('');
+                            setSelectedDestinationId('');
+                        }}
                         onError={(e) => {
                             console.log(e);
                         }}
@@ -89,7 +169,11 @@ const CreateDispatchModal = () => {
                                         <Label htmlFor="vehicle_id">
                                             Vehicle
                                         </Label>
-                                        <Select name="vehicle_id">
+                                        <Select
+                                            name="vehicle_id"
+                                            value={selectedVehicleId}
+                                            onValueChange={setSelectedVehicleId}
+                                        >
                                             <SelectTrigger
                                                 id="vehicle_id"
                                                 aria-invalid={
@@ -100,12 +184,20 @@ const CreateDispatchModal = () => {
                                                 <SelectValue placeholder="Select vehicle" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {options.vehicles.map((v) => (
+                                                {availableVehicles.map((v: any) => (
                                                     <SelectItem
                                                         key={v.id}
                                                         value={String(v.id)}
+                                                        disabled={v.isAvailable === false}
                                                     >
-                                                        {v.label}
+                                                        <div className="flex items-center justify-between gap-2 w-full">
+                                                            <span>{v.label}</span>
+                                                            {v.isAvailable === false && v.activeStatus && (
+                                                                <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-amber-50 text-amber-700 border-amber-300 capitalize">
+                                                                    {v.activeStatus}
+                                                                </Badge>
+                                                            )}
+                                                        </div>
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
@@ -122,7 +214,11 @@ const CreateDispatchModal = () => {
                                         <Label htmlFor="driver_id">
                                             Driver
                                         </Label>
-                                        <Select name="driver_id">
+                                        <Select
+                                            name="driver_id"
+                                            value={selectedDriverId}
+                                            onValueChange={setSelectedDriverId}
+                                        >
                                             <SelectTrigger
                                                 id="driver_id"
                                                 aria-invalid={
@@ -133,12 +229,20 @@ const CreateDispatchModal = () => {
                                                 <SelectValue placeholder="Select driver" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {options.drivers.map((d) => (
+                                                {availableDrivers.map((d: any) => (
                                                     <SelectItem
                                                         key={d.id}
                                                         value={String(d.id)}
+                                                        disabled={d.isAvailable === false}
                                                     >
-                                                        {d.label}
+                                                        <div className="flex items-center justify-between gap-2 w-full">
+                                                            <span>{d.label}</span>
+                                                            {d.isAvailable === false && d.activeStatus && (
+                                                                <Badge variant="outline" className="text-[10px] py-0 px-1.5 bg-amber-50 text-amber-700 border-amber-300 capitalize">
+                                                                    {d.activeStatus}
+                                                                </Badge>
+                                                            )}
+                                                        </div>
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
@@ -149,72 +253,137 @@ const CreateDispatchModal = () => {
                                     </div>
 
                                     <div
-                                        className="space-y-1.5"
-                                        data-invalid={!!errors.business_unit_id}
+                                        className="col-span-2 space-y-1.5"
+                                        data-invalid={!!errors.client_id}
                                     >
-                                        <Label htmlFor="business_unit_id">
-                                            Business Unit
+                                        <Label htmlFor="client_id">
+                                            Client
                                         </Label>
-                                        <Select name="business_unit_id">
+                                        {lockFields && <input type="hidden" name="client_id" value={selectedClientId} />}
+                                        <Select
+                                            name="client_id"
+                                            value={selectedClientId}
+                                            onValueChange={handleClientChange}
+                                            disabled={lockFields}
+                                        >
                                             <SelectTrigger
-                                                id="business_unit_id"
+                                                id="client_id"
                                                 aria-invalid={
-                                                    !!errors.business_unit_id
+                                                    !!errors.client_id
                                                 }
                                                 className="w-full"
                                             >
-                                                <SelectValue placeholder="Select business unit" />
+                                                <SelectValue placeholder="Select client" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {options.businessUnits.map(
-                                                    (b) => (
+                                                {options.clients.map(
+                                                    (c) => (
                                                         <SelectItem
-                                                            key={b.id}
-                                                            value={String(b.id)}
+                                                            key={c.id}
+                                                            value={String(c.id)}
                                                         >
-                                                            {b.label}
+                                                            {c.label}
                                                         </SelectItem>
                                                     ),
                                                 )}
                                             </SelectContent>
                                         </Select>
                                         <InputError
-                                            message={errors.business_unit_id}
+                                            message={errors.client_id}
                                         />
                                     </div>
 
                                     <div
                                         className="space-y-1.5"
-                                        data-invalid={!!errors.destination_id}
+                                        data-invalid={!!errors.origin_location_id}
                                     >
-                                        <Label htmlFor="destination_id">
-                                            Destination
+                                        <Label htmlFor="origin_location_id">
+                                            Origin Location
                                         </Label>
-                                        <Select name="destination_id">
+                                        {lockFields && <input type="hidden" name="origin_location_id" value={selectedOriginId} />}
+                                        <Select
+                                            name="origin_location_id"
+                                            value={selectedOriginId}
+                                            onValueChange={setSelectedOriginId}
+                                            disabled={lockFields || !selectedClientId}
+                                        >
                                             <SelectTrigger
-                                                id="destination_id"
+                                                id="origin_location_id"
                                                 aria-invalid={
-                                                    !!errors.destination_id
+                                                    !!errors.origin_location_id
                                                 }
                                                 className="w-full"
                                             >
-                                                <SelectValue placeholder="Select destination" />
+                                                <SelectValue
+                                                    placeholder={
+                                                        selectedClientId
+                                                            ? 'Select origin'
+                                                            : 'Select client first'
+                                                    }
+                                                />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                {options.destinations.map(
-                                                    (d) => (
+                                                {originOptions.map(
+                                                    (l: any) => (
                                                         <SelectItem
-                                                            key={d.id}
-                                                            value={String(d.id)}
+                                                            key={l.id}
+                                                            value={String(l.id)}
                                                         >
-                                                            {d.label}
+                                                            {l.label}
                                                         </SelectItem>
                                                     ),
                                                 )}
                                             </SelectContent>
                                         </Select>
                                         <InputError
-                                            message={errors.destination_id}
+                                            message={errors.origin_location_id}
+                                        />
+                                    </div>
+
+                                    <div
+                                        className="space-y-1.5"
+                                        data-invalid={!!errors.destination_location_id}
+                                    >
+                                        <Label htmlFor="destination_location_id">
+                                            Destination Location
+                                        </Label>
+                                        {lockFields && <input type="hidden" name="destination_location_id" value={selectedDestinationId} />}
+                                        <Select
+                                            name="destination_location_id"
+                                            value={selectedDestinationId}
+                                            onValueChange={setSelectedDestinationId}
+                                            disabled={lockFields || !selectedClientId}
+                                        >
+                                            <SelectTrigger
+                                                id="destination_location_id"
+                                                aria-invalid={
+                                                    !!errors.destination_location_id
+                                                }
+                                                className="w-full"
+                                            >
+                                                <SelectValue
+                                                    placeholder={
+                                                        selectedClientId
+                                                            ? 'Select destination'
+                                                            : 'Select client first'
+                                                    }
+                                                />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {destinationOptions.map(
+                                                    (l: any) => (
+                                                        <SelectItem
+                                                            key={l.id}
+                                                            value={String(l.id)}
+                                                        >
+                                                            {l.label}
+                                                        </SelectItem>
+                                                    ),
+                                                )}
+                                            </SelectContent>
+                                        </Select>
+                                        <InputError
+                                            message={errors.destination_location_id}
                                         />
                                     </div>
                                 </div>
@@ -257,6 +426,7 @@ const CreateDispatchModal = () => {
                                             id="dispatch_date"
                                             name="dispatch_date"
                                             type="date"
+                                            defaultValue={defaultValues?.dispatchDate ?? ''}
                                             aria-invalid={
                                                 !!errors.dispatch_date
                                             }
@@ -299,7 +469,6 @@ const CreateDispatchModal = () => {
                                     <Input
                                         id="linehaul_trip_no"
                                         name="linehaul_trip_no"
-
                                         aria-invalid={!!errors.linehaul_trip_no}
                                     />
                                     <InputError

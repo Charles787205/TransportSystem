@@ -1,27 +1,15 @@
 import { format } from 'date-fns';
-import { Route, Truck, MapPin, Calendar, User } from 'lucide-react';
-import {
-    Bar,
-    BarChart,
-    CartesianGrid,
-    XAxis,
-    YAxis,
-    ResponsiveContainer,
-} from 'recharts';
-
+import { Route, Truck, MapPin, Calendar, ArrowLeft, Plus } from 'lucide-react';
+import { Link } from '@inertiajs/react';
+import CreateDispatchModal from '@/components/dispatchoperation/create-dispatch-modal';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
     Card,
     CardContent,
     CardHeader,
     CardTitle,
-    CardDescription,
 } from '@/components/ui/card';
-import {
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from '@/components/ui/chart';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -34,301 +22,194 @@ import {
 } from '@/components/ui/table';
 
 import type { DispatchData, TripLegData } from '@/generated/DispatchOperation';
-import type { PlanWithBUandDestinationData } from '@/generated/Planning';
-
-const chartConfig = {
-    count: {
-        label: 'Vehicles',
-        color: 'hsl(var(--chart-1))',
-    },
-};
-
-const formatOdometer = (value: number | null) =>
-    value === null ? '—' : value.toLocaleString();
+import type { PlanData } from '@/generated/Planning';
+import { index } from '@/routes/planning';
 
 const PlanningDetailPage = ({
     plan,
-    dispatches,
-    tripLegs,
+    dispatches = [],
+    tripLegs = [],
 }: {
-    plan: PlanWithBUandDestinationData;
-    dispatches: DispatchData[];
-    tripLegs: TripLegData[];
+    plan: PlanData;
+    dispatches?: DispatchData[];
+    tripLegs?: TripLegData[];
 }) => {
     const requiredCount = plan.numberOfVehicles;
-    const dispatchedCount = tripLegs.length;
+    const dispatchedCount = dispatches.length;
     const fulfilled = dispatchedCount >= requiredCount;
     const progressPct = requiredCount
         ? Math.min((dispatchedCount / requiredCount) * 100, 100)
         : 0;
 
-    const chartData = [
-        { label: 'Required', count: requiredCount },
-        { label: 'Dispatched', count: dispatchedCount },
-    ];
-
-    // group top-level trip legs by dispatch so each dispatch card
-    // shows only its own legs
-    const legsByDispatchId = tripLegs.reduce<Record<number, TripLegData[]>>(
-        (acc, leg) => {
-            (acc[leg.dispatchId] ??= []).push(leg);
-
-            return acc;
-        },
-        {},
-    );
-
     return (
         <div className="space-y-6 p-6">
             {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <h1 className="text-2xl font-semibold tracking-tight">
-                        Plan Detail
-                    </h1>
-                    <p className="text-sm text-muted-foreground">
-                        Overview of dispatch coverage for this plan
-                    </p>
-                </div>
-                <Badge
-                    variant={fulfilled ? 'default' : 'destructive'}
-                    className={fulfilled ? 'bg-blue-800 hover:bg-blue-800' : ''}
-                >
-                    {fulfilled ? 'Fully Dispatched' : 'Understaffed'}
-                </Badge>
-            </div>
-
-            {/* Plan overview cards */}
-            <div className="grid gap-4 md:grid-cols-3">
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">
-                            Business Unit
-                        </CardTitle>
-                        <Truck className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-lg font-semibold">
-                            {plan.businessUnit.name}
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">
-                            Destination
-                        </CardTitle>
-                        <MapPin className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-lg font-semibold">
-                            {plan.destination.name}
-                        </div>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between pb-2">
-                        <CardTitle className="text-sm font-medium text-muted-foreground">
-                            Dispatch Date
-                        </CardTitle>
-                        <Calendar className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                        <div className="text-lg font-semibold">
-                            {format(new Date(plan.dispatchDate), 'PPP')}
-                        </div>
-                    </CardContent>
-                </Card>
-            </div>
-
-            {/* Vehicle coverage progress */}
             <Card>
-                <CardHeader>
-                    <CardTitle>Vehicle Coverage</CardTitle>
-                    <CardDescription>
-                        {dispatchedCount} of {requiredCount} required trip legs
-                        dispatched
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-3">
-                    <Progress
-                        value={progressPct}
-                        className={
-                            fulfilled
-                                ? '[&>div]:bg-blue-800'
-                                : '[&>div]:bg-amber-500'
-                        }
-                    />
-                    <div className="flex justify-between text-sm text-muted-foreground">
-                        <span>{dispatchedCount} dispatched</span>
-                        <span>{requiredCount} needed</span>
+                <CardContent className="flex items-center justify-between p-6">
+                    <div className="flex items-center gap-4">
+                        <Link href={index().url} className="cursor-pointer hover:scale-105">
+                            <ArrowLeft className="size-5" />
+                        </Link>
+                        <div>
+                            <div className="flex items-center gap-3">
+                                <h1 className="text-xl font-semibold">
+                                    Plan #{plan.id} — {plan.client?.name ?? `Client #${plan.clientId}`}
+                                </h1>
+                                <Badge
+                                    variant={fulfilled ? 'default' : 'secondary'}
+                                    className={fulfilled ? 'bg-blue-800' : ''}
+                                >
+                                    {fulfilled ? 'Fully Dispatched' : 'Pending Capacity'}
+                                </Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground">
+                                Scheduled for{' '}
+                                {new Date(plan.dispatchDate).toLocaleDateString('en-US', {
+                                    month: 'long',
+                                    day: 'numeric',
+                                    year: 'numeric',
+                                })}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className="flex items-center gap-6">
+                        <div className="text-right">
+                            <p className="text-2xl font-bold">{dispatchedCount} / {requiredCount}</p>
+                            <p className="text-xs text-muted-foreground">Vehicles Dispatched</p>
+                        </div>
                     </div>
                 </CardContent>
             </Card>
 
-            {/* Chart comparing dispatched vs required */}
+            {/* Capacity Progress */}
             <Card>
                 <CardHeader>
-                    <CardTitle>Dispatched vs Required</CardTitle>
-                    <CardDescription>
-                        Trip leg count compared to the required vehicle count
-                        for this plan
-                    </CardDescription>
+                    <CardTitle className="text-sm font-medium">Capacity Fulfillment Progress</CardTitle>
                 </CardHeader>
-                <CardContent>
-                    <ChartContainer
-                        config={chartConfig}
-                        className="h-[220px] w-full"
-                    >
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={chartData}>
-                                <CartesianGrid vertical={false} />
-                                <XAxis
-                                    dataKey="label"
-                                    tickLine={false}
-                                    axisLine={false}
-                                />
-                                <YAxis
-                                    allowDecimals={false}
-                                    tickLine={false}
-                                    axisLine={false}
-                                />
-                                <ChartTooltip
-                                    content={<ChartTooltipContent />}
-                                />
-                                <Bar
-                                    dataKey="count"
-                                    fill="var(--color-count)"
-                                    radius={[4, 4, 0, 0]}
-                                />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </ChartContainer>
+                <CardContent className="space-y-2">
+                    <Progress value={progressPct} className="h-2.5" />
+                    <div className="flex justify-between text-xs text-muted-foreground">
+                        <span>{progressPct.toFixed(0)}% fulfilled</span>
+                        <span>{requiredCount - dispatchedCount > 0 ? `${requiredCount - dispatchedCount} more vehicles required` : 'Target reached'}</span>
+                    </div>
                 </CardContent>
             </Card>
 
-            <Separator />
-
-            {/* Dispatch list */}
-            <Card>
-                <CardHeader>
-                    <CardTitle>Dispatches</CardTitle>
-                    <CardDescription>
-                        Vehicles assigned to this business unit and destination,
-                        with their trip legs
-                    </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                    {dispatches.length === 0 ? (
-                        <p className="py-8 text-center text-sm text-muted-foreground">
-                            No dispatches recorded yet for this plan.
+            {/* Route Info */}
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-sm font-medium">
+                            <MapPin className="size-4 text-muted-foreground" />
+                            Origin Location
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-base font-semibold">{plan.origin?.name ?? `Location #${plan.originId}`}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                            {[plan.origin?.touchpoint, plan.origin?.type, plan.origin?.address].filter(Boolean).join(' • ') || 'No extra address details'}
                         </p>
+                    </CardContent>
+                </Card>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2 text-sm font-medium">
+                            <MapPin className="size-4 text-muted-foreground" />
+                            Destination Location
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                        <p className="text-base font-semibold">{plan.destination?.name ?? `Location #${plan.destinationId}`}</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                            {[plan.destination?.touchpoint, plan.destination?.type, plan.destination?.address].filter(Boolean).join(' • ') || 'No extra address details'}
+                        </p>
+                    </CardContent>
+                </Card>
+            </div>
+
+            {/* Dispatches Table */}
+            <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0">
+                    <CardTitle className="flex items-center gap-2">
+                        <Truck className="size-4" />
+                        Dispatches Assigned To This Plan
+                    </CardTitle>
+                    <CreateDispatchModal
+                        defaultValues={{
+                            clientId: plan.clientId,
+                            originLocationId: plan.originId,
+                            destinationLocationId: plan.destinationId,
+                            dispatchDate: plan.dispatchDate,
+                        }}
+                        lockFields={true}
+                        trigger={
+                            <Button className="bg-blue-800 text-white hover:bg-blue-900">
+                                <Plus className="mr-2 h-4 w-4" />
+                                Add Dispatch
+                            </Button>
+                        }
+                    />
+                </CardHeader>
+                <CardContent>
+                    {dispatches.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed py-10 text-center">
+                            <Truck className="size-8 text-muted-foreground" />
+                            <p className="text-sm text-muted-foreground">
+                                No dispatches assigned for this client on {plan.dispatchDate} yet.
+                            </p>
+                        </div>
                     ) : (
-                        dispatches.map((dispatch) => (
-                            <DispatchRow
-                                key={dispatch.id}
-                                dispatch={dispatch}
-                                legs={legsByDispatchId[dispatch.id] ?? []}
-                            />
-                        ))
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead>Dispatch #</TableHead>
+                                    <TableHead>Vehicle</TableHead>
+                                    <TableHead>Driver</TableHead>
+                                    <TableHead>Call Time</TableHead>
+                                    <TableHead>Service Type</TableHead>
+                                    <TableHead>Trip Legs</TableHead>
+                                    <TableHead className="text-right">Actions</TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {dispatches.map((dispatchItem) => (
+                                    <TableRow key={dispatchItem.id}>
+                                        <TableCell className="font-semibold">
+                                            <Link
+                                                href={`/dispatchoperations/${dispatchItem.id}`}
+                                                className="text-blue-600 hover:underline font-mono"
+                                            >
+                                                #{dispatchItem.id}
+                                            </Link>
+                                        </TableCell>
+                                        <TableCell className="font-medium">
+                                            {dispatchItem.vehicle?.plateNumber ?? 'Vehicle N/A'}
+                                        </TableCell>
+                                        <TableCell>{dispatchItem.driver?.fullName ?? 'Driver N/A'}</TableCell>
+                                        <TableCell>{dispatchItem.assignedCallTime}</TableCell>
+                                        <TableCell>
+                                            <Badge variant="outline" className="capitalize">{dispatchItem.serviceType}</Badge>
+                                        </TableCell>
+                                        <TableCell>
+                                            {dispatchItem.tripLegs?.length ?? 0} leg(s)
+                                        </TableCell>
+                                        <TableCell className="text-right">
+                                            <Link
+                                                href={`/dispatchoperations/${dispatchItem.id}`}
+                                                className="inline-flex items-center justify-center rounded-md text-xs font-medium border border-input bg-background hover:bg-accent hover:text-accent-foreground h-8 px-3"
+                                            >
+                                                View Dispatch
+                                            </Link>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
                     )}
                 </CardContent>
             </Card>
-        </div>
-    );
-};
-
-const DispatchRow = ({
-    dispatch,
-    legs,
-}: {
-    dispatch: DispatchData;
-    legs: TripLegData[];
-}) => {
-    const sortedLegs = [...legs].sort(
-        (a, b) => a.tripSequence - b.tripSequence,
-    );
-
-    return (
-        <div className="rounded-lg border">
-            <div className="flex flex-wrap items-center justify-between gap-3 border-b bg-muted/40 px-4 py-3">
-                <div className="flex flex-wrap items-center gap-4">
-                    <div className="flex items-center gap-1.5 font-medium">
-                        <Truck className="h-3.5 w-3.5 text-muted-foreground" />
-                        {dispatch.vehicle?.plateNumber ??
-                            `#${dispatch.vehicleId}`}
-                    </div>
-                    <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
-                        <User className="h-3.5 w-3.5" />
-                        {dispatch.driver?.fullName ?? `#${dispatch.driverId}`}
-                    </div>
-                    <Badge variant="secondary">{dispatch.serviceType}</Badge>
-                </div>
-                <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                    <span>Call time: {dispatch.assignedCallTime}</span>
-                    <span>
-                        Odometer: {formatOdometer(dispatch.odometerStart)} /{' '}
-                        {formatOdometer(dispatch.odometerEnd)}
-                    </span>
-                </div>
-            </div>
-
-            {sortedLegs.length === 0 ? (
-                <p className="px-4 py-4 text-sm text-muted-foreground">
-                    No trip legs recorded for this dispatch yet.
-                </p>
-            ) : (
-                <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead className="w-16">Seq</TableHead>
-                            <TableHead>Trip No.</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Departure</TableHead>
-                            <TableHead>Arrived</TableHead>
-                            <TableHead>End</TableHead>
-                            <TableHead className="text-right">
-                                Parcels
-                            </TableHead>
-                            <TableHead className="text-right">
-                                Odometer (Start / End)
-                            </TableHead>
-                        </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                        {sortedLegs.map((leg) => (
-                            <TableRow key={leg.id}>
-                                <TableCell>{leg.tripSequence}</TableCell>
-                                <TableCell>
-                                    <div className="flex items-center gap-1.5">
-                                        <Route className="h-3.5 w-3.5 text-muted-foreground" />
-                                        {leg.linehaulTripNo}
-                                    </div>
-                                </TableCell>
-                                <TableCell>
-                                    <Badge variant="outline">
-                                        {leg.status}
-                                    </Badge>
-                                </TableCell>
-                                <TableCell>
-                                    {leg.departureTime ?? '—'}
-                                </TableCell>
-                                <TableCell>{leg.arrivedTime ?? '—'}</TableCell>
-                                <TableCell>{leg.endTime ?? '—'}</TableCell>
-                                <TableCell className="text-right">
-                                    {leg.totalParcel ?? '—'}
-                                </TableCell>
-                                <TableCell className="text-right">
-                                    {formatOdometer(leg.odometerStart)} /{' '}
-                                    {formatOdometer(leg.odometerEnd)}
-                                </TableCell>
-                            </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            )}
         </div>
     );
 };

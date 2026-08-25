@@ -5,15 +5,15 @@ namespace Modules\Vendor\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Exception;
 use Illuminate\Http\Request;
-use Modules\Vendor\Classes\Data\CreateDriverData;
+use Modules\Vendor\Classes\Data\Request\CreateDriverData;
 use Modules\Vendor\Services\DriverService;
 
 class DriverController extends Controller
 {
-    
     public function __construct(
         private DriverService $driverService
-    ){}
+    ) {}
+
     public function index()
     {
         return view('vendor::index');
@@ -30,9 +30,11 @@ class DriverController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CreateDriverData $request) {
-        try{ 
+    public function store(CreateDriverData $request)
+    {
+        try {
             $this->driverService->createDriver($request);
+
             return back()->with('success', 'Driver created.');
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());

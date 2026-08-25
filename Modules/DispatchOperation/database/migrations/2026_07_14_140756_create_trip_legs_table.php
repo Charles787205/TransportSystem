@@ -16,6 +16,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('dispatch_id')->constrained()->cascadeOnDelete();
             $table->unsignedInteger('trip_sequence')->default(1);
+            $table->foreignId('origin_location_id')->nullable()->constrained('locations')->nullOnDelete();
+            $table->foreignId('destination_location_id')->nullable()->constrained('locations')->nullOnDelete();
             $table->integer('total_parcel')->nullable();
             $table->decimal('odometer_start', 10, 2)->nullable();
             $table->decimal('odometer_end', 10, 2)->nullable();

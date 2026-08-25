@@ -25,7 +25,7 @@ const VendorDriverTable = ({ drivers }: { drivers: DriverData[] }) => {
             </TableHeader>
             <TableBody>
                 {drivers.map((driver) => (
-                    <TableRow>
+                    <TableRow key={driver.id}>
                         <TableCell>{driver.fullName}</TableCell>
                         <TableCell>{driver.phoneNumber}</TableCell>
                         <TableCell>

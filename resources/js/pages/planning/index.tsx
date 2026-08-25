@@ -4,15 +4,15 @@ import {
     ClipboardList,
     MapPin,
     X,
-    MapPinHouse,
     MoreHorizontal,
+    Eye,
+    Trash2,
 } from 'lucide-react';
-
 import { useEffect, useRef, useState } from 'react';
-
 import CreatePlanModal from '@/components/client/create-plan-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -20,16 +20,6 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-
-import {
-    Pagination,
-    PaginationContent,
-    PaginationEllipsis,
-    PaginationItem,
-    PaginationLink,
-    PaginationNext,
-    PaginationPrevious,
-} from '@/components/ui/pagination';
 import {
     Select,
     SelectContent,
@@ -45,25 +35,30 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-
-import type { BusinessUnitData } from '@/generated/Client';
-import type { DestinationData } from '@/generated/Client';
 import type { PaginatedPlanData } from '@/generated/Planning';
-import { destroy, edit, index, show } from '@/routes/planning';
+import { destroy, index, show } from '@/routes/planning';
+
 const ALL = 'all';
+
+type OptionItem = {
+    id: number;
+    label: string;
+    client_id?: number;
+};
 
 export default function PlanningPage({
     paginatedPlans,
-    businessUnits,
-    destinations,
+    clients = [],
+    locations = [],
     filters,
 }: {
     paginatedPlans: PaginatedPlanData;
-    businessUnits: BusinessUnitData[];
-    destinations: DestinationData[];
+    clients?: OptionItem[];
+    locations?: OptionItem[];
     filters?: {
         search?: string;
-        business_unit_id?: string;
+        client_id?: string;
+        origin_id?: string;
         destination_id?: string;
         dispatch_date?: string;
     };
@@ -71,9 +66,8 @@ export default function PlanningPage({
     const { plans, from, to, total, links } = paginatedPlans;
 
     const [search, setSearch] = useState(filters?.search ?? '');
-    const [businessUnitId, setBusinessUnitId] = useState(
-        filters?.business_unit_id ?? ALL,
-    );
+    const [clientId, setClientId] = useState(filters?.client_id ?? ALL);
+    const [originId, setOriginId] = useState(filters?.origin_id ?? ALL);
     const [destinationId, setDestinationId] = useState(
         filters?.destination_id ?? ALL,
     );
@@ -84,7 +78,8 @@ export default function PlanningPage({
 
     const applyFilters = (next: {
         search?: string;
-        business_unit_id?: string;
+        client_id?: string;
+        origin_id?: string;
         destination_id?: string;
         dispatch_date?: string;
     }) => {
@@ -92,9 +87,13 @@ export default function PlanningPage({
             index().url,
             {
                 search: next.search || undefined,
-                business_unit_id:
-                    next.business_unit_id && next.business_unit_id !== ALL
-                        ? next.business_unit_id
+                client_id:
+                    next.client_id && next.client_id !== ALL
+                        ? next.client_id
+                        : undefined,
+                origin_id:
+                    next.origin_id && next.origin_id !== ALL
+                        ? next.origin_id
                         : undefined,
                 destination_id:
                     next.destination_id && next.destination_id !== ALL
@@ -102,11 +101,10 @@ export default function PlanningPage({
                         : undefined,
                 dispatch_date: next.dispatch_date || undefined,
             },
-            { preserveState: true, preserveScroll: true, replace: true },
+            { preserveState: true, replace: true },
         );
     };
 
-    // Debounce search input only; filters apply immediately on change
     useEffect(() => {
         if (isFirstRender.current) {
             isFirstRender.current = false;
@@ -114,197 +112,161 @@ export default function PlanningPage({
             return;
         }
 
-        const timeout = setTimeout(() => {
+        const timer = setTimeout(() => {
             applyFilters({
                 search,
-                business_unit_id: businessUnitId,
+                client_id: clientId,
+                origin_id: originId,
                 destination_id: destinationId,
                 dispatch_date: dispatchDate,
             });
-        }, 350);
+        }, 300);
 
-        return () => clearTimeout(timeout);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [search]);
-
-    const handleBusinessUnitChange = (value: string) => {
-        setBusinessUnitId(value);
-        applyFilters({
-            search,
-            business_unit_id: value,
-            destination_id: destinationId,
-            dispatch_date: dispatchDate,
-        });
-    };
-
-    const handleDestinationChange = (value: string) => {
-        setDestinationId(value);
-        applyFilters({
-            search,
-            business_unit_id: businessUnitId,
-            destination_id: value,
-            dispatch_date: dispatchDate,
-        });
-    };
-
-    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const val = e.target.value;
-        setDispatchDate(val);
-        applyFilters({
-            search,
-            business_unit_id: businessUnitId,
-            destination_id: destinationId,
-            dispatch_date: val,
-        });
-    };
+        return () => clearTimeout(timer);
+    }, [search, clientId, originId, destinationId, dispatchDate]);
 
     const clearFilters = () => {
         setSearch('');
-        setBusinessUnitId(ALL);
+        setClientId(ALL);
+        setOriginId(ALL);
         setDestinationId(ALL);
         setDispatchDate('');
-        applyFilters({});
-    };
-
-    const handleDelete = (planId: number | string) => {
-        if (
-            !window.confirm('Delete this plan? This action cannot be undone.')
-        ) {
-            return;
-        }
-
-        router.delete(destroy({ planning: planId }).url, {
-            preserveScroll: true,
-        });
+        router.get(index().url, {}, { preserveState: true, replace: true });
     };
 
     const hasActiveFilters =
-        search || businessUnitId !== ALL || destinationId !== ALL || dispatchDate;
-    console.log({
-        plans: plans,
-        businessUnits: businessUnits,
-        destinations: destinations,
-        filters: filters,
+        Boolean(search) ||
+        clientId !== ALL ||
+        originId !== ALL ||
+        destinationId !== ALL ||
+        Boolean(dispatchDate);
+
+    const filteredLocations = locations.filter((loc) => {
+        if (clientId === ALL) {
+            return true;
+        }
+
+        return String(loc.client_id) === String(clientId);
     });
 
+    const handlePageChange = (url: string | null) => {
+        if (url) {
+            router.get(url, {}, { preserveState: true });
+        }
+    };
+
     return (
-        <div className="flex flex-col gap-6 p-6">
-            <div className="flex w-full">
+        <div className="space-y-6 p-6">
+            {/* Header */}
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <h1 className="text-xl font-semibold text-slate-900">
+                    <h1 className="text-2xl font-semibold tracking-tight">
                         Planning
                     </h1>
-                    <p className="text-sm text-slate-500">
-                        View and manage dispatch plans across business units
+                    <p className="text-sm text-muted-foreground">
+                        Manage vehicle capacity planning by client route and
+                        dispatch date.
                     </p>
                 </div>
 
-                <div className="ml-auto">
-                    <CreatePlanModal />
-                </div>
+                <CreatePlanModal clients={clients} locations={locations} />
             </div>
 
-            <div className="grid grid-cols-3 gap-4">
-                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-                    <p className="text-sm text-slate-500">Total plans</p>
-                    <p className="mt-1 text-2xl font-semibold text-slate-900">
-                        {total}
-                    </p>
-                </div>
-                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-                    <p className="text-sm text-slate-500">Business units</p>
-                    <p className="mt-1 text-2xl font-semibold text-slate-900">
-                        {businessUnits.length}
-                    </p>
-                </div>
-                <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm">
-                    <p className="text-sm text-slate-500">Destinations</p>
-                    <p className="mt-1 text-2xl font-semibold text-slate-900">
-                        {destinations.length}
-                    </p>
-                </div>
-            </div>
+            {/* Filter Bar */}
+            <Card>
+                <CardContent className="p-4">
+                    <div className="flex flex-wrap items-center gap-3">
+                        <div className="relative min-w-[200px] flex-1">
+                            <Search className="absolute top-2.5 left-2.5 size-4 text-muted-foreground" />
+                            <Input
+                                placeholder="Search client or location..."
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
+                                className="pl-9"
+                            />
+                        </div>
 
-            <div className="flex flex-wrap items-center gap-3">
-                <div className="relative max-w-sm flex-1">
-                    <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-slate-400" />
-                    <Input
-                        value={search}
-                        onChange={(e) => setSearch(e.target.value)}
-                        placeholder="Search plans..."
-                        className="pl-9"
-                    />
-                </div>
+                        <Select value={clientId} onValueChange={setClientId}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="All Clients" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value={ALL}>All Clients</SelectItem>
+                                {clients.map((c) => (
+                                    <SelectItem key={c.id} value={String(c.id)}>
+                                        {c.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
 
-                <Select
-                    value={businessUnitId}
-                    onValueChange={handleBusinessUnitChange}
-                >
-                    <SelectTrigger className="w-[200px]">
-                        <SelectValue placeholder="Business unit" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value={ALL}>All business units</SelectItem>
-                        {businessUnits.map((bu) => (
-                            <SelectItem key={bu.id} value={String(bu.id)}>
-                                {bu.name}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                        <Select value={originId} onValueChange={setOriginId}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="All Origins" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value={ALL}>All Origins</SelectItem>
+                                {filteredLocations.map((l) => (
+                                    <SelectItem key={l.id} value={String(l.id)}>
+                                        {l.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
 
-                <Select
-                    value={destinationId}
-                    onValueChange={handleDestinationChange}
-                >
-                    <SelectTrigger className="w-[200px]">
-                        <SelectValue placeholder="Destination" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value={ALL}>All destinations</SelectItem>
-                        {destinations.map((d) => (
-                            <SelectItem key={d.id} value={String(d.id)}>
-                                {d.name}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
+                        <Select
+                            value={destinationId}
+                            onValueChange={setDestinationId}
+                        >
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="All Destinations" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value={ALL}>
+                                    All Destinations
+                                </SelectItem>
+                                {filteredLocations.map((l) => (
+                                    <SelectItem key={l.id} value={String(l.id)}>
+                                        {l.label}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
 
-                <Input
-                    type="date"
-                    value={dispatchDate}
-                    onChange={handleDateChange}
-                    className="w-[180px]"
-                />
+                        <Input
+                            type="date"
+                            value={dispatchDate}
+                            onChange={(e) => setDispatchDate(e.target.value)}
+                            className="w-[160px]"
+                        />
 
-                {hasActiveFilters && (
-                    <Button variant="ghost" size="sm" onClick={clearFilters}>
-                        <X className="h-3.5 w-3.5" />
-                        Clear
-                    </Button>
-                )}
-            </div>
+                        {hasActiveFilters && (
+                            <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={clearFilters}
+                                className="h-9 px-2"
+                            >
+                                <X className="mr-1 size-4" /> Reset
+                            </Button>
+                        )}
+                    </div>
+                </CardContent>
+            </Card>
 
-            <div className="overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm">
+            {/* Plans Table */}
+            <div className="rounded-lg border bg-card shadow-sm">
                 <Table>
                     <TableHeader>
-                        <TableRow className="bg-gray-50 hover:bg-gray-50">
-                            <TableHead className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                                Business Unit
+                        <TableRow>
+                            <TableHead>Client</TableHead>
+                            <TableHead>Origin Location</TableHead>
+                            <TableHead>Destination Location</TableHead>
+                            <TableHead className="text-center">
+                                Vehicles / Fulfillment
                             </TableHead>
-                            <TableHead className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                                Destination
-                            </TableHead>
-                            <TableHead className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                                Dispatch Date
-                            </TableHead>
-                            <TableHead className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                                Number Of Vehicles
-                            </TableHead>
-                            <TableHead className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                                Status
-                            </TableHead>
-                            <TableHead className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+                            <TableHead>Dispatch Date</TableHead>
+                            <TableHead className="text-right">
                                 Actions
                             </TableHead>
                         </TableRow>
@@ -313,205 +275,144 @@ export default function PlanningPage({
                         {plans.length === 0 ? (
                             <TableRow>
                                 <TableCell
-                                    colSpan={4}
-                                    className="py-10 text-center text-slate-400"
+                                    colSpan={6}
+                                    className="h-32 text-center text-muted-foreground"
                                 >
-                                    <div className="flex flex-col items-center gap-2">
-                                        <ClipboardList className="h-8 w-8 opacity-30" />
-                                        No plans found.
+                                    <div className="flex flex-col items-center justify-center gap-1">
+                                        <ClipboardList className="size-8 text-muted-foreground/60" />
+                                        <p>No plans found.</p>
                                     </div>
                                 </TableCell>
                             </TableRow>
                         ) : (
-                            plans.map((plan) => {
-                                const isActive =
-                                    plan.businessUnit.active === 'true' ||
-                                    plan.businessUnit.active === '1';
-
-                                return (
-                                    <TableRow
-                                        key={plan.id}
-                                        className="border-gray-100 hover:bg-blue-50"
-                                    >
-                                        <TableCell className="font-medium text-slate-900">
-                                            <div className="5 flex items-center gap-1">
-                                                <MapPinHouse className="h-3.5 w-3.5 text-slate-400" />
-                                                {`${plan.businessUnit.touchpoint} ${plan.businessUnit.name}`}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-slate-600">
-                                            <div className="flex items-center gap-1.5">
-                                                <MapPin className="h-3.5 w-3.5 text-slate-400" />
-                                                {plan.destination.name}
-                                            </div>
-                                        </TableCell>
-                                        <TableCell className="text-slate-600">
-                                            {plan.dispatchDate}
-                                        </TableCell>
-                                        <TableHead className="text-xs font-medium tracking-wide text-slate-500 uppercase">
-                                            {plan.numberOfVehicles}
-                                        </TableHead>
-                                        <TableCell>
+                            plans.map((plan) => (
+                                <TableRow key={plan.id}>
+                                    <TableCell className="font-medium">
+                                        {plan.client?.name ??
+                                            `Client #${plan.clientId}`}
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center gap-1.5">
+                                            <MapPin className="size-3.5 text-muted-foreground" />
+                                            <span>
+                                                {plan.origin?.name ??
+                                                    `Location #${plan.originId}`}
+                                            </span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <div className="flex items-center gap-1.5">
+                                            <MapPin className="size-3.5 text-muted-foreground" />
+                                            <span>
+                                                {plan.destination?.name ??
+                                                    `Location #${plan.destinationId}`}
+                                            </span>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="text-center font-semibold">
+                                        <div className="flex flex-col items-center gap-1">
                                             <Badge
                                                 variant={
-                                                    isActive
+                                                    (plan.dispatchedCount ?? 0) >= plan.numberOfVehicles
                                                         ? 'default'
-                                                        : 'secondary'
+                                                        : (plan.dispatchedCount ?? 0) > 0
+                                                          ? 'outline'
+                                                          : 'secondary'
                                                 }
                                                 className={
-                                                    isActive
-                                                        ? 'border-transparent bg-emerald-100 text-emerald-700'
-                                                        : 'border-transparent bg-slate-100 text-slate-500'
+                                                    (plan.dispatchedCount ?? 0) >= plan.numberOfVehicles
+                                                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
+                                                        : (plan.dispatchedCount ?? 0) > 0
+                                                          ? 'border-amber-500 text-amber-700 bg-amber-50'
+                                                          : ''
                                                 }
                                             >
-                                                {isActive
-                                                    ? 'Active'
-                                                    : 'Inactive'}
+                                                {plan.dispatchedCount ?? 0}/{plan.numberOfVehicles} fulfilled
                                             </Badge>
-                                        </TableCell>
-                                        <TableCell>
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        className="h-8 w-8"
-                                                    >
-                                                        <MoreHorizontal className="h-4 w-4" />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    <DropdownMenuItem asChild>
-                                                        <Link
-                                                            href={
-                                                                show({
-                                                                    planning:
-                                                                        plan.id,
-                                                                }).url
-                                                            }
-                                                        >
-                                                            View
-                                                        </Link>
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem asChild>
-                                                        <Link
-                                                            href={
-                                                                edit({
-                                                                    planning:
-                                                                        plan.id,
-                                                                }).url
-                                                            }
-                                                        >
-                                                            Edit
-                                                        </Link>
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        className="text-destructive focus:text-destructive"
-                                                        onClick={() =>
-                                                            handleDelete(
-                                                                plan.id,
-                                                            )
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        {new Date(
+                                            plan.dispatchDate,
+                                        ).toLocaleDateString('en-US', {
+                                            month: 'short',
+                                            day: 'numeric',
+                                            year: 'numeric',
+                                        })}
+                                    </TableCell>
+                                    <TableCell className="text-right">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="size-8"
+                                                >
+                                                    <MoreHorizontal className="size-4" />
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end">
+                                                <DropdownMenuItem asChild>
+                                                    <Link
+                                                        href={
+                                                            show({
+                                                                planning:
+                                                                    plan.id,
+                                                            }).url
                                                         }
+                                                        className="cursor-pointer"
                                                     >
-                                                        Delete
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </TableCell>
-                                    </TableRow>
-                                );
-                            })
+                                                        <Eye className="mr-2 size-4" />{' '}
+                                                        View Details
+                                                    </Link>
+                                                </DropdownMenuItem>
+                                                <DropdownMenuItem
+                                                    className="cursor-pointer text-destructive focus:text-destructive"
+                                                    onClick={() =>
+                                                        router.delete(
+                                                            destroy({
+                                                                planning:
+                                                                    plan.id,
+                                                            }).url,
+                                                        )
+                                                    }
+                                                >
+                                                    <Trash2 className="mr-2 size-4" />{' '}
+                                                    Delete Plan
+                                                </DropdownMenuItem>
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </TableCell>
+                                </TableRow>
+                            ))
                         )}
                     </TableBody>
                 </Table>
             </div>
 
-            {plans.length > 0 && (
+            {/* Pagination */}
+            {links && links.length > 3 && (
                 <div className="flex items-center justify-between">
-                    <p className="text-sm text-slate-500">
-                        Showing{' '}
-                        <span className="font-medium text-slate-900">
-                            {from}
-                        </span>
-                        –
-                        <span className="font-medium text-slate-900">{to}</span>{' '}
-                        of{' '}
-                        <span className="font-medium text-slate-900">
-                            {total}
-                        </span>
+                    <p className="text-sm text-muted-foreground">
+                        Showing {from ?? 0}–{to ?? 0} of {total} plans
                     </p>
-
-                    <Pagination className="mx-0 w-auto">
-                        <PaginationContent>
-                            {links.map((link, index) => {
-                                const isPrev = link.label?.includes('Previous');
-                                const isNext = link.label?.includes('Next');
-                                const isEllipsis = link.label === '...';
-
-                                if (isEllipsis) {
-                                    return (
-                                        <PaginationItem key={index}>
-                                            <PaginationEllipsis />
-                                        </PaginationItem>
-                                    );
-                                }
-
-                                const go = (e: React.MouseEvent) => {
-                                    e.preventDefault();
-
-                                    if (link.url) {
-                                        router.visit(link.url, {
-                                            preserveScroll: true,
-                                        });
-                                    }
-                                };
-
-                                if (isPrev) {
-                                    return (
-                                        <PaginationItem key={index}>
-                                            <PaginationPrevious
-                                                href={link.url ?? '#'}
-                                                className={
-                                                    !link.url
-                                                        ? 'pointer-events-none opacity-40'
-                                                        : ''
-                                                }
-                                                onClick={go}
-                                            />
-                                        </PaginationItem>
-                                    );
-                                }
-
-                                if (isNext) {
-                                    return (
-                                        <PaginationItem key={index}>
-                                            <PaginationNext
-                                                href={link.url ?? '#'}
-                                                className={
-                                                    !link.url
-                                                        ? 'pointer-events-none opacity-40'
-                                                        : ''
-                                                }
-                                                onClick={go}
-                                            />
-                                        </PaginationItem>
-                                    );
-                                }
-
-                                return (
-                                    <PaginationItem key={index}>
-                                        <PaginationLink
-                                            href={link.url ?? '#'}
-                                            isActive={!!link.active}
-                                            onClick={go}
-                                        >
-                                            {link.label}
-                                        </PaginationLink>
-                                    </PaginationItem>
-                                );
-                            })}
-                        </PaginationContent>
-                    </Pagination>
+                    <div className="flex items-center gap-1">
+                        {links.map((link, index) => (
+                            <Button
+                                key={`${link.label}-${index}`}
+                                variant={link.active ? 'default' : 'outline'}
+                                size="sm"
+                                disabled={!link.url}
+                                onClick={() => handlePageChange(link.url)}
+                            >
+                                <span
+                                    dangerouslySetInnerHTML={{
+                                        __html: link.label!,
+                                    }}
+                                />
+                            </Button>
+                        ))}
+                    </div>
                 </div>
             )}
         </div>

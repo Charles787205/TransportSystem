@@ -3,24 +3,26 @@
 namespace Modules\Client\Services;
 
 use Illuminate\Support\Collection;
-use Modules\Client\Classes\Data\ClientData;
-use Modules\Client\Classes\Data\CreateBusinessUnitData;
-use Modules\Client\Classes\Data\CreateClientData;
-use Modules\Client\Repositories\BusinessUnitRepository;
+use Modules\Client\Classes\Data\Request\CreateClientData;
+use Modules\Client\Classes\Data\Request\CreateLocationData;
+use Modules\Client\Classes\Data\Response\ClientData;
+use Modules\Client\Classes\Data\Response\LocationData;
+use Modules\Client\Classes\Data\Response\PaginatedLocationData;
 use Modules\Client\Repositories\ClientRepository;
-use Modules\Client\Classes\Data\BusinessUnitData;
-use Modules\Client\Classes\Data\CreateDestinationData;
-use Modules\Client\Classes\Data\DestinationData;
-use Modules\Client\Classes\Data\PaginatedBusinessUnitData;
-use Modules\Client\Repositories\DestinationRepository;
-use Modules\Client\Classes\Data\PaginatedDestinationData;
+use Modules\Client\Repositories\LocationRepository;
+use Modules\DispatchOperation\Classes\Data\Response\DispatchData;
+use Modules\DispatchOperation\Repositories\DispatchRepository;
+use Modules\Planning\Classes\Data\Response\PaginatedPlanData;
+use Modules\Planning\Repositories\PlanRepository;
+
 class ClientService
 {
     public function __construct(
         private ClientRepository $clientRepo,
-        private BusinessUnitRepository $businessUnitRepo,
-        private DestinationRepository $destinationRepo
-    ){}
+        private LocationRepository $locationRepo,
+        private PlanRepository $planRepo,
+        private DispatchRepository $dispatchRepo,
+    ) {}
 
     /**
      * @return Collection<int, ClientData>
@@ -28,40 +30,56 @@ class ClientService
     public function getClients()
     {
         $clients = $this->clientRepo->getClients();
+
         return $clients->map(fn ($c) => ClientData::from($c->toArray()));
     }
-    public function createClient(CreateClientData $data) : ClientData
+
+    public function createClient(CreateClientData $data): ClientData
     {
         $client = $this->clientRepo->createClient($data->clientAttributes());
-        
+
         return ClientData::from($client->refresh());
     }
-    public function getClient(int $id) : ClientData 
-    {   
+
+    public function getClient(int $id): ClientData
+    {
         $client = $this->clientRepo->getClient($id);
+
         return ClientData::from($client);
     }
 
-    public function createBusinessUnit(CreateBusinessUnitData $data){
-        $this->businessUnitRepo->createBusinessunit($data->businessUnitAttributes());
-    }
-
-    public function getPaginatedBusinessUnits(int $clientId, int $pageSize = 10, int $page = 1)
+    public function createLocation(CreateLocationData $data): LocationData
     {
-        $businessUnits = $this->businessUnitRepo->getPaginatedBusinessUnits($clientId, $pageSize, $page);
-        return PaginatedBusinessUnitData::from($businessUnits);
-    }
-    public function createDestination(CreateDestinationData $data){
-        $destination = $this->destinationRepo->createDestination($data->destinationAttributes());
-        return DestinationData::from($destination);
+        $location = $this->locationRepo->createLocation($data->locationAttributes());
+
+        return LocationData::from($location);
     }
 
-    public function getPaginatedClientsDestination(int $clientId){
-        $filter = ['client_id' => $clientId];
-        $destinations = $this->destinationRepo->getPaginatedDestinations(where: $filter);
-        return PaginatedDestinationData::from($destinations);
+    public function getPaginatedLocations(int $clientId, int $pageSize = 10, int $page = 1): PaginatedLocationData
+    {
+        $locations = $this->locationRepo->getPaginatedLocations($clientId, $pageSize, $page);
+
+        return PaginatedLocationData::from($locations);
     }
 
-    
-    
+    public function getPaginatedPlans(int $clientId, int $pageSize = 10): PaginatedPlanData
+    {
+        $plans = $this->planRepo->getPaginatedPlans(
+            where: ['client_id' => $clientId],
+            pageSize: $pageSize,
+            with: ['client', 'origin', 'destination']
+        );
+
+        return PaginatedPlanData::from($plans);
+    }
+
+    public function getRecentDispatches(int $clientId, int $limit = 10)
+    {
+        $dispatches = $this->dispatchRepo->getDispatches(
+            where: ['client_id' => $clientId],
+            with: ['vehicle', 'driver', 'client', 'tripLegs']
+        )->take($limit);
+
+        return $dispatches->map(fn ($d) => DispatchData::from($d));
+    }
 }

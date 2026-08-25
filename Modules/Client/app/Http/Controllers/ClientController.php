@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
-use Modules\Client\Classes\Data\CreateClientData;
+use Modules\Client\Classes\Data\Request\CreateClientData;
 use Modules\Client\Models\Client;
 use Modules\Client\Services\ClientService;
 
@@ -55,16 +55,18 @@ class ClientController extends Controller
     {
         Gate::authorize('view', $client);
 
-        $client = $this->clientService->getClient($client->id);
-        $businessUnits = $this->clientService->getPaginatedBusinessUnits($client->id, 10);
-        $destinations = $this->clientService->getPaginatedClientsDestination($client->id);
+        $clientData = $this->clientService->getClient($client->id);
+        $locations = $this->clientService->getPaginatedLocations($client->id);
+        $plans = $this->clientService->getPaginatedPlans($client->id);
+        $dispatches = $this->clientService->getRecentDispatches($client->id);
 
         return Inertia::render(
             'client/show',
             [
-                'client' => $client,
-                'businessUnits' => $businessUnits,
-                'destinations' => $destinations,
+                'client' => $clientData,
+                'locations' => $locations,
+                'plans' => $plans,
+                'dispatches' => $dispatches,
             ]
         );
     }
@@ -87,6 +89,22 @@ class ClientController extends Controller
     {
         $clientModel = Client::findOrFail($id);
         Gate::authorize('update', $clientModel);
+    }
+
+    public function updateAllowedCargoUnits(Request $request, Client $client)
+    {
+        Gate::authorize('update', $client);
+
+        $validated = $request->validate([
+            'allowed_cargo_units' => ['nullable', 'array'],
+            'allowed_cargo_units.*' => ['string', 'in:per_parcel,per_box,loose_items,by_weight'],
+        ]);
+
+        $client->update([
+            'allowed_cargo_units' => $validated['allowed_cargo_units'] ?? [],
+        ]);
+
+        return back()->with('success', 'Cargo calculation configuration updated.');
     }
 
     /**

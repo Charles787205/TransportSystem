@@ -7,8 +7,7 @@ import {
     Truck,
     ClipboardList,
     BarChart3,
-    Plus,
-    Share2
+    MapPin,
 } from 'lucide-react';
 import { ArrowLeft } from 'lucide-react';
 import {
@@ -19,40 +18,49 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import type {  ClientData, PaginatedDestinationData } from '@/generated/Client';
-import type { PaginatedBusinessUnitData } from '@/generated/Client';
+import ClientCargoConfig from '@/components/client/client-cargo-config';
+import CreateLocationModal from '@/components/client/create-location-modal';
+import type { ClientData, PaginatedLocationData } from '@/generated/Client';
+import type { DispatchData } from '@/generated/DispatchOperation';
+import type { PaginatedPlanData } from '@/generated/Planning';
 import { index } from '@/routes/client';
-import { index as BUIndex } from '@/routes/client/bu/index';
-import {index as DestinationIndex} from '@/routes/client/destination'
+
 const getInitials = (name: string) =>
     name
         .split(' ')
-    .map((part) => part[0])
+        .map((part) => part[0])
         .slice(0, 2)
         .join('')
         .toUpperCase();
 
-const Show = ({ client,
-    businessUnits,
-    destinations } : { client: ClientData; businessUnits: PaginatedBusinessUnitData, destinations: PaginatedDestinationData }) => {
+const Show = ({
+    client,
+    locations,
+    plans,
+    dispatches,
+}: {
+    client: ClientData;
+    locations?: PaginatedLocationData;
+    plans?: PaginatedPlanData;
+    dispatches?: DispatchData[];
+}) => {
     const handlePageChange = (url: string | null) => {
         if (url) {
             router.get(url, {}, { preserveState: true });
         }
     };
-    console.log(businessUnits);
 
     return (
         <>
             <Head title={client.name} />
-        
+
             <div className="space-y-6 p-6">
                 {/* Header */}
                 <Card>
                     <CardContent className="flex items-center justify-between">
                         <div className="flex items-center gap-4">
-                            <Link href={index().url} className='cursor-pointer hover:scale-105'>
-                            <ArrowLeft />
+                            <Link href={index().url} className="cursor-pointer hover:scale-105">
+                                <ArrowLeft />
                             </Link>
                             <Avatar className="size-14">
                                 <AvatarFallback className="text-lg font-medium">
@@ -71,7 +79,7 @@ const Show = ({ client,
                                                 : 'secondary'
                                         }
                                     >
-                                        {client.active}
+                                        {client.active ? 'Active' : 'Inactive'}
                                     </Badge>
                                 </div>
                                 <p className="text-sm text-muted-foreground">
@@ -92,12 +100,14 @@ const Show = ({ client,
                                 Edit
                             </Button>
                             <Button variant="destructive" size="sm">
-                                
                                 Set Inactive
                             </Button>
                         </div>
                     </CardContent>
                 </Card>
+
+                {/* Cargo Configuration */}
+                <ClientCargoConfig client={client} />
 
                 {/* Contact info */}
                 <Card>
@@ -152,151 +162,94 @@ const Show = ({ client,
                 </Card>
 
                 <Separator />
-                {/* Business Units */}
-                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between">
-                            <CardTitle className="flex items-center gap-2">
-                                <Share2 className="size-4" />
-                                Business Units
-                            </CardTitle>
-                            <Button className='bg-blue-500 text-white' onClick={()=>{
-                                router.visit(BUIndex.url({client: client.id}))
-                                }} variant="ghost" size="sm">
-                                
-                                Business Unit page
-                            </Button>
-                            
-                        </CardHeader>
-                        <CardContent>
-                            {businessUnits.data.length > 0 ? (
-                                <div className="space-y-4">
-                                    <div className="space-y-2">
-                                        {businessUnits.data.map((businessUnit, index) => (
-                                            <div
-                                                key={`${businessUnit.name}-${index}`}
-                                                className="flex items-center justify-between rounded-md border p-3"
-                                            >
-                                                <div>
-                                                    <p className="font-medium">
-                                                        {businessUnit.name}
-                                                    </p>
-                                                    <p className="text-sm text-muted-foreground">
-                                                        {businessUnit.touchpoint}
-                                                    </p>
-                                                </div>
-                                                <Badge
-                                                    variant={
-                                                        businessUnit.active === '1'
-                                                            ? 'default'
-                                                            : 'secondary'
-                                                    }
-                                                >
-                                                    {businessUnit.active === '1' ? 'Active' : 'Inactive'}
-                                                </Badge>
-                                            </div>
-                                        ))}
-                                    </div>
-                                    
-                                    {businessUnits.lastPage > 1 && (
-                                        <div className="flex items-center justify-between">
-                                            <p className="text-sm text-muted-foreground">
-                                                Showing {businessUnits.from ?? 0}–{businessUnits.to ?? 0} of {businessUnits.total}
-                                            </p>
-                                            <div className="flex flex-wrap gap-1">
-                                                {businessUnits.links.map((link, index) => (
-                                                    <Button
-                                                        key={`${link.label}-${index}`}
-                                                        variant={link.active ? 'default' : 'outline'}
-                                                        size="sm"
-                                                        disabled={!link.url}
-                                                        onClick={() => handlePageChange(link.url)}
-                                                       
-                                                    />
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )} 
-                                </div>
-                            ) : (
-                                <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed py-10 text-center">
-                                    <Share2 className="size-8 text-muted-foreground" />
-                                    <p className="text-sm text-muted-foreground">
-                                        No business units found for this client.
-                                    </p>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
 
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between">
-                            <CardTitle className="flex items-center gap-2">
-                                <Share2 className="size-4" />
-                                Destinations
-                            </CardTitle>
-                            <Button className='bg-blue-500 text-white' onClick={()=>{
-                                router.visit(DestinationIndex.url({client: client.id}))
-                                }} variant="ghost" size="sm">
-                                
-                                Destination Index
-                            </Button>
-                            
-                        </CardHeader>
-                        {/**Destinations */}
-                        <CardContent>
-                            {destinations.data.length > 0 ? (
-                                <div className="space-y-4">
-                                    <div className="space-y-2">
-                                        {destinations.data.map((destination, index) => (
-                                            <div
-                                                key={`${destination.name}-${index}`}
-                                                className="flex items-center justify-between rounded-md border p-3"
-                                            >
-                                                <div>
+                {/* Locations Card */}
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <CardTitle className="flex items-center gap-2">
+                            <MapPin className="size-4" />
+                            Client Locations
+                        </CardTitle>
+                        <CreateLocationModal clientId={client.id} />
+                    </CardHeader>
+                    <CardContent>
+                        {locations?.data && locations.data.length > 0 ? (
+                            <div className="space-y-4">
+                                <div className="space-y-2">
+                                    {locations.data.map((location) => (
+                                        <div
+                                            key={location.id}
+                                            className="flex items-center justify-between rounded-md border p-3"
+                                        >
+                                            <div>
+                                                <div className="flex items-center gap-2">
                                                     <p className="font-medium">
-                                                        {destination.name}
+                                                        {location.name}
                                                     </p>
-                                                    
+                                                    {location.type && (
+                                                        <Badge variant="outline">
+                                                            {location.type}
+                                                        </Badge>
+                                                    )}
                                                 </div>
-                                                
+                                                <p className="text-sm text-muted-foreground">
+                                                    {[location.touchpoint, location.address]
+                                                        .filter(Boolean)
+                                                        .join(' • ') || 'No extra address details'}
+                                                </p>
                                             </div>
-                                        ))}
-                                    </div>
-                                    
-                                    {destinations.lastPage > 1 && (
-                                        <div className="flex items-center justify-between">
-                                            <p className="text-sm text-muted-foreground">
-                                                Showing {destinations.from ?? 0}–{destinations.to ?? 0} of {destinations.total}
-                                            </p>
-                                            <div className="flex flex-wrap gap-1">
-                                                {destinations.links.map((link, index) => (
+                                            <Badge
+                                                variant={
+                                                    location.active
+                                                        ? 'default'
+                                                        : 'secondary'
+                                                }
+                                            >
+                                                {location.active ? 'Active' : 'Inactive'}
+                                            </Badge>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {locations.lastPage > 1 && (
+                                    <div className="flex items-center justify-between">
+                                        <p className="text-sm text-muted-foreground">
+                                            Showing {locations.from ?? 0}–{locations.to ?? 0} of {locations.total}
+                                        </p>
+                                        <div className="flex flex-wrap gap-1">
+                                            {locations.links.map((link, index) => {
+                                                let label = link.label;
+                                                if (label?.includes('&laquo;')) label = '« Prev';
+                                                if (label?.includes('&raquo;')) label = 'Next »';
+
+                                                return (
                                                     <Button
                                                         key={`${link.label}-${index}`}
                                                         variant={link.active ? 'default' : 'outline'}
                                                         size="sm"
                                                         disabled={!link.url}
                                                         onClick={() => handlePageChange(link.url)}
-                                                       
-                                                    />
-                                                ))}
-                                            </div>
+                                                    >
+                                                        {label}
+                                                    </Button>
+                                                );
+                                            })}
                                         </div>
-                                    )} 
-                                </div>
-                            ) : (
-                                <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed py-10 text-center">
-                                    <Share2 className="size-8 text-muted-foreground" />
-                                    <p className="text-sm text-muted-foreground">
-                                        No business units found for this client.
-                                    </p>
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-                </div>
-                
-                {/* Plans, deliveries, charts */}
+                                    </div>
+                                )}
+                            </div>
+                        ) : (
+                            <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed py-10 text-center">
+                                <MapPin className="size-8 text-muted-foreground" />
+                                <p className="text-sm text-muted-foreground">
+                                    No locations recorded for this client yet.
+                                </p>
+                            </div>
+                        )}
+                    </CardContent>
+                </Card>
+
+                {/* Plans & Deliveries */}
                 <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
@@ -304,18 +257,37 @@ const Show = ({ client,
                                 <ClipboardList className="size-4" />
                                 Plans
                             </CardTitle>
-                            <Button variant="ghost" size="sm">
-                                <Plus className="size-4" />
-                                Add
-                            </Button>
                         </CardHeader>
                         <CardContent>
-                            <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed py-10 text-center">
-                                <ClipboardList className="size-8 text-muted-foreground" />
-                                <p className="text-sm text-muted-foreground">
-                                    No plans yet for this client.
-                                </p>
-                            </div>
+                            {plans?.plans && plans.plans.length > 0 ? (
+                                <div className="space-y-2">
+                                    {plans.plans.map((plan) => (
+                                        <div
+                                            key={plan.id}
+                                            className="flex items-center justify-between rounded-md border p-3"
+                                        >
+                                            <div>
+                                                <p className="font-medium text-sm">
+                                                    Dispatch Date: {plan.dispatchDate}
+                                                </p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    Vehicles: {plan.numberOfVehicles}
+                                                </p>
+                                            </div>
+                                            <Badge variant="outline">
+                                                #{plan.id}
+                                            </Badge>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed py-10 text-center">
+                                    <ClipboardList className="size-8 text-muted-foreground" />
+                                    <p className="text-sm text-muted-foreground">
+                                        No plans recorded yet for this client.
+                                    </p>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
 
@@ -323,19 +295,39 @@ const Show = ({ client,
                         <CardHeader className="flex flex-row items-center justify-between">
                             <CardTitle className="flex items-center gap-2">
                                 <Truck className="size-4" />
-                                Deliveries
+                                Dispatches / Deliveries
                             </CardTitle>
-                            <Button variant="ghost" size="sm">
-                                View all
-                            </Button>
                         </CardHeader>
                         <CardContent>
-                            <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed py-10 text-center">
-                                <Truck className="size-8 text-muted-foreground" />
-                                <p className="text-sm text-muted-foreground">
-                                    No deliveries recorded yet.
-                                </p>
-                            </div>
+                            {dispatches && dispatches.length > 0 ? (
+                                <div className="space-y-2">
+                                    {dispatches.map((dispatch) => (
+                                        <div
+                                            key={dispatch.id}
+                                            className="flex items-center justify-between rounded-md border p-3"
+                                        >
+                                            <div>
+                                                <p className="font-medium text-sm">
+                                                    {dispatch.vehicle?.plateNumber ?? 'Vehicle N/A'} • {dispatch.driver?.fullName ?? 'Driver N/A'}
+                                                </p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    Date: {dispatch.dispatchDate} | Call: {dispatch.assignedCallTime}
+                                                </p>
+                                            </div>
+                                            <Badge variant="secondary">
+                                                {dispatch.serviceType}
+                                            </Badge>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center justify-center gap-2 rounded-md border border-dashed py-10 text-center">
+                                    <Truck className="size-8 text-muted-foreground" />
+                                    <p className="text-sm text-muted-foreground">
+                                        No dispatches recorded yet for this client.
+                                    </p>
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
                 </div>
@@ -344,15 +336,14 @@ const Show = ({ client,
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2">
                             <BarChart3 className="size-4" />
-                            Delivery activity
+                            Delivery Activity
                         </CardTitle>
                     </CardHeader>
                     <CardContent>
                         <div className="flex h-64 flex-col items-center justify-center gap-2 rounded-md border border-dashed text-center">
                             <BarChart3 className="size-8 text-muted-foreground" />
                             <p className="text-sm text-muted-foreground">
-                                Chart will render here once delivery data is
-                                available.
+                                Activity chart will render here once delivery data is available.
                             </p>
                         </div>
                     </CardContent>

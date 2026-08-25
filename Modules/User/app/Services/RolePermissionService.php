@@ -2,9 +2,9 @@
 
 namespace Modules\User\Services;
 
-use Modules\User\Classes\Data\CreateRoleData;
-use Modules\User\Classes\Data\RoleData;
-use Modules\User\Classes\Data\UpdateRoleData;
+use Modules\User\Classes\Data\Request\CreateRoleData;
+use Modules\User\Classes\Data\Request\UpdateRoleData;
+use Modules\User\Classes\Data\Response\RoleData;
 use Modules\User\Repositories\PermissionRepository;
 use Modules\User\Repositories\RoleRepository;
 

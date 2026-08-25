@@ -1,16 +1,10 @@
 import { Link, router } from '@inertiajs/react';
-import { MoreHorizontal, Plus, Search } from 'lucide-react';
+import { Eye, Plus, Search } from 'lucide-react';
 
 import { ArrowLeft } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
     Table,
@@ -21,8 +15,8 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import type { VehicleData } from '@/generated/Vendor';
-import { show as vendorShow } from '@/routes/vendor';
-import { show, destroy, create, edit } from '@/routes/vendor/vehicle';
+import { destroy, show as vendorShow } from '@/routes/vendor';
+import { show, create } from '@/routes/vendor/vehicle';
 
 interface PaginatedVehicles {
     data: VehicleData[];
@@ -41,20 +35,6 @@ interface IndexProps {
 
 const Index = ({ data, vendorId }: IndexProps) => {
     const vehicles = data.data;
-
-    const handleDelete = (id: number) => {
-        if (!confirm('Delete this vehicle? This cannot be undone.')) {
-return;
-}
-
-        router.delete(
-            destroy({
-                vendor: vendorId,
-                vehicle: id,
-            }).url,
-            { preserveScroll: true },
-        );
-    };
 
     return (
         <div className="space-y-6 p-6">
@@ -162,52 +142,19 @@ return;
                                                     : 'Inactive'}
                                             </Badge>
                                         </TableCell>
-                                        <TableCell>
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button
-                                                        variant="ghost"
-                                                        size="icon"
-                                                        className="h-8 w-8"
-                                                    >
-                                                        <MoreHorizontal className="h-4 w-4" />
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    <DropdownMenuItem asChild>
-                                                        <Link
-                                                            href={show.url({
-                                                                vendor: vendorId,
-                                                                vehicle:
-                                                                    vehicle.id,
-                                                            })}
-                                                        >
-                                                            View
-                                                        </Link>
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem asChild>
-                                                        <Link
-                                                            href={edit.url({
-                                                                vendor: vendorId,
-                                                                vehicle:
-                                                                    vehicle.id,
-                                                            })}
-                                                        >
-                                                            Edit
-                                                        </Link>
-                                                    </DropdownMenuItem>
-                                                    <DropdownMenuItem
-                                                        className="text-destructive focus:text-destructive"
-                                                        onClick={() =>
-                                                            handleDelete(
-                                                                vehicle.vendorId,
-                                                            )
-                                                        }
-                                                    >
-                                                        Delete
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
+                                        <TableCell className="text-right">
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                asChild
+                                            >
+                                                <Link
+                                                    href={show.url([vendorId, vehicle.id])}
+                                                >
+                                                    <Eye className="mr-1 h-4 w-4" />
+                                                    View
+                                                </Link>
+                                            </Button>
                                         </TableCell>
                                     </TableRow>
                                 ))

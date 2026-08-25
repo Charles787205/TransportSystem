@@ -3,6 +3,8 @@
 namespace Modules\Client\Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\Client\Enums\LocationType;
+use Modules\Client\Enums\TouchpointType;
 use Modules\Client\Models\Client;
 
 class ClientDatabaseSeeder extends Seeder
@@ -18,13 +20,11 @@ class ClientDatabaseSeeder extends Seeder
                 'email' => 'contact@acme.com',
                 'phone_number' => '+1-555-0199',
                 'active' => true,
-                'business_units' => [
-                    ['name' => 'North Division', 'touchpoint' => 'Hub A'],
-                    ['name' => 'South Division', 'touchpoint' => 'Hub B'],
-                ],
-                'destinations' => [
-                    ['name' => 'New York Warehouse'],
-                    ['name' => 'Boston Hub'],
+                'locations' => [
+                    ['name' => 'North Division', 'touchpoint' => TouchpointType::FM, 'type' => LocationType::BU, 'address' => '123 North St'],
+                    ['name' => 'South Division', 'touchpoint' => TouchpointType::MM, 'type' => LocationType::BU, 'address' => '456 South St'],
+                    ['name' => 'New York Warehouse', 'touchpoint' => TouchpointType::MFM, 'type' => LocationType::HUB, 'address' => '789 NY Ave'],
+                    ['name' => 'Boston Hub', 'touchpoint' => TouchpointType::FM, 'type' => LocationType::HUB, 'address' => '101 Boston Rd'],
                 ],
             ],
             [
@@ -32,29 +32,22 @@ class ClientDatabaseSeeder extends Seeder
                 'email' => 'shipping@globaldist.com',
                 'phone_number' => '+1-555-0288',
                 'active' => true,
-                'business_units' => [
-                    ['name' => 'Express Delivery', 'touchpoint' => 'Airport Station'],
-                ],
-                'destinations' => [
-                    ['name' => 'Los Angeles Sorting Facility'],
-                    ['name' => 'San Francisco Depot'],
+                'locations' => [
+                    ['name' => 'Express Delivery', 'touchpoint' => TouchpointType::FM, 'type' => LocationType::BU, 'address' => '1 Driver Way'],
+                    ['name' => 'Los Angeles Sorting Facility', 'touchpoint' => TouchpointType::MFM, 'type' => LocationType::HUB, 'address' => '500 LA Blvd'],
+                    ['name' => 'San Francisco Depot', 'touchpoint' => TouchpointType::MM, 'type' => LocationType::HUB, 'address' => '300 SF Way'],
                 ],
             ],
         ];
 
         foreach ($clients as $clientData) {
-            $businessUnits = $clientData['business_units'];
-            $destinations = $clientData['destinations'];
-            unset($clientData['business_units'], $clientData['destinations']);
+            $locations = $clientData['locations'];
+            unset($clientData['locations']);
 
             $client = Client::create($clientData);
 
-            foreach ($businessUnits as $bu) {
-                $client->businessUnits()->create($bu);
-            }
-
-            foreach ($destinations as $dest) {
-                $client->destinations()->create($dest);
+            foreach ($locations as $locData) {
+                $client->locations()->create($locData);
             }
         }
     }

@@ -10,7 +10,11 @@ import {
     Repeat,
 } from 'lucide-react';
 import { useState } from 'react';
-import { AreaChart, Area, XAxis, CartesianGrid } from 'recharts';
+import AddInsuranceModal from '@/components/vehicle/add-insurance-modal';
+import AddRegistrationModal from '@/components/vehicle/add-registration-modal';
+import EditVehicleModal from '@/components/vehicle/edit-vehicle-modal';
+import VehicleAttachDriverDialog from '@/components/vehicle/vehicle-attach-driver-dialog';
+import { VehicleDriverHistoryItem } from '@/components/vehicle/vehicle-driver-history-item';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -22,90 +26,72 @@ import {
     CardDescription,
     CardFooter,
 } from '@/components/ui/card';
-import type {
-    ChartConfig} from '@/components/ui/chart';
-import {
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from '@/components/ui/chart';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
-import VehicleAttachDriverDialog from '@/components/vehicle/vehicle-attach-driver-dialog';
-import { VehicleDriverHistoryItem } from '@/components/vehicle/vehicle-driver-history-item';
 import type { VehicleData, VehicleDriverHistory } from '@/generated/Vendor';
 import { index } from '@/routes/vendor/vehicle';
-const dispatchHistory = [
-    { month: 'Jan', successRate: 82 },
-    { month: 'Feb', successRate: 85 },
-    { month: 'Mar', successRate: 79 },
-    { month: 'Apr', successRate: 91 },
-    { month: 'May', successRate: 88 },
-    { month: 'Jun', successRate: 94 },
-];
-const chartConfig = {
-    successRate: {
-        label: 'Success Rate',
-        color: 'var(--color-blue-800)',
-    },
-} satisfies ChartConfig;
+
+type ShowProps = {
+    vendorId: number;
+    vehicle: VehicleData;
+    history: VehicleDriverHistory[];
+    stats?: {
+        totalTrips: number;
+        successRate: number;
+    };
+};
 
 const Show = ({
     vendorId,
     vehicle,
     history,
-}: {
-    vendorId: number;
-    vehicle: VehicleData;
-    history: VehicleDriverHistory[];
-}) => {
-    const activeInsurance = vehicle.insurances?.[0] ?? null;
-    const activeRegistration = vehicle.registrations?.[0] ?? null;
+    stats,
+}: ShowProps) => {
+    const insurances = vehicle.insurances ?? [];
+    const registrations = vehicle.registrations ?? [];
+    const activeInsurance = insurances.length > 0 ? insurances[insurances.length - 1] : null;
+    const activeRegistration = registrations.length > 0 ? registrations[registrations.length - 1] : null;
 
-    // Dummy stats — swap for real aggregates once dispatch tracking exists
-    const totalTrips = 214;
-    const successRate = 91;
+    const totalTrips = stats?.totalTrips ?? 0;
+    const successRate = stats?.successRate ?? 100;
     const [isOpenDialog, setIsOpenDialog] = useState(false);
 
     function openDialog() {
         setIsOpenDialog(true);
         router.reload({
             only: ['drivers'],
-            onSuccess: () => {
-                console.log('Drivers loaded');
-            },
         });
     }
-
-    console.log(history);
 
     return (
         <div className="space-y-6 p-6">
             {/* Header */}
-            <div className="flex items-center gap-4">
-                <Button variant="outline" size="icon" asChild>
-                    <Link href={index(vendorId)}>
-                        <ArrowLeft className="size-4" />
-                    </Link>
-                </Button>
-                <div className="flex size-11 items-center justify-center rounded-lg bg-blue-800/10 text-blue-800">
-                    <Truck className="size-5" />
-                </div>
-                <div>
-                    <div className="flex items-center gap-2">
-                        <h1 className="text-2xl font-semibold tracking-tight">
-                            {vehicle.plateNumber}
-                        </h1>
-                        <Badge
-                            variant={vehicle.isActive ? 'default' : 'secondary'}
-                        >
-                            {vehicle.isActive ? 'Active' : 'Inactive'}
-                        </Badge>
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div className="flex items-center gap-4">
+                    <Button variant="outline" size="icon" asChild>
+                        <Link href={index(vendorId)}>
+                            <ArrowLeft className="size-4" />
+                        </Link>
+                    </Button>
+                    <div className="flex size-11 items-center justify-center rounded-lg bg-blue-800/10 text-blue-800">
+                        <Truck className="size-5" />
                     </div>
-                    <p className="text-sm text-muted-foreground">
-                        {vehicle.make} · Owned by {vehicle.ownersName}
-                    </p>
+                    <div>
+                        <div className="flex items-center gap-2">
+                            <h1 className="text-2xl font-semibold tracking-tight">
+                                {vehicle.plateNumber}
+                            </h1>
+                            <Badge variant={vehicle.isActive ? 'default' : 'secondary'}>
+                                {vehicle.isActive ? 'Active' : 'Inactive'}
+                            </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                            {vehicle.make} · Owned by {vehicle.ownersName}
+                        </p>
+                    </div>
                 </div>
+
+                <EditVehicleModal vendorId={vendorId} vehicle={vehicle} />
             </div>
 
             {/* Main grid */}
@@ -120,12 +106,12 @@ const Show = ({
                     </CardHeader>
                     <CardContent className="space-y-3">
                         {[
-                            ['Make', vehicle.make],
+                            ['Make / Model', vehicle.make],
                             ['Year Model', vehicle.yearModel],
-                            ['Engine Number', vehicle.engineNumber],
-                            ['Chassis Number', vehicle.chassisNumber],
+                            ['Engine Number', vehicle.engineNumber || '—'],
+                            ['Chassis Number', vehicle.chassisNumber || '—'],
                             ["Owner's Name", vehicle.ownersName],
-                            ['Registered Address', vehicle.registeredAddress],
+                            ['Registered Address', vehicle.registeredAddress || '—'],
                         ].map(([label, value]) => (
                             <div
                                 key={label}
@@ -147,7 +133,7 @@ const Show = ({
                     <CardHeader>
                         <CardTitle>Trip Summary</CardTitle>
                         <CardDescription>
-                            Lifetime dispatch activity
+                            Real dispatch activity statistics
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="grid grid-cols-2 gap-4">
@@ -155,7 +141,7 @@ const Show = ({
                             <Repeat className="size-4 text-muted-foreground" />
                             <p className="text-2xl font-bold">{totalTrips}</p>
                             <p className="text-xs text-muted-foreground">
-                                Total Trips
+                                Total Dispatches
                             </p>
                         </div>
                         <div className="flex flex-col items-start gap-1 rounded-lg border p-4">
@@ -167,8 +153,7 @@ const Show = ({
                         </div>
                     </CardContent>
                     <CardFooter className="text-xs text-muted-foreground">
-                        Success rate reflects on-time, completed dispatch
-                        requests
+                        Success rate reflects delivered dispatches for this vehicle
                     </CardFooter>
                 </Card>
 
@@ -178,7 +163,7 @@ const Show = ({
                         <div>
                             <CardTitle>Assigned Driver</CardTitle>
                             <CardDescription>
-                                Current driver for this truck
+                                Current driver for this vehicle
                             </CardDescription>
                         </div>
                     </CardHeader>
@@ -187,7 +172,7 @@ const Show = ({
                             <div className="flex items-center gap-3 rounded-lg border p-4">
                                 <Avatar className="size-10">
                                     <AvatarImage src="https://github.com/shadcn.png" />
-                                    <AvatarFallback>CN</AvatarFallback>
+                                    <AvatarFallback>DR</AvatarFallback>
                                 </Avatar>
                                 <div>
                                     <p className="text-sm font-medium">
@@ -201,7 +186,6 @@ const Show = ({
                         ) : (
                             <div className="flex items-center gap-3 rounded-lg border p-4">
                                 <Avatar className="size-10">
-                                    <AvatarImage src="https://github.com/shadcn.png" />
                                     <AvatarFallback>-</AvatarFallback>
                                 </Avatar>
                                 <div>
@@ -221,79 +205,116 @@ const Show = ({
                         </Button>
                     </CardFooter>
                 </Card>
-                {/* Attach Driver */}
 
+                {/* Attach Driver Dialog */}
                 <VehicleAttachDriverDialog
                     isOpen={isOpenDialog}
                     setIsOpen={setIsOpenDialog}
                 />
 
-                {/* Performance Chart */}
-                {/* Performance Chart */}
-                <Card className="lg:col-span-2">
-                    <CardHeader>
-                        <CardTitle>Dispatch Success Rate</CardTitle>
-                        <CardDescription>
-                            How often this truck shows up when requested, over
-                            time
-                        </CardDescription>
+                {/* Insurance Card */}
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <ShieldAlert className="size-4 text-blue-800" />
+                            <CardTitle className="text-base">
+                                Insurance Policies ({insurances.length})
+                            </CardTitle>
+                        </div>
+                        <div className="flex items-center gap-1">
+                            <ShieldCheck
+                                className={`size-4 ${activeInsurance ? 'text-emerald-600' : 'text-muted-foreground'}`}
+                            />
+                            <AddInsuranceModal vendorId={vendorId} vehicleId={vehicle.id} />
+                        </div>
                     </CardHeader>
-                    <CardContent>
-                        <ChartContainer
-                            config={chartConfig}
-                            className="h-72 w-full"
-                        >
-                            <AreaChart data={dispatchHistory}>
-                                <defs>
-                                    <linearGradient
-                                        id="successGradient"
-                                        x1="0"
-                                        y1="0"
-                                        x2="0"
-                                        y2="1"
-                                    >
-                                        <stop
-                                            offset="5%"
-                                            stopColor="var(--color-successRate)"
-                                            stopOpacity={0.35}
-                                        />
-                                        <stop
-                                            offset="95%"
-                                            stopColor="var(--color-successRate)"
-                                            stopOpacity={0}
-                                        />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid
-                                    strokeDasharray="3 3"
-                                    vertical={false}
-                                />
-                                <XAxis
-                                    dataKey="month"
-                                    tickLine={false}
-                                    axisLine={false}
-                                    tickMargin={8}
-                                />
-                                <ChartTooltip
-                                    cursor={false}
-                                    content={
-                                        <ChartTooltipContent indicator="line" />
-                                    }
-                                />
-                                <Area
-                                    dataKey="successRate"
-                                    type="monotone"
-                                    stroke="var(--color-successRate)"
-                                    strokeWidth={2}
-                                    fill="url(#successGradient)"
-                                />
-                            </AreaChart>
-                        </ChartContainer>
+                    <CardContent className="space-y-2">
+                        {activeInsurance ? (
+                            <>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-muted-foreground">
+                                        Provider
+                                    </span>
+                                    <span className="font-medium">
+                                        {activeInsurance.providerName}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-muted-foreground">
+                                        Policy #
+                                    </span>
+                                    <span className="font-medium">
+                                        {activeInsurance.policyNumber}
+                                    </span>
+                                </div>
+                                <Separator className="my-2" />
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-muted-foreground">
+                                        Valid Period
+                                    </span>
+                                    <span className="font-medium">
+                                        {activeInsurance.startDate} – {activeInsurance.endDate}
+                                    </span>
+                                </div>
+                            </>
+                        ) : (
+                            <p className="py-4 text-center text-sm text-muted-foreground">
+                                No insurance policy on file
+                            </p>
+                        )}
                     </CardContent>
-                    <CardFooter className="text-xs text-muted-foreground">
-                        Dummy data shown — connect to real dispatch history when
-                        available
-                    </CardFooter>
+                </Card>
+
+                {/* Registration Card */}
+                <Card>
+                    <CardHeader className="flex flex-row items-center justify-between">
+                        <div className="flex items-center gap-2">
+                            <FileWarning className="size-4 text-blue-800" />
+                            <CardTitle className="text-base">
+                                Registrations ({registrations.length})
+                            </CardTitle>
+                        </div>
+                        <AddRegistrationModal vendorId={vendorId} vehicleId={vehicle.id} />
+                    </CardHeader>
+                    <CardContent className="space-y-2">
+                        {activeRegistration ? (
+                            <>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-muted-foreground">
+                                        CR #
+                                    </span>
+                                    <span className="font-medium">
+                                        {activeRegistration.crNumber}
+                                    </span>
+                                </div>
+                                <div className="flex justify-between text-sm">
+                                    <span className="text-muted-foreground">
+                                        OR #
+                                    </span>
+                                    <span className="font-medium">
+                                        {activeRegistration.orNumber}
+                                    </span>
+                                </div>
+                                {activeRegistration.ltfrbDate && (
+                                    <>
+                                        <Separator className="my-2" />
+                                        <div className="flex justify-between text-sm">
+                                            <span className="text-muted-foreground">
+                                                LTFRB Date
+                                            </span>
+                                            <span className="font-medium">
+                                                {activeRegistration.ltfrbDate}
+                                            </span>
+                                        </div>
+                                    </>
+                                )}
+                            </>
+                        ) : (
+                            <p className="py-4 text-center text-sm text-muted-foreground">
+                                No registration on file
+                            </p>
+                        )}
+                    </CardContent>
                 </Card>
 
                 {/* Driver History */}
@@ -326,104 +347,6 @@ const Show = ({
                                     Assignments will appear here once set up
                                 </p>
                             </div>
-                        )}
-                    </CardContent>
-                </Card>
-
-                {/* Insurance */}
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <ShieldAlert className="size-4 text-blue-800" />
-                            <CardTitle className="text-base">
-                                Insurance
-                            </CardTitle>
-                        </div>
-                        <ShieldCheck
-                            className={`size-4 ${activeInsurance ? 'text-emerald-600' : 'text-muted-foreground'}`}
-                        />
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                        {activeInsurance ? (
-                            <>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">
-                                        Provider
-                                    </span>
-                                    <span className="font-medium">
-                                        {activeInsurance.providerName}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">
-                                        Policy #
-                                    </span>
-                                    <span className="font-medium">
-                                        {activeInsurance.policyNumber}
-                                    </span>
-                                </div>
-                                <Separator className="my-2" />
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">
-                                        Valid
-                                    </span>
-                                    <span className="font-medium">
-                                        {activeInsurance.startDate} –{' '}
-                                        {activeInsurance.endDate}
-                                    </span>
-                                </div>
-                            </>
-                        ) : (
-                            <p className="py-4 text-center text-sm text-muted-foreground">
-                                No insurance on file
-                            </p>
-                        )}
-                    </CardContent>
-                </Card>
-
-                {/* Registration */}
-                <Card>
-                    <CardHeader className="flex flex-row items-center justify-between">
-                        <div className="flex items-center gap-2">
-                            <FileWarning className="size-4 text-blue-800" />
-                            <CardTitle className="text-base">
-                                Registration
-                            </CardTitle>
-                        </div>
-                    </CardHeader>
-                    <CardContent className="space-y-2">
-                        {activeRegistration ? (
-                            <>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">
-                                        CR #
-                                    </span>
-                                    <span className="font-medium">
-                                        {activeRegistration.crNumber}
-                                    </span>
-                                </div>
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">
-                                        OR #
-                                    </span>
-                                    <span className="font-medium">
-                                        {activeRegistration.orNumber}
-                                    </span>
-                                </div>
-                                <Separator className="my-2" />
-                                <div className="flex justify-between text-sm">
-                                    <span className="text-muted-foreground">
-                                        LTFRB Date
-                                    </span>
-                                    <span className="font-medium">
-                                        {activeRegistration.ltfrbDate}
-                                    </span>
-                                </div>
-                            </>
-                        ) : (
-                            <p className="py-4 text-center text-sm text-muted-foreground">
-                                No registration on file
-                            </p>
                         )}
                     </CardContent>
                 </Card>

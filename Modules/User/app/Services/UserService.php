@@ -3,10 +3,10 @@
 namespace Modules\User\Services;
 
 use Illuminate\Support\Facades\Log;
-use Modules\Core\Classes\Data\PaginatedData;
-use Modules\User\Classes\Data\CreateUserData;
-use Modules\User\Classes\Data\UpdateUserData;
-use Modules\User\Classes\Data\UserData;
+use Modules\Core\Classes\Data\Response\PaginatedData;
+use Modules\User\Classes\Data\Request\CreateUserData;
+use Modules\User\Classes\Data\Request\UpdateUserData;
+use Modules\User\Classes\Data\Response\UserData;
 use Modules\User\Repositories\UserRepository;
 
 class UserService

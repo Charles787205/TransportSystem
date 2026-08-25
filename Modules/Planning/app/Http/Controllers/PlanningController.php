@@ -6,8 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
-use Modules\Planning\Classes\Data\CreatePlanData;
-use Modules\Planning\Classes\Data\PlanIndexFilterData;
+use Modules\Planning\Classes\Data\Request\CreatePlanData;
+use Modules\Planning\Classes\Data\Request\PlanIndexFilterData;
 use Modules\Planning\Models\Plan;
 use Modules\Planning\Services\PlanService;
 

@@ -2,24 +2,24 @@
 
 namespace Modules\DispatchOperation\Services;
 
-use Modules\DispatchOperation\Repositories\TripLegRepository;
-use Modules\DispatchOperation\Classes\Data\EditTripLegData;
+use Modules\DispatchOperation\Classes\Data\Request\CreateTripLegData;
+use Modules\DispatchOperation\Classes\Data\Request\EditTripLegData;
 use Modules\DispatchOperation\Models\TripLeg;
-use Illuminate\Support\Facades\Log;
-use Modules\DispatchOperation\Classes\Data\CreateTripLegData;
 use Modules\DispatchOperation\Repositories\DispatchRepository;
-use Spatie\LaravelData\Mappers\SnakeCaseMapper;
+use Modules\DispatchOperation\Repositories\TripLegRepository;
+
 class TripLegService
 {
     public function __construct(
         private TripLegRepository $tripLegRepo,
         private DispatchRepository $dispatchRepo
-    )
-    { }
+    ) {}
+
     public function editTripLeg(EditTripLegData $data, int $tripId): TripLeg
     {
         return $this->tripLegRepo->editTripLeg($data->toModelAttributes(), $tripId);
     }
+
     public function addTripLeg(CreateTripLegData $data)
     {
         $dispatch = $this->dispatchRepo->getDispatch($data->dispatchId, with: ['tripLegs']);
@@ -33,12 +33,15 @@ class TripLegService
                 'Cannot add a new trip leg while another trip leg is still in progress.'
             );
         }
+        $firstLeg = $dispatch->tripLegs->firstWhere('trip_sequence', 1);
         $tripSequence = $dispatch->tripLegs()->count() + 1;
 
         return $this->dispatchRepo->attachTripLegs($dispatch, [
             'dispatch_id' => $data->dispatchId,
             'linehaul_trip_no' => $data->linehaulTripNo,
-            'trip_sequence' => $tripSequence
-            ]);
+            'trip_sequence' => $tripSequence,
+            'origin_location_id' => $firstLeg?->origin_location_id,
+            'destination_location_id' => $firstLeg?->destination_location_id,
+        ]);
     }
 }

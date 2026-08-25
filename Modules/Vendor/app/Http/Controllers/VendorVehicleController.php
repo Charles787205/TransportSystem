@@ -4,26 +4,25 @@ namespace Modules\Vendor\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 use Inertia\Inertia;
-use Modules\Vendor\Classes\Data\CreateVehicleData;
-use Modules\Vendor\Classes\Data\CreateVendorData;
-use Modules\Vendor\Classes\Data\DriverData;
-use Modules\Vendor\Classes\Data\VehicleData;
+use Modules\Vendor\Classes\Data\Request\CreateInsuranceData;
+use Modules\Vendor\Classes\Data\Request\CreateRegistrationData;
+use Modules\Vendor\Classes\Data\Request\CreateVehicleData;
+use Modules\Vendor\Classes\Data\Request\UpdateVehicleData;
 use Modules\Vendor\Models\Vehicle;
 use Modules\Vendor\Models\Vendor;
 use Modules\Vendor\Services\DriverService;
 use Modules\Vendor\Services\VehicleService;
-use Illuminate\Validation\Rule;
-
 
 class VendorVehicleController extends Controller
 {
-    
-    public function __construct(protected VehicleService $vehicleService, protected DriverService $driverService){}
+    public function __construct(protected VehicleService $vehicleService, protected DriverService $driverService) {}
+
     public function index(Vendor $vendor)
     {
         $vehicles = $this->vehicleService->getPaginated(vendorId: $vendor->id);
+
         return Inertia::render('vendor/vehicles/index', ['data' => $vehicles, 'vendorId' => $vendor->id]);
     }
 
@@ -32,15 +31,17 @@ class VendorVehicleController extends Controller
      */
     public function create(Vendor $vendor)
     {
-        return Inertia::render('vendor/vehicles/create', ['vendorId'=> $vendor->id]);
+        return Inertia::render('vendor/vehicles/create', ['vendorId' => $vendor->id]);
     }
 
     /**
-     * Store a newly created resource in storage.`
+     * Store a newly created resource in storage.
      */
-    public function store(CreateVehicleData $data) {
+    public function store(CreateVehicleData $data)
+    {
         $this->vehicleService->createVehicle($data);
-        return back()->with("success", "Created :)");
+
+        return back()->with('success', 'Created :)');
     }
 
     /**
@@ -48,22 +49,44 @@ class VendorVehicleController extends Controller
      */
     public function show(Vendor $vendor, Vehicle $vehicle)
     {
-        $vehicle = $this->vehicleService->getVehicleWithInsurancesAndRegistration($vehicle->id);
+        $vehicleData = $this->vehicleService->getVehicleWithInsurancesAndRegistration($vehicle->id);
         $history = $this->vehicleService->getDriverHistory($vehicle->id);
+        $stats = $this->vehicleService->getVehicleStats($vehicle->id);
+
         return Inertia::render(
             'vendor/vehicles/show',
             [
                 'vendorId' => $vendor->id,
-                'drivers' => Inertia::optional(fn () => 
-                    $this->driverService->getDriversFromVendor($vendor->id)
-                ),
+                'drivers' => Inertia::optional(fn () => $this->driverService->getDriversFromVendor($vendor->id)),
                 'history' => $history,
-                'vehicle' => $vehicle
+                'vehicle' => $vehicleData,
+                'stats' => $stats,
             ]
         );
     }
 
-   public function attachDriver(string $vehicleId, string $vendorId, Request $request)
+    public function update(UpdateVehicleData $data, Vendor $vendor, Vehicle $vehicle)
+    {
+        $this->vehicleService->updateVehicle($vehicle->id, $data);
+
+        return back()->with('success', 'Vehicle updated successfully.');
+    }
+
+    public function addInsurance(CreateInsuranceData $data, Vendor $vendor, Vehicle $vehicle)
+    {
+        $this->vehicleService->addInsurance($vehicle->id, $data);
+
+        return back()->with('success', 'Insurance policy added.');
+    }
+
+    public function addRegistration(CreateRegistrationData $data, Vendor $vendor, Vehicle $vehicle)
+    {
+        $this->vehicleService->addRegistration($vehicle->id, $data);
+
+        return back()->with('success', 'Registration added.');
+    }
+
+    public function attachDriver(string $vehicleId, string $vendorId, Request $request)
     {
         $validated = $request->validate([
             'driver_id' => ['required', Rule::exists('drivers', 'id')],
@@ -86,14 +109,10 @@ class VendorVehicleController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, $id) {}
-
-    /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id) {
-        return back()->with("success", "Deleted :)");
+    public function destroy($id)
+    {
+        return back()->with('success', 'Deleted :)');
     }
 }

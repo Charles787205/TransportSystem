@@ -1,0 +1,87 @@
+<?php
+
+namespace Modules\DispatchOperation\Classes\Data\Request;
+
+use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Optional;
+use Spatie\TypeScriptTransformer\Attributes\Optional as AttributesOptional;
+
+class EditTripLegData extends Data
+{
+    public function __construct(
+        #[AttributesOptional]
+        public int|Optional|null $totalParcel,
+        #[AttributesOptional]
+        public float|Optional|null $odometerStart,
+        #[AttributesOptional]
+        public float|Optional|null $odometerEnd,
+        #[AttributesOptional]
+        public string|Optional|null $departureTime,
+        #[AttributesOptional]
+        public string|Optional|null $originArrivedTime,
+        #[AttributesOptional]
+        public string|Optional|null $originStartLoadingTime,
+        #[AttributesOptional]
+        public string|Optional|null $originEndLoadingTime,
+        #[AttributesOptional]
+        public string|Optional|null $arrivedTime,
+        #[AttributesOptional]
+        public string|Optional|null $destinationArrivedTime,
+        #[AttributesOptional]
+        public string|Optional|null $destinationStartUnloadingTime,
+        #[AttributesOptional]
+        public string|Optional|null $destinationEndUnloadingTime,
+        #[AttributesOptional]
+        public string|Optional|null $destinationDepartedTime,
+        #[AttributesOptional]
+        public string|Optional|null $endTime,
+        #[AttributesOptional]
+        public string|Optional|null $status,
+        #[AttributesOptional]
+        public string|Optional|null $cancellationDetail,
+        #[AttributesOptional]
+        public string|Optional|null $cancellationRemark,
+        #[AttributesOptional]
+        public float|Optional|null $cargoParcel,
+        #[AttributesOptional]
+        public float|Optional|null $cargoBox,
+        #[AttributesOptional]
+        public float|Optional|null $cargoLoose,
+        #[AttributesOptional]
+        public float|Optional|null $cargoWeight,
+    ) {}
+
+    public static function rules(): array
+    {
+        return [
+            'cancellation_detail' => ['required_if:status,cancelled', 'nullable', 'string'],
+            'cancellation_remark' => ['nullable', 'string'],
+        ];
+    }
+
+    public function toModelAttributes()
+    {
+        return array_filter([
+            'total_parcel' => $this->totalParcel,
+            'odometer_start' => $this->odometerStart,
+            'odometer_end' => $this->odometerEnd,
+            'departure_time' => $this->departureTime,
+            'origin_arrived_time' => $this->originArrivedTime,
+            'origin_start_loading_time' => $this->originStartLoadingTime,
+            'origin_end_loading_time' => $this->originEndLoadingTime,
+            'arrived_time' => $this->arrivedTime ?? $this->destinationArrivedTime,
+            'destination_arrived_time' => $this->destinationArrivedTime ?? $this->arrivedTime,
+            'destination_start_unloading_time' => $this->destinationStartUnloadingTime,
+            'destination_end_unloading_time' => $this->destinationEndUnloadingTime,
+            'destination_departed_time' => $this->destinationDepartedTime,
+            'end_time' => $this->endTime,
+            'status' => $this->status,
+            'cancellation_detail' => $this->cancellationDetail,
+            'cancellation_remark' => $this->cancellationRemark,
+            'cargo_parcel' => $this->cargoParcel,
+            'cargo_box' => $this->cargoBox,
+            'cargo_loose' => $this->cargoLoose,
+            'cargo_weight' => $this->cargoWeight,
+        ], fn ($value) => ! $value instanceof Optional);
+    }
+}

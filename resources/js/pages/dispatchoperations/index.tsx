@@ -6,6 +6,7 @@ import CreateDispatchModal from '@/components/dispatchoperation/create-dispatch-
 import PlannedDispatchMetrics from '@/components/dispatchoperation/planned-disptatch-metrics';
 import type { DispatchMetrics } from '@/components/dispatchoperation/planned-disptatch-metrics';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
@@ -94,7 +95,7 @@ const DispatchOperation = ({
                                 <SelectItem value="all">All Dates</SelectItem>
                             </SelectContent>
                         </Select>
-                        
+
                         {dateFilter === 'custom' && (
                             <div className="flex items-center gap-2">
                                 <Input
@@ -103,7 +104,7 @@ const DispatchOperation = ({
                                     onChange={(e) => setStartDate(e.target.value)}
                                     className="w-[140px]"
                                 />
-                                <span className="text-slate-500">to</span>
+                                <span className="text-slate-400">to</span>
                                 <Input
                                     type="date"
                                     value={endDate}
@@ -113,30 +114,32 @@ const DispatchOperation = ({
                             </div>
                         )}
                     </div>
-                    
-                    <div className="relative">
-                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input
-                            type="search"
-                            placeholder="Search..."
-                            className="w-64 pl-8"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                    </div>
                     <CreateDispatchModal />
                 </div>
             </div>
+
             <PlannedDispatchMetrics metrics={metrics} />
-            <Card className="border-slate-200">
-                <CardHeader className="pb-3">
-                    <CardTitle className="text-base font-medium text-slate-700">
-                        All Dispatches
-                    </CardTitle>
+
+            <Card>
+                <CardHeader>
+                    <div className="flex items-center justify-between">
+                        <CardTitle className="text-base font-semibold">
+                            Dispatches
+                        </CardTitle>
+                        <div className="relative w-72">
+                            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+                            <Input
+                                placeholder="Search plate no, driver or client..."
+                                className="pl-9"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                            />
+                        </div>
+                    </div>
                 </CardHeader>
-                <CardContent className="">
+                <CardContent>
                     {data.length === 0 ? (
-                        <div className="flex flex-col items-center justify-center gap-2 py-16 text-slate-400">
+                        <div className="flex flex-col items-center justify-center py-12 text-slate-400">
                             <PackageSearch className="h-10 w-10" />
                             <p className="text-sm">No dispatches found.</p>
                         </div>
@@ -150,8 +153,8 @@ const DispatchOperation = ({
                                         <TableHead>Dispatch Date</TableHead>
                                         <TableHead>Call Time</TableHead>
                                         <TableHead>Driver</TableHead>
-                                        <TableHead>Business Unit</TableHead>
-                                        <TableHead>Destination</TableHead>
+                                        <TableHead>Origin Location</TableHead>
+                                        <TableHead>Destination Location</TableHead>
                                         <TableHead>Trip No.</TableHead>
                                         <TableHead>Status</TableHead>
                                         <TableHead className="text-right">
@@ -160,74 +163,75 @@ const DispatchOperation = ({
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {data.map((dispatch: DispatchData) => (
-                                        <TableRow
-                                            key={dispatch.id}
-                                            className="hover:bg-slate-50"
-                                        >
-                                            <TableCell>
-                                                {dispatch.vehicle
-                                                    ?.plateNumber ?? ''}
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge
-                                                    variant="secondary"
-                                                    className="bg-blue-50 text-blue-800 hover:bg-blue-50"
-                                                >
-                                                    {dispatch.serviceType}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell>
-                                                {dispatch.dispatchDate}
-                                            </TableCell>
-                                            <TableCell>
-                                                {dispatch.assignedCallTime}
-                                            </TableCell>
+                                    {data.map((dispatch: DispatchData) => {
+                                        const sortedLegs = dispatch.tripLegs
+                                            ? [...dispatch.tripLegs].sort((a, b) => (a.tripSequence ?? 1) - (b.tripSequence ?? 1))
+                                            : [];
+                                        const firstLeg = sortedLegs[0];
 
-                                            <TableCell>
-                                                {dispatch.driver?.fullName ??
-                                                    ''}
-                                            </TableCell>
-                                            <TableCell>
-                                                {dispatch.businessUnit
-                                                    ? dispatch.businessUnit
-                                                          .touchpoint
-                                                    : ''}{' '}
-                                                {dispatch.businessUnit
-                                                    ? dispatch.businessUnit.name
-                                                    : ''}
-                                            </TableCell>
-                                            <TableCell>
-                                                {dispatch.destination?.name}
-                                            </TableCell>
-                                            <TableCell>
-                                                {dispatch.tripLegs.length}
-                                            </TableCell>
-                                            <TableCell>
-                                                <Badge
-                                                    className={
-                                                        TRIP_STATUS_COLORS[
-                                                            getDispatchStatus(
-                                                                dispatch.tripLegs,
-                                                            ) || 'pending'
-                                                        ]
-                                                    }
-                                                >
-                                                    {getDispatchStatus(
-                                                        dispatch.tripLegs,
-                                                    )}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell className="flex justify-end">
-                                                <Link
-                                                    className="hover:scale-105"
-                                                    href={show(dispatch.id)}
-                                                >
-                                                    <Eye className="h-4 text-neutral-600" />
-                                                </Link>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
+                                        return (
+                                            <TableRow
+                                                key={dispatch.id}
+                                                className="hover:bg-slate-50"
+                                            >
+                                                <TableCell>
+                                                    {dispatch.vehicle
+                                                        ?.plateNumber ?? ''}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge
+                                                        variant="secondary"
+                                                        className="bg-blue-50 text-blue-800 hover:bg-blue-50"
+                                                    >
+                                                        {dispatch.serviceType}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell>
+                                                    {dispatch.dispatchDate}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {dispatch.assignedCallTime}
+                                                </TableCell>
+
+                                                <TableCell>
+                                                    {dispatch.driver?.fullName ??
+                                                        ''}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {firstLeg?.originLocation?.name ?? '—'}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {firstLeg?.destinationLocation?.name ?? '—'}
+                                                </TableCell>
+                                                <TableCell>
+                                                    {dispatch.tripLegs.length}
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge
+                                                        className={
+                                                            TRIP_STATUS_COLORS[
+                                                                getDispatchStatus(
+                                                                    dispatch.tripLegs,
+                                                                ) || 'pending'
+                                                            ]
+                                                        }
+                                                    >
+                                                        {getDispatchStatus(
+                                                            dispatch.tripLegs,
+                                                        )}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell className="flex justify-end">
+                                                    <Link
+                                                        className="hover:scale-105"
+                                                        href={show(dispatch.id)}
+                                                    >
+                                                        <Eye className="h-4 text-neutral-600" />
+                                                    </Link>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })}
                                 </TableBody>
                             </Table>
                         </div>
@@ -252,31 +256,26 @@ const DispatchOperation = ({
                                 link.label
                             );
 
-                            if (!link.url) {
-                                return (
-                                    <span
-                                        key={index}
-                                        className="flex h-8 w-8 items-center justify-center rounded-md text-sm text-slate-300"
-                                    >
-                                        {label}
-                                    </span>
-                                );
-                            }
-
                             return (
-                                <Link
+                                <Button
                                     key={index}
-                                    href={link.url}
-                                    preserveScroll
-                                    preserveState
-                                    className={`flex h-8 min-w-8 items-center justify-center rounded-md px-2 text-sm transition-colors ${
-                                        link.active
-                                            ? 'bg-blue-800 text-white'
-                                            : 'text-slate-600 hover:bg-slate-100'
-                                    }`}
+                                    variant={
+                                        link.active ? 'default' : 'outline'
+                                    }
+                                    size="sm"
+                                    disabled={!link.url}
+                                    onClick={() =>
+                                        link.url &&
+                                        router.get(
+                                            link.url,
+                                            {},
+                                            { preserveState: true },
+                                        )
+                                    }
+                                    className="h-8 w-8 p-0"
                                 >
                                     {label}
-                                </Link>
+                                </Button>
                             );
                         })}
                     </div>

@@ -1,13 +1,21 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use Modules\DispatchOperation\Http\Controllers\DispatchOperationController;
 use Modules\DispatchOperation\Http\Controllers\DispatchFormOptionsController;
+use Modules\DispatchOperation\Http\Controllers\DispatchOperationController;
+use Modules\DispatchOperation\Http\Controllers\DropController;
+use Modules\DispatchOperation\Http\Controllers\ReturnTripController;
 use Modules\DispatchOperation\Http\Controllers\TripLegController;
+use Modules\DispatchOperation\Http\Controllers\TripRemarkController;
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('dispatchoperations/form-options', [DispatchFormOptionsController::class, 'index'])
-    ->name('dispatch-operations.form-options');
+        ->name('dispatch-operations.form-options');
     Route::resource('dispatchoperations', DispatchOperationController::class)->names('dispatchoperation');
     Route::resource('triplegs', TripLegController::class);
+    Route::post('return-trips', [ReturnTripController::class, 'store'])->name('return-trips.store');
+    Route::post('drops', [DropController::class, 'store'])->name('drops.store');
+    Route::put('drops/{drop}', [DropController::class, 'update'])->name('drops.update');
+    Route::delete('drops/{drop}', [DropController::class, 'destroy'])->name('drops.destroy');
+    Route::post('trip-remarks', [TripRemarkController::class, 'store'])->name('trip-remarks.store');
 });

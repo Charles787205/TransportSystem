@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('plans', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('business_unit_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('destination_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('client_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('origin_id')->constrained('locations')->cascadeOnDelete();
+            $table->foreignId('destination_id')->constrained('locations')->cascadeOnDelete();
             $table->integer('number_of_vehicles');
             $table->date('dispatch_date');
             $table->timestamps();
