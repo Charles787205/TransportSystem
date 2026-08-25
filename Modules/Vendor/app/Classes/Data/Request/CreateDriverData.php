@@ -8,6 +8,7 @@ use Spatie\LaravelData\Attributes\Validation\Digits;
 use Spatie\LaravelData\Attributes\Validation\Enum;
 use Spatie\LaravelData\Attributes\Validation\Exists;
 use Spatie\LaravelData\Attributes\Validation\Max;
+use Spatie\LaravelData\Attributes\Validation\Nullable;
 use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Data;
 
@@ -36,18 +37,16 @@ class CreateDriverData extends Data
 
         public string $phoneNumber,
 
-        #[Required]
-        public string $address,
+        #[Nullable]
+        public ?string $address,
 
-        #[Required]
-
+        #[Nullable]
         #[Date]
-        public string $licenseExpiry,
+        public ?string $licenseExpiry,
 
-        #[Required]
-
-        #[Max(11)]
-        public string $licenseNumber,
+        #[Nullable]
+        #[Max(50)]
+        public ?string $licenseNumber,
 
         #[Required]
 

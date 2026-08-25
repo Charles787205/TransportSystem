@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Modules\DispatchOperation\Models\Dispatch;
+use Modules\Vendor\Enums\DriverStatusEnum;
 use Modules\Vendor\Enums\GenderEnum;
 use Spatie\Activitylog\Models\Concerns\LogsActivity;
 
@@ -34,8 +35,9 @@ class Driver extends Model
     {
         return [
             'gender' => GenderEnum::class,
+            'status' => DriverStatusEnum::class,
             'birthday' => 'date',
-            'license_expiry' => 'date',
+            'license_expiry_date' => 'date',
 
         ];
     }

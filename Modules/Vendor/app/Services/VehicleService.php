@@ -120,4 +120,9 @@ class VehicleService
     {
         $this->vehicleRepo->attachDriver(vehicleId: $vehicleId, driverId: $driverId);
     }
+
+    public function updateVehicleStatus(int $vehicleId, bool $isActive): bool
+    {
+        return $this->vehicleRepo->updateStatus($vehicleId, $isActive);
+    }
 }

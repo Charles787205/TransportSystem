@@ -4,8 +4,12 @@ namespace Modules\Vendor\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Exception;
-use Illuminate\Http\Request;
+use Inertia\Inertia;
 use Modules\Vendor\Classes\Data\Request\CreateDriverData;
+use Modules\Vendor\Classes\Data\Request\UpdateDriverStatusData;
+use Modules\Vendor\Enums\DriverStatusEnum;
+use Modules\Vendor\Models\Driver;
+use Modules\Vendor\Models\Vendor;
 use Modules\Vendor\Services\DriverService;
 
 class VendorDriverController extends Controller
@@ -44,9 +48,16 @@ class VendorDriverController extends Controller
     /**
      * Show the specified resource.
      */
-    public function show($id)
+    public function show(Vendor $vendor, Driver $driver)
     {
-        return view('vendor::show');
+        $driverData = $this->driverService->getDriverDetails($driver->id);
+        $statuses = array_map(fn ($case) => $case->value, DriverStatusEnum::cases());
+
+        return Inertia::render('vendor/drivers/show', [
+            'vendorId' => $vendor->id,
+            'driver' => $driverData,
+            'statuses' => $statuses,
+        ]);
     }
 
     /**
@@ -60,7 +71,12 @@ class VendorDriverController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, $id) {}
+    public function update(UpdateDriverStatusData $request, Vendor $vendor, Driver $driver)
+    {
+        $this->driverService->updateDriverStatus($driver->id, $request->status);
+
+        return back()->with('success', 'Driver status updated successfully.');
+    }
 
     /**
      * Remove the specified resource from storage.

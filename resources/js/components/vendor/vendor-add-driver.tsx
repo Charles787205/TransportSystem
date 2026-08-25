@@ -122,7 +122,7 @@ const VendorAddDriver = ({
                                     data-invalid={!!errors.address}
                                 >
                                     <FieldLabel htmlFor="address">
-                                        Address
+                                        Address <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
                                     </FieldLabel>
                                     <Input
                                         id="address"
@@ -155,7 +155,7 @@ const VendorAddDriver = ({
 
                                 <Field data-invalid={!!errors.license_number}>
                                     <FieldLabel htmlFor="license_number">
-                                        License Number
+                                        License Number <span className="text-xs text-muted-foreground font-normal">(Optional)</span>
                                     </FieldLabel>
                                     <Input
                                         aria-invalid={!!errors.license_number}
@@ -170,7 +170,7 @@ const VendorAddDriver = ({
                                 <DatePicker
                                     aria-invalid={!!errors.license_expiry}
                                     name="license_expiry"
-                                    label="License Expiry"
+                                    label="License Expiry (Optional)"
                                     error={errors.license_expiry}
                                 />
 
