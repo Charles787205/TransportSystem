@@ -20,6 +20,7 @@ import VendorVehiclesTable from '@/components/vendor/vendor-vehicle-table';
 import type { VendorWithDriversAndVehiclesData } from '@/generated/Vendor';
 import { index } from '@/routes/vendor';
 
+import { index as driversIndex } from '@/routes/vendor/driver';
 import { index as vehiclesIndex } from '@/routes/vendor/vehicle';
 
 const Show = ({ vendor }: { vendor: VendorWithDriversAndVehiclesData }) => {
@@ -67,8 +68,8 @@ const Show = ({ vendor }: { vendor: VendorWithDriversAndVehiclesData }) => {
                 </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-2">
-                <Card className="max-w-xl border-gray-200 shadow-sm">
+            <div className="grid grid-cols-3 items-start gap-2">
+                <Card className="h-fit max-w-xl border-gray-200 shadow-sm">
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle className="text-base font-semibold text-slate-900">
                             Vendor details
@@ -124,19 +125,28 @@ const Show = ({ vendor }: { vendor: VendorWithDriversAndVehiclesData }) => {
                     </CardContent>
                 </Card>
                 <Card className="col-span-2">
-                    <div className="flex">
-                        <CardHeader>
-                            <CardTitle>Drivers</CardTitle>
-                        </CardHeader>
-                        <Button
-                            className="mr-6 ml-auto bg-blue-500"
-                            size="sm"
-                            onClick={() =>
-                                setOpenAddDriverModal((prev) => !prev)
-                            }
-                        >
-                            <Plus /> Add Driver
-                        </Button>
+                    <div className="flex items-center justify-between p-6">
+                        <CardTitle>Drivers</CardTitle>
+                        <div className="flex items-center gap-2">
+                            <Button
+                                className="bg-blue-500"
+                                size="sm"
+                                onClick={() =>
+                                    setOpenAddDriverModal((prev) => !prev)
+                                }
+                            >
+                                <Plus /> Add Driver
+                            </Button>
+                            <Button
+                                onClick={() =>
+                                    router.visit(driversIndex(vendor.id))
+                                }
+                                variant="outline"
+                                size="sm"
+                            >
+                                Drivers Page <ArrowRight />
+                            </Button>
+                        </div>
                         <VendorAddDriver
                             open={openAddDriverModal}
                             setOpen={setOpenAddDriverModal}

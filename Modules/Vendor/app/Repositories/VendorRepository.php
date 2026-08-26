@@ -12,23 +12,27 @@ class VendorRepository
         $vendor = Vendor::create([
             'name' => $name,
             'email' => $email,
-            'phone_number' => $phoneNumber
+            'phone_number' => $phoneNumber,
         ]);
+
         return $vendor->refresh();
     }
 
-    public function getVendors() : Collection
+    public function getVendors(): Collection
     {
         return Vendor::get()->latest();
     }
 
-    public function getActiveVendorsWithVehiclesCount(): Collection 
+    public function getActiveVendorsWithVehiclesCount(): Collection
     {
         return Vendor::where('is_active', true)->withCount('vehicles')->latest()->get();
     }
 
     public function getVendorWithDriversAndVehiclesCount(int $id): Vendor
     {
-        return Vendor::with('vehicles')->with('drivers')->findOrFail($id);
+        return Vendor::with([
+            'vehicles' => fn ($query) => $query->latest()->take(5),
+            'drivers' => fn ($query) => $query->latest()->take(5),
+        ])->findOrFail($id);
     }
 }

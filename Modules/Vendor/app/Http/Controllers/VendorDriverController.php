@@ -4,6 +4,7 @@ namespace Modules\Vendor\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use Exception;
+use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Modules\Vendor\Classes\Data\Request\CreateDriverData;
 use Modules\Vendor\Classes\Data\Request\UpdateDriverStatusData;
@@ -18,9 +19,28 @@ class VendorDriverController extends Controller
         protected DriverService $driverService
     ) {}
 
-    public function index()
+    public function index(Vendor $vendor, Request $request)
     {
-        return view('vendor::index');
+        $search = $request->query('search');
+
+        $drivers = Driver::query()
+            ->where('vendor_id', $vendor->id)
+            ->when($search, function ($query, $search) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('full_name', 'like', "%{$search}%")
+                        ->orWhere('driver_id_number', 'like', "%{$search}%")
+                        ->orWhere('license_number', 'like', "%{$search}%");
+                });
+            })
+            ->latest()
+            ->paginate(20)
+            ->withQueryString()
+            ->through(fn ($driver) => $this->driverService->getDriverDetails($driver->id));
+
+        return Inertia::render('vendor/drivers/index', [
+            'data' => $drivers,
+            'vendorId' => $vendor->id,
+        ]);
     }
 
     /**
