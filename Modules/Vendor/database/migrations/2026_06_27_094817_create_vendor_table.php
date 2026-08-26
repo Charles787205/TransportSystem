@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('vendors', function (Blueprint $table) {
             $table->id();
-            $table->string("name", 50)->unique();
-            $table->string("email", 50)->unique();
-            $table->string("phone_number")->unique();
+            $table->string('name', 50)->unique();
+            $table->string('email', 50);
+            $table->string('phone_number')->unique();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
