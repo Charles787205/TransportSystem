@@ -40,9 +40,18 @@ type EditDropModalProps = {
     children?: React.ReactNode;
 };
 
-const normalizeTimeValue = (value: string | null | undefined) => {
+const normalizeDateTimeValue = (value: string | null | undefined) => {
     if (!value) return '';
-    return value.slice(0, 5);
+    if (value.includes('T')) return value.slice(0, 16);
+    if (value.includes(' ')) {
+        const [date, time] = value.split(' ');
+        return `${date}T${time.slice(0, 5)}`;
+    }
+    if (value.length <= 8) {
+        const today = new Date().toISOString().slice(0, 10);
+        return `${today}T${value.slice(0, 5)}`;
+    }
+    return value;
 };
 
 export default function EditDropModal({
@@ -65,8 +74,8 @@ export default function EditDropModal({
         box_count: drop.boxCount !== null && drop.boxCount !== undefined ? String(drop.boxCount) : '',
         loose_items_count: drop.looseItemsCount !== null && drop.looseItemsCount !== undefined ? String(drop.looseItemsCount) : '',
         weight_kg: drop.weightKg !== null && drop.weightKg !== undefined ? String(drop.weightKg) : '',
-        arrived_time: normalizeTimeValue(drop.arrivedTime),
-        departed_time: normalizeTimeValue(drop.departedTime),
+        arrived_time: normalizeDateTimeValue(drop.arrivedTime),
+        departed_time: normalizeDateTimeValue(drop.departedTime),
     });
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -186,23 +195,25 @@ export default function EditDropModal({
                         </div>
                     )}
 
-                    {/* Arrival & Departure Time */}
-                    <div className="grid grid-cols-2 gap-3">
+                    {/* Arrival & Departure Date and Time */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div className="grid gap-1.5">
-                            <Label htmlFor="arrived_time">Arrived Time</Label>
+                            <Label htmlFor="arrived_time" className="text-xs">Arrived Date & Time</Label>
                             <Input
                                 id="arrived_time"
-                                type="time"
+                                type="datetime-local"
+                                className="text-xs"
                                 value={data.arrived_time}
                                 onChange={(e) => setData('arrived_time', e.target.value)}
                             />
                             <InputError message={errors.arrived_time} />
                         </div>
                         <div className="grid gap-1.5">
-                            <Label htmlFor="departed_time">Departed Time</Label>
+                            <Label htmlFor="departed_time" className="text-xs">Departed Date & Time</Label>
                             <Input
                                 id="departed_time"
-                                type="time"
+                                type="datetime-local"
+                                className="text-xs"
                                 value={data.departed_time}
                                 onChange={(e) => setData('departed_time', e.target.value)}
                             />

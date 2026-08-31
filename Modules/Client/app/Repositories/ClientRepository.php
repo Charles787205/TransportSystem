@@ -29,4 +29,9 @@ class ClientRepository
     {
         return Client::find($id);
     }
+
+    public function getClientOptions()
+    {
+        return Client::query()->get(['id', 'name as label']);
+    }
 }

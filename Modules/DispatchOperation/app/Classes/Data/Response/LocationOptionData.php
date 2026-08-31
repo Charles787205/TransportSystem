@@ -12,5 +12,6 @@ class LocationOptionData extends Data
         public int $id,
         public string $label,
         public int $clientId,
+        public ?string $touchpoint = null,
     ) {}
 }

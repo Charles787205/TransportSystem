@@ -8,14 +8,21 @@ import {
     TableBody,
 } from '@/components/ui/table';
 import type { DriverData } from '@/generated/Vendor';
+import {
+    getDriverStatusBadgeStyle,
+    getDriverStatusBadgeVariant,
+} from '@/pages/vendor/drivers/show';
 import { show } from '@/routes/vendor/driver';
-import { getDriverStatusBadgeStyle, getDriverStatusBadgeVariant } from '@/pages/vendor/drivers/show';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 
 const VendorDriverTable = ({ drivers }: { drivers: DriverData[] }) => {
     if (!drivers || drivers.length === 0) {
-        return <p className="text-gray-500 py-4 text-center">No Drivers added yet</p>;
+        return (
+            <p className="py-4 text-center text-gray-500">
+                No Drivers added yet
+            </p>
+        );
     }
 
     return (
@@ -38,8 +45,13 @@ const VendorDriverTable = ({ drivers }: { drivers: DriverData[] }) => {
                         <TableCell className="font-medium">
                             {driver?.id && driver?.vendorId ? (
                                 <Link
-                                    href={show({ vendor: driver.vendorId, driver: driver.id }).url}
-                                    className="hover:underline text-blue-700"
+                                    href={
+                                        show({
+                                            vendor: driver.vendorId,
+                                            driver: driver.id,
+                                        }).url
+                                    }
+                                    className="text-blue-700 hover:underline"
                                 >
                                     {driver.fullName}
                                 </Link>
@@ -50,8 +62,12 @@ const VendorDriverTable = ({ drivers }: { drivers: DriverData[] }) => {
                         <TableCell>{driver.phoneNumber}</TableCell>
                         <TableCell>
                             <Badge
-                                variant={getDriverStatusBadgeVariant(driver.status)}
-                                className={getDriverStatusBadgeStyle(driver.status)}
+                                variant={getDriverStatusBadgeVariant(
+                                    driver.status,
+                                )}
+                                className={getDriverStatusBadgeStyle(
+                                    driver.status,
+                                )}
                             >
                                 {driver.status}
                             </Badge>
@@ -59,7 +75,14 @@ const VendorDriverTable = ({ drivers }: { drivers: DriverData[] }) => {
                         <TableCell className="text-right">
                             {driver?.id && driver?.vendorId && (
                                 <Button variant="ghost" size="sm" asChild>
-                                    <Link href={show({ vendor: driver.vendorId, driver: driver.id }).url}>
+                                    <Link
+                                        href={
+                                            show({
+                                                vendor: driver.vendorId,
+                                                driver: driver.id,
+                                            }).url
+                                        }
+                                    >
                                         View
                                     </Link>
                                 </Button>

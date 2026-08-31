@@ -82,4 +82,9 @@ class ClientService
 
         return $dispatches->map(fn ($d) => DispatchData::from($d));
     }
+
+    public function getClientLocations(int $clientId)
+    {
+        return $this->locationRepo->getLocations(['client_id' => $clientId]);
+    }
 }

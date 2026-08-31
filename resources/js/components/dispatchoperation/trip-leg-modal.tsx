@@ -1,9 +1,8 @@
-import { Form } from '@inertiajs/react';
-import { Loader2, Clock, MapPin } from 'lucide-react';
-import { useState } from 'react';
+import { Form, router } from '@inertiajs/react';
+import { Loader2, MapPin, Trash2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import TripLegController from '@/actions/Modules/DispatchOperation/Http/Controllers/TripLegController';
 import InputError from '../input-error';
-import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import {
     Dialog,
@@ -32,12 +31,36 @@ type TripLegModalProps = {
     clientAllowedCargoUnits?: string[] | null;
 };
 
-const normalizeTimeValue = (value: string | null | undefined) => {
+const normalizeDateTimeValue = (value: string | null | undefined) => {
     if (!value) {
         return '';
     }
 
-    return value.slice(0, 5);
+    if (value.includes('T')) {
+        return value.slice(0, 16);
+    }
+
+    if (value.includes(' ')) {
+        const [date, time] = value.split(' ');
+        return `${date}T${time.slice(0, 5)}`;
+    }
+
+    if (value.length <= 8) {
+        const today = new Date().toISOString().slice(0, 10);
+        return `${today}T${value.slice(0, 5)}`;
+    }
+
+    return value;
+};
+
+const getCurrentDateTimeString = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
 };
 
 const TRIP_STATUS_OPTIONS = [
@@ -79,8 +102,116 @@ const TripLegModal = ({
     clientAllowedCargoUnits,
 }: TripLegModalProps) => {
     const [status, setStatus] = useState(tripLeg?.status ?? 'pending');
+    const [cargoParcel, setCargoParcel] = useState<string | number>(
+        tripLeg?.cargoes?.find((c: any) => c.cargoType === 'per_parcel')?.quantity ?? tripLeg?.totalParcel ?? ''
+    );
+    const [odometerStart, setOdometerStart] = useState<string | number>(tripLeg?.odometerStart ?? '');
+    const [odometerEnd, setOdometerEnd] = useState<string | number>(tripLeg?.odometerEnd ?? '');
+
+    const [originArrivedTime, setOriginArrivedTime] = useState(normalizeDateTimeValue(tripLeg?.originArrivedTime));
+    const [originStartLoadingTime, setOriginStartLoadingTime] = useState(normalizeDateTimeValue(tripLeg?.originStartLoadingTime));
+    const [originEndLoadingTime, setOriginEndLoadingTime] = useState(normalizeDateTimeValue(tripLeg?.originEndLoadingTime));
+    const [departureTime, setDepartureTime] = useState(normalizeDateTimeValue(tripLeg?.departureTime));
+
+    const [destinationArrivedTime, setDestinationArrivedTime] = useState(
+        normalizeDateTimeValue(tripLeg?.destinationArrivedTime ?? tripLeg?.arrivedTime)
+    );
+    const [destinationStartUnloadingTime, setDestinationStartUnloadingTime] = useState(
+        normalizeDateTimeValue(tripLeg?.destinationStartUnloadingTime)
+    );
+    const [destinationEndUnloadingTime, setDestinationEndUnloadingTime] = useState(
+        normalizeDateTimeValue(tripLeg?.destinationEndUnloadingTime)
+    );
+    const [destinationDepartedTime, setDestinationDepartedTime] = useState(
+        normalizeDateTimeValue(tripLeg?.destinationDepartedTime ?? tripLeg?.endTime)
+    );
+
+    const [statusValidationError, setStatusValidationError] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (open && tripLeg) {
+            setStatus(tripLeg.status ?? 'pending');
+            setCargoParcel(
+                tripLeg.cargoes?.find((c: any) => c.cargoType === 'per_parcel')?.quantity ?? tripLeg.totalParcel ?? ''
+            );
+            setOdometerStart(tripLeg.odometerStart ?? '');
+            setOdometerEnd(tripLeg.odometerEnd ?? '');
+            setOriginArrivedTime(normalizeDateTimeValue(tripLeg.originArrivedTime));
+            setOriginStartLoadingTime(normalizeDateTimeValue(tripLeg.originStartLoadingTime));
+            setOriginEndLoadingTime(normalizeDateTimeValue(tripLeg.originEndLoadingTime));
+            setDepartureTime(normalizeDateTimeValue(tripLeg.departureTime));
+            setDestinationArrivedTime(normalizeDateTimeValue(tripLeg.destinationArrivedTime ?? tripLeg.arrivedTime));
+            setDestinationStartUnloadingTime(normalizeDateTimeValue(tripLeg.destinationStartUnloadingTime));
+            setDestinationEndUnloadingTime(normalizeDateTimeValue(tripLeg.destinationEndUnloadingTime));
+            setDestinationDepartedTime(normalizeDateTimeValue(tripLeg.destinationDepartedTime ?? tripLeg.endTime));
+            setStatusValidationError(null);
+        }
+    }, [open, tripLeg]);
+
     const isEditing = tripLeg !== null;
-    const formAction = TripLegController.update.form(tripLeg.id);
+    const formAction = TripLegController.update.form(tripLeg?.id ?? 0);
+
+    const getMissingDeliveredFields = () => {
+        const missing: string[] = [];
+        if (cargoParcel === '' || cargoParcel === null || cargoParcel === undefined || Number(cargoParcel) <= 0) {
+            missing.push('parcels count');
+        }
+        if (odometerStart === '' || odometerStart === null || odometerStart === undefined) {
+            missing.push('odometer start');
+        }
+        if (odometerEnd === '' || odometerEnd === null || odometerEnd === undefined) {
+            missing.push('odometer end');
+        }
+        if (!originArrivedTime) missing.push('origin arrival date/time');
+        if (!originStartLoadingTime) missing.push('origin start loading date/time');
+        if (!originEndLoadingTime) missing.push('origin end loading date/time');
+        if (!departureTime) missing.push('departure date/time');
+        if (!destinationArrivedTime) missing.push('destination arrival date/time');
+        if (!destinationStartUnloadingTime) missing.push('destination start unloading date/time');
+        if (!destinationEndUnloadingTime) missing.push('destination end unloading date/time');
+        if (!destinationDepartedTime) missing.push('destination departure date/time');
+
+        return missing;
+    };
+
+    const handleStatusChange = (newStatus: string) => {
+        setStatusValidationError(null);
+
+        if (newStatus === 'waiting at parking' && !originArrivedTime) {
+            setOriginArrivedTime(getCurrentDateTimeString());
+        } else if (newStatus === 'ongoing loading' && !originStartLoadingTime) {
+            setOriginStartLoadingTime(getCurrentDateTimeString());
+        } else if (newStatus === 'in transit to destination' && !departureTime) {
+            setDepartureTime(getCurrentDateTimeString());
+        } else if (newStatus === 'waiting for unloading' && !destinationArrivedTime) {
+            setDestinationArrivedTime(getCurrentDateTimeString());
+        } else if (newStatus === 'ongoing unloading' && !destinationStartUnloadingTime) {
+            setDestinationStartUnloadingTime(getCurrentDateTimeString());
+        }
+
+        if (newStatus === 'delivered') {
+            const missing = getMissingDeliveredFields();
+            if (missing.length > 0) {
+                setStatusValidationError(
+                    `Cannot set status to Delivered. Missing required fields: ${missing.join(', ')}.`
+                );
+            }
+        }
+
+        setStatus(newStatus);
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        if (status === 'delivered') {
+            const missing = getMissingDeliveredFields();
+            if (missing.length > 0) {
+                e.preventDefault();
+                setStatusValidationError(
+                    `Cannot set status to Delivered. Missing required fields: ${missing.join(', ')}.`
+                );
+            }
+        }
+    };
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -100,6 +231,7 @@ const TripLegModal = ({
                     {...formAction}
                     resetOnSuccess
                     onSuccess={() => onOpenChange?.(false)}
+                    onSubmit={handleSubmit}
                     className="space-y-6"
                 >
                     {({ errors, processing }) => (
@@ -126,9 +258,11 @@ const TripLegModal = ({
                                                 name="cargo_parcel"
                                                 type="number"
                                                 min={0}
-                                                defaultValue={
-                                                    tripLeg?.cargoes?.find((c: any) => c.cargoType === 'per_parcel')?.quantity ?? tripLeg?.totalParcel ?? undefined
-                                                }
+                                                value={cargoParcel}
+                                                onChange={(e) => {
+                                                    setCargoParcel(e.target.value);
+                                                    setStatusValidationError(null);
+                                                }}
                                             />
                                         </div>
                                     )}
@@ -186,7 +320,11 @@ const TripLegModal = ({
                                             name="odometer_start"
                                             type="number"
                                             step="0.01"
-                                            defaultValue={tripLeg?.odometerStart ?? undefined}
+                                            value={odometerStart}
+                                            onChange={(e) => {
+                                                setOdometerStart(e.target.value);
+                                                setStatusValidationError(null);
+                                            }}
                                             aria-invalid={!!errors.odometer_start}
                                         />
                                         <InputError message={errors.odometer_start} />
@@ -199,7 +337,11 @@ const TripLegModal = ({
                                             name="odometer_end"
                                             type="number"
                                             step="0.01"
-                                            defaultValue={tripLeg?.odometerEnd ?? undefined}
+                                            value={odometerEnd}
+                                            onChange={(e) => {
+                                                setOdometerEnd(e.target.value);
+                                                setStatusValidationError(null);
+                                            }}
                                             aria-invalid={!!errors.odometer_end}
                                         />
                                         <InputError message={errors.odometer_end} />
@@ -215,45 +357,61 @@ const TripLegModal = ({
                                     <MapPin className="h-4 w-4 text-emerald-600" />
                                     Origin Location Timestamps ({tripLeg?.originLocation?.name ?? 'Origin'})
                                 </div>
-                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="origin-arrived-time" className="text-xs">Arrival Time</Label>
+                                        <Label htmlFor="origin-arrived-time" className="text-xs">Arrival Date & Time</Label>
                                         <Input
                                             id="origin-arrived-time"
                                             name="origin_arrived_time"
-                                            type="time"
-                                            className="bg-white"
-                                            defaultValue={normalizeTimeValue(tripLeg?.originArrivedTime)}
+                                            type="datetime-local"
+                                            className="bg-white text-xs"
+                                            value={originArrivedTime}
+                                            onChange={(e) => {
+                                                setOriginArrivedTime(e.target.value);
+                                                setStatusValidationError(null);
+                                            }}
                                         />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="origin-start-loading-time" className="text-xs">Start Loading Time</Label>
+                                        <Label htmlFor="origin-start-loading-time" className="text-xs">Start Loading Date & Time</Label>
                                         <Input
                                             id="origin-start-loading-time"
                                             name="origin_start_loading_time"
-                                            type="time"
-                                            className="bg-white"
-                                            defaultValue={normalizeTimeValue(tripLeg?.originStartLoadingTime)}
+                                            type="datetime-local"
+                                            className="bg-white text-xs"
+                                            value={originStartLoadingTime}
+                                            onChange={(e) => {
+                                                setOriginStartLoadingTime(e.target.value);
+                                                setStatusValidationError(null);
+                                            }}
                                         />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="origin-end-loading-time" className="text-xs">End Loading Time</Label>
+                                        <Label htmlFor="origin-end-loading-time" className="text-xs">End Loading Date & Time</Label>
                                         <Input
                                             id="origin-end-loading-time"
                                             name="origin_end_loading_time"
-                                            type="time"
-                                            className="bg-white"
-                                            defaultValue={normalizeTimeValue(tripLeg?.originEndLoadingTime)}
+                                            type="datetime-local"
+                                            className="bg-white text-xs"
+                                            value={originEndLoadingTime}
+                                            onChange={(e) => {
+                                                setOriginEndLoadingTime(e.target.value);
+                                                setStatusValidationError(null);
+                                            }}
                                         />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="departure-time" className="text-xs">Departure Time</Label>
+                                        <Label htmlFor="departure-time" className="text-xs">Departure Date & Time</Label>
                                         <Input
                                             id="departure-time"
                                             name="departure_time"
-                                            type="time"
-                                            className="bg-white"
-                                            defaultValue={normalizeTimeValue(tripLeg?.departureTime)}
+                                            type="datetime-local"
+                                            className="bg-white text-xs"
+                                            value={departureTime}
+                                            onChange={(e) => {
+                                                setDepartureTime(e.target.value);
+                                                setStatusValidationError(null);
+                                            }}
                                         />
                                     </div>
                                 </div>
@@ -265,45 +423,61 @@ const TripLegModal = ({
                                     <MapPin className="h-4 w-4 text-blue-600" />
                                     Destination Location Timestamps ({tripLeg?.destinationLocation?.name ?? 'Destination'})
                                 </div>
-                                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="destination-arrived-time" className="text-xs">Arrival Time</Label>
+                                        <Label htmlFor="destination-arrived-time" className="text-xs">Arrival Date & Time</Label>
                                         <Input
                                             id="destination-arrived-time"
                                             name="destination_arrived_time"
-                                            type="time"
-                                            className="bg-white"
-                                            defaultValue={normalizeTimeValue(tripLeg?.destinationArrivedTime ?? tripLeg?.arrivedTime)}
+                                            type="datetime-local"
+                                            className="bg-white text-xs"
+                                            value={destinationArrivedTime}
+                                            onChange={(e) => {
+                                                setDestinationArrivedTime(e.target.value);
+                                                setStatusValidationError(null);
+                                            }}
                                         />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="destination-start-unloading-time" className="text-xs">Start Unloading Time</Label>
+                                        <Label htmlFor="destination-start-unloading-time" className="text-xs">Start Unloading Date & Time</Label>
                                         <Input
                                             id="destination-start-unloading-time"
                                             name="destination_start_unloading_time"
-                                            type="time"
-                                            className="bg-white"
-                                            defaultValue={normalizeTimeValue(tripLeg?.destinationStartUnloadingTime)}
+                                            type="datetime-local"
+                                            className="bg-white text-xs"
+                                            value={destinationStartUnloadingTime}
+                                            onChange={(e) => {
+                                                setDestinationStartUnloadingTime(e.target.value);
+                                                setStatusValidationError(null);
+                                            }}
                                         />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="destination-end-unloading-time" className="text-xs">End Unloading Time</Label>
+                                        <Label htmlFor="destination-end-unloading-time" className="text-xs">End Unloading Date & Time</Label>
                                         <Input
                                             id="destination-end-unloading-time"
                                             name="destination_end_unloading_time"
-                                            type="time"
-                                            className="bg-white"
-                                            defaultValue={normalizeTimeValue(tripLeg?.destinationEndUnloadingTime)}
+                                            type="datetime-local"
+                                            className="bg-white text-xs"
+                                            value={destinationEndUnloadingTime}
+                                            onChange={(e) => {
+                                                setDestinationEndUnloadingTime(e.target.value);
+                                                setStatusValidationError(null);
+                                            }}
                                         />
                                     </div>
                                     <div className="space-y-1.5">
-                                        <Label htmlFor="destination-departed-time" className="text-xs">Departure Time</Label>
+                                        <Label htmlFor="destination-departed-time" className="text-xs">Departure Date & Time</Label>
                                         <Input
                                             id="destination-departed-time"
                                             name="destination_departed_time"
-                                            type="time"
-                                            className="bg-white"
-                                            defaultValue={normalizeTimeValue(tripLeg?.destinationDepartedTime ?? tripLeg?.endTime)}
+                                            type="datetime-local"
+                                            className="bg-white text-xs"
+                                            value={destinationDepartedTime}
+                                            onChange={(e) => {
+                                                setDestinationDepartedTime(e.target.value);
+                                                setStatusValidationError(null);
+                                            }}
                                         />
                                     </div>
                                 </div>
@@ -317,12 +491,12 @@ const TripLegModal = ({
                                 <Select
                                     name="status"
                                     value={status}
-                                    onValueChange={setStatus}
+                                    onValueChange={handleStatusChange}
                                 >
                                     <SelectTrigger
                                         id="status"
                                         className="w-full capitalize"
-                                        aria-invalid={!!errors.status}
+                                        aria-invalid={!!(statusValidationError || errors.status)}
                                     >
                                         <SelectValue placeholder="Select status" />
                                     </SelectTrigger>
@@ -338,7 +512,7 @@ const TripLegModal = ({
                                         ))}
                                     </SelectContent>
                                 </Select>
-                                <InputError message={errors.status} />
+                                <InputError message={statusValidationError || errors.status} />
                             </div>
 
                             {status === 'cancelled' && (
@@ -377,24 +551,43 @@ const TripLegModal = ({
                                 </div>
                             )}
 
-                            <DialogFooter>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    onClick={() => onOpenChange?.(false)}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button type="submit" disabled={processing}>
-                                    {processing ? (
-                                        <>
-                                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                            Saving...
-                                        </>
-                                    ) : (
-                                        'Save Changes'
-                                    )}
-                                </Button>
+                            <DialogFooter className="flex items-center justify-between">
+                                {isEditing && (
+                                    <Button
+                                        type="button"
+                                        variant="destructive"
+                                        size="sm"
+                                        onClick={() => {
+                                            if (confirm('Are you sure you want to delete this trip leg?')) {
+                                                router.delete(`/triplegs/${tripLeg.id}`, {
+                                                    onSuccess: () => onOpenChange?.(false),
+                                                });
+                                            }
+                                        }}
+                                        className="mr-auto"
+                                    >
+                                        <Trash2 className="mr-1 h-3.5 w-3.5" /> Delete Leg
+                                    </Button>
+                                )}
+                                <div className="flex gap-2">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={() => onOpenChange?.(false)}
+                                    >
+                                        Cancel
+                                    </Button>
+                                    <Button type="submit" disabled={processing}>
+                                        {processing ? (
+                                            <>
+                                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                                Saving...
+                                            </>
+                                        ) : (
+                                            'Save Changes'
+                                        )}
+                                    </Button>
+                                </div>
                             </DialogFooter>
                         </>
                     )}
@@ -405,3 +598,4 @@ const TripLegModal = ({
 };
 
 export default TripLegModal;
+

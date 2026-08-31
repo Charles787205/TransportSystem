@@ -1,4 +1,4 @@
-import { Link } from '@inertiajs/react';
+import { Link, router } from '@inertiajs/react';
 import {
     Building2,
     Calendar,
@@ -9,6 +9,7 @@ import {
     ArrowLeft,
     RotateCcw,
     Plus,
+    Trash2,
 } from 'lucide-react';
 import { useState } from 'react';
 import CreateDropModal from '@/components/dispatchoperation/create-drop-modal';
@@ -66,6 +67,18 @@ const formatDate = (value: string | null | undefined) => {
 const formatTime = (value: string | null | undefined) => {
     if (!value) {
         return '—';
+    }
+
+    if (value.includes('T') || value.includes('-')) {
+        const dateObj = new Date(value);
+        if (!isNaN(dateObj.getTime())) {
+            return dateObj.toLocaleString('en-PH', {
+                month: 'short',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit',
+            });
+        }
     }
 
     const [hours, minutes] = value.split(':');
@@ -168,9 +181,16 @@ const DispatchDetailsPages = ({
                         </div>
                     </div>
                 </div>
-                <Badge variant="outline" className="capitalize">
-                    {dispatch.serviceType}
-                </Badge>
+                <div className="flex items-center gap-2">
+                    {dispatch.touchpoint && (
+                        <Badge variant="secondary" className="border-blue-200 bg-blue-100 text-blue-800">
+                            {dispatch.touchpoint}
+                        </Badge>
+                    )}
+                    <Badge variant="outline" className="capitalize">
+                        {dispatch.serviceType}
+                    </Badge>
+                </div>
             </div>
 
             <div className="grid gap-6 lg:grid-cols-2">
@@ -307,20 +327,27 @@ const DispatchDetailsPages = ({
                                                 </TableCell>
                                                 <TableCell>
                                                     <div className="space-y-0.5 text-xs">
-                                                        <div>
+                                                        <div className="flex items-center gap-1">
                                                             <span className="text-muted-foreground">
                                                                 From:
                                                             </span>{' '}
-                                                            {leg.originLocation
-                                                                ?.name ?? '—'}
+                                                            <span>{leg.originLocation?.name ?? '—'}</span>
+                                                            {leg.originLocation?.touchpoint && (
+                                                                <Badge variant="outline" className="px-1 py-0 text-[10px] text-slate-600 bg-slate-50 border-slate-200">
+                                                                    {leg.originLocation.touchpoint}
+                                                                </Badge>
+                                                            )}
                                                         </div>
-                                                        <div>
+                                                        <div className="flex items-center gap-1">
                                                             <span className="text-muted-foreground">
                                                                 To:
                                                             </span>{' '}
-                                                            {leg
-                                                                .destinationLocation
-                                                                ?.name ?? '—'}
+                                                            <span>{leg.destinationLocation?.name ?? '—'}</span>
+                                                            {leg.destinationLocation?.touchpoint && (
+                                                                <Badge variant="outline" className="px-1 py-0 text-[10px] text-slate-600 bg-slate-50 border-slate-200">
+                                                                    {leg.destinationLocation.touchpoint}
+                                                                </Badge>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </TableCell>
@@ -611,6 +638,31 @@ const DispatchDetailsPages = ({
                                                         >
                                                             <Pencil className="h-3.5 w-3.5" />
                                                         </Button>
+                                                        <Button
+                                                            type="button"
+                                                            variant="ghost"
+                                                            size="icon-sm"
+                                                            aria-label={`Delete trip leg ${leg.tripSequence}`}
+                                                            title="Delete Trip Leg"
+                                                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                            onClick={() => {
+                                                                if (tripLegs.length <= 1) {
+                                                                    alert('Cannot delete this trip leg. A dispatch must contain at least one trip leg.');
+                                                                    return;
+                                                                }
+                                                                if (
+                                                                    confirm(
+                                                                        `Are you sure you want to delete Trip Leg #${leg.tripSequence}?`,
+                                                                    )
+                                                                ) {
+                                                                    router.delete(
+                                                                        `/triplegs/${leg.id}`,
+                                                                    );
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Trash2 className="h-3.5 w-3.5" />
+                                                        </Button>
                                                     </div>
                                                 </TableCell>
                                             </TableRow>
@@ -666,6 +718,9 @@ const DispatchDetailsPages = ({
                                         Odometer (Start / End)
                                     </TableHead>
                                     <TableHead>Departed / Arrived</TableHead>
+                                    <TableHead className="w-20 text-right">
+                                        Action
+                                    </TableHead>
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
@@ -713,11 +768,24 @@ const DispatchDetailsPages = ({
                                                 </Badge>
                                             </TableCell>
                                             <TableCell className="font-medium text-slate-900">
-                                                {rt.originLocation?.name ?? '—'}
+                                                <div className="flex items-center gap-1.5">
+                                                    <span>{rt.originLocation?.name ?? '—'}</span>
+                                                    {rt.originLocation?.touchpoint && (
+                                                        <Badge variant="outline" className="px-1 py-0 text-[10px] text-slate-600 bg-slate-50 border-slate-200">
+                                                            {rt.originLocation.touchpoint}
+                                                        </Badge>
+                                                    )}
+                                                </div>
                                             </TableCell>
                                             <TableCell className="font-medium text-slate-900">
-                                                {rt.destinationLocation?.name ??
-                                                    '—'}
+                                                <div className="flex items-center gap-1.5">
+                                                    <span>{rt.destinationLocation?.name ?? '—'}</span>
+                                                    {rt.destinationLocation?.touchpoint && (
+                                                        <Badge variant="outline" className="px-1 py-0 text-[10px] text-slate-600 bg-slate-50 border-slate-200">
+                                                            {rt.destinationLocation.touchpoint}
+                                                        </Badge>
+                                                    )}
+                                                </div>
                                             </TableCell>
                                             <TableCell>
                                                 {cargoItems.length > 0 ? (
@@ -758,6 +826,29 @@ const DispatchDetailsPages = ({
                                                           timeStyle: 'short',
                                                       })
                                                     : '—'}
+                                            </TableCell>
+                                            <TableCell className="text-right">
+                                                <Button
+                                                    type="button"
+                                                    variant="ghost"
+                                                    size="icon-sm"
+                                                    aria-label="Delete return trip"
+                                                    title="Delete Return Trip"
+                                                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                                                    onClick={() => {
+                                                        if (
+                                                            confirm(
+                                                                'Are you sure you want to delete this return trip?',
+                                                            )
+                                                        ) {
+                                                            router.delete(
+                                                                `/return-trips/${rt.id}`,
+                                                            );
+                                                        }
+                                                    }}
+                                                >
+                                                    <Trash2 className="h-3.5 w-3.5" />
+                                                </Button>
                                             </TableCell>
                                         </TableRow>
                                     );

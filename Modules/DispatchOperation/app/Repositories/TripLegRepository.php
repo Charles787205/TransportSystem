@@ -35,6 +35,10 @@ class TripLegRepository
             'cargo_weight' => true,
         ]);
 
+        if (isset($data['cargo_parcel']) && $data['cargo_parcel'] !== null && $data['cargo_parcel'] !== '' && ! isset($tripLegData['total_parcel'])) {
+            $tripLegData['total_parcel'] = (int) $data['cargo_parcel'];
+        }
+
         $tripLeg->update($tripLegData);
 
         foreach ($cargoInputs as $type => $qty) {
@@ -74,5 +78,26 @@ class TripLegRepository
             ->where('origin_location_id', $originId)
             ->where('destination_location_id', $destinationId)
             ->get();
+    }
+
+    public function findLatestTripLegByVehicleId(int $vehicleId): ?TripLeg
+    {
+        return TripLeg::whereHas('dispatch', function ($q) use ($vehicleId) {
+            $q->where('vehicle_id', $vehicleId);
+        })->latest()->first();
+    }
+
+    public function findLatestTripLegByDriverId(int $driverId): ?TripLeg
+    {
+        return TripLeg::whereHas('dispatch', function ($q) use ($driverId) {
+            $q->where('driver_id', $driverId);
+        })->latest()->first();
+    }
+
+    public function deleteTripLeg(int $id): bool
+    {
+        $tripLeg = TripLeg::findOrFail($id);
+
+        return (bool) $tripLeg->delete();
     }
 }

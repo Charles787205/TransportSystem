@@ -15,6 +15,11 @@ class VehicleRepository
         return $vehicle->refresh();
     }
 
+    public function find(int $id): ?Vehicle
+    {
+        return Vehicle::find($id);
+    }
+
     public function getVehiclesPaginated(?int $vendorId, int $pageSize)
     {
         return Vehicle::query()
@@ -55,5 +60,12 @@ class VehicleRepository
             )
             ->take(6)
             ->values();
+    }
+
+    public function getVehiclesWithLatestDispatch()
+    {
+        return Vehicle::with(['dispatches.tripLegs' => function ($q) {
+            $q->latest();
+        }])->get(['id', 'plate_number as label', 'vendor_id', 'driver_id', 'is_active']);
     }
 }

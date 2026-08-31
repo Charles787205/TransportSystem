@@ -198,10 +198,24 @@ const DispatchOperation = ({
                                                         ''}
                                                 </TableCell>
                                                 <TableCell>
-                                                    {firstLeg?.originLocation?.name ?? '—'}
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span>{firstLeg?.originLocation?.name ?? '—'}</span>
+                                                        {firstLeg?.originLocation?.touchpoint && (
+                                                            <Badge variant="outline" className="font-mono text-[10px] bg-slate-50 text-slate-600 border-slate-200">
+                                                                {firstLeg.originLocation.touchpoint}
+                                                            </Badge>
+                                                        )}
+                                                    </div>
                                                 </TableCell>
                                                 <TableCell>
-                                                    {firstLeg?.destinationLocation?.name ?? '—'}
+                                                    <div className="flex items-center gap-1.5">
+                                                        <span>{firstLeg?.destinationLocation?.name ?? '—'}</span>
+                                                        {firstLeg?.destinationLocation?.touchpoint && (
+                                                            <Badge variant="outline" className="font-mono text-[10px] bg-slate-50 text-slate-600 border-slate-200">
+                                                                {firstLeg.destinationLocation.touchpoint}
+                                                            </Badge>
+                                                        )}
+                                                    </div>
                                                 </TableCell>
                                                 <TableCell>
                                                     {dispatch.tripLegs.length}

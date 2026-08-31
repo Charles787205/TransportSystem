@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
-use Modules\Client\Models\Location;
+use Modules\Client\Services\ClientService;
 use Modules\DispatchOperation\Classes\Data\Request\CreateDispatchData;
 use Modules\DispatchOperation\Classes\Data\Request\EditTripLegData;
 use Modules\DispatchOperation\Enums\TripStatus;
@@ -17,7 +17,8 @@ use Modules\DispatchOperation\Services\DispatchService;
 class DispatchOperationController extends Controller
 {
     public function __construct(
-        private DispatchService $dispatchService
+        private DispatchService $dispatchService,
+        private ClientService $clientService
     ) {}
 
     public function index(Request $request)
@@ -26,7 +27,6 @@ class DispatchOperationController extends Controller
 
         $filters = $request->only(['search', 'date_filter', 'start_date', 'end_date']);
 
-        // Default to today if no date filter is provided
         if (! isset($filters['date_filter'])) {
             $filters['date_filter'] = 'today';
         }
@@ -77,11 +77,11 @@ class DispatchOperationController extends Controller
      */
     public function show($id)
     {
-        $dispatchModel = Dispatch::findOrFail($id);
+        $dispatchModel = $this->dispatchService->getDispatchModel((int) $id);
         Gate::authorize('view', $dispatchModel);
 
-        $dispatch = $this->dispatchService->getDispatchDetails($id);
-        $locations = Location::where('client_id', $dispatchModel->client_id)->get(['id', 'name', 'touchpoint', 'type']);
+        $dispatch = $this->dispatchService->getDispatchDetails((int) $id);
+        $locations = $this->clientService->getClientLocations($dispatchModel->client_id);
 
         return Inertia::render(
             'dispatchoperations/show',
@@ -101,7 +101,7 @@ class DispatchOperationController extends Controller
      */
     public function edit($id)
     {
-        $dispatchModel = Dispatch::findOrFail($id);
+        $dispatchModel = $this->dispatchService->getDispatchModel((int) $id);
         Gate::authorize('update', $dispatchModel);
 
         return view('dispatchoperation::edit');
@@ -112,7 +112,7 @@ class DispatchOperationController extends Controller
      */
     public function update(EditTripLegData $request, $id)
     {
-        $dispatchModel = Dispatch::findOrFail($id);
+        $dispatchModel = $this->dispatchService->getDispatchModel((int) $id);
         Gate::authorize('update', $dispatchModel);
     }
 
@@ -121,7 +121,7 @@ class DispatchOperationController extends Controller
      */
     public function destroy($id)
     {
-        $dispatchModel = Dispatch::findOrFail($id);
+        $dispatchModel = $this->dispatchService->getDispatchModel((int) $id);
         Gate::authorize('delete', $dispatchModel);
     }
 }
