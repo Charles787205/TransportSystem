@@ -12,8 +12,7 @@ class DashboardMetricsData extends Data
         public int $plans,
         public int $dispatches,
         public int $vendors,
-        public int $drivers,
         public int $vehicles,
-        public int $clients,
+        public float $planVsDispatchPercentage,
     ) {}
 }

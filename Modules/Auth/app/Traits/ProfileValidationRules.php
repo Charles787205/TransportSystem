@@ -2,9 +2,9 @@
 
 namespace Modules\Auth\Traits;
 
-use Modules\User\Models\User;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rule;
+use Modules\User\Models\User;
 
 trait ProfileValidationRules
 {

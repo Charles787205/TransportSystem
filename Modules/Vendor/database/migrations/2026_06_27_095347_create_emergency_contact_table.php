@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('full_name');
             $table->foreignId('driver_id')->constrained()->cascadeOnDelete();
-            $table->string("phone_number",13);
+            $table->string('phone_number', 13);
             $table->timestamps();
         });
     }

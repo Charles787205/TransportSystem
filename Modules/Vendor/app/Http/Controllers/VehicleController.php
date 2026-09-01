@@ -5,6 +5,7 @@ namespace Modules\Vendor\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Modules\Vendor\Models\Vendor;
+
 class VehicleController extends Controller
 {
     /**

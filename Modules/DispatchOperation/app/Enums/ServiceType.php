@@ -1,6 +1,7 @@
 <?php
 
 namespace Modules\DispatchOperation\Enums;
+
 use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 
 #[TypeScript()]

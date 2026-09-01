@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('insurances', function (Blueprint $table) {
             $table->id();
             $table->foreignId('vehicle_id');
-            $table->string("provider_name");
-            $table->string("policy_number");
-            $table->date("start_date");
-            $table->date("end_date");
+            $table->string('provider_name');
+            $table->string('policy_number');
+            $table->date('start_date');
+            $table->date('end_date');
             $table->timestamps();
         });
     }

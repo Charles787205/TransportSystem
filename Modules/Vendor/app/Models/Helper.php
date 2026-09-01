@@ -3,8 +3,9 @@
 namespace Modules\Vendor\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
 // use Modules\Vendor\Database\Factories\HelperFactory;
 
 #[Fillable(['full_name', 'phone_number'])]

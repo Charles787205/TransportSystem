@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('helpers', function (Blueprint $table) {
             $table->id();
-            $table->string("full_name")->unique();
-            $table->string("phone_number")->unique();
+            $table->string('full_name')->unique();
+            $table->string('phone_number')->unique();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

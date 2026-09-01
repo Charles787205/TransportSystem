@@ -2,9 +2,9 @@
 
 namespace Modules\Auth\Actions\Fortify;
 
+use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Modules\User\Models\User;
-use Illuminate\Support\Facades\Hash;
 
 class CreateNewUser implements CreatesNewUsers
 {

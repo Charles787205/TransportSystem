@@ -4,14 +4,10 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Modules\Client\Database\Seeders\ClientDatabaseSeeder;
-use Modules\DispatchOperation\Database\Seeders\DispatchOperationDatabaseSeeder;
-use Modules\Planning\Database\Seeders\PlanningDatabaseSeeder;
 use Modules\User\Database\Seeders\PermissionSeeder;
 use Modules\User\Database\Seeders\RoleSeeder;
 use Modules\User\Models\Role;
 use Modules\User\Models\User;
-use Modules\Vendor\Database\Seeders\VendorDatabaseSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -38,6 +34,5 @@ class DatabaseSeeder extends Seeder
             'role_id' => $adminRole?->id,
         ]);
 
-       
     }
 }

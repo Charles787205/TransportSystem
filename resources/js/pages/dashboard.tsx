@@ -2,12 +2,11 @@ import { Head, Link, router } from '@inertiajs/react';
 import {
     FileText,
     Truck,
-    Users,
-    UserCheck,
     Building2,
     ArrowUpRight,
     Filter,
     RotateCcw,
+    Percent,
 } from 'lucide-react';
 import { useState } from 'react';
 import {
@@ -321,7 +320,7 @@ export default function Dashboard({
                 </Card>
 
                 {/* Metric Cards Grid */}
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
                     <Card className="border border-slate-100 bg-white shadow-xs">
                         <CardHeader className="flex flex-row items-center justify-between pb-2">
                             <CardTitle className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
@@ -333,6 +332,9 @@ export default function Dashboard({
                             <div className="text-2xl font-bold text-slate-900">
                                 {metrics?.plans ?? 0}
                             </div>
+                            <p className="mt-1 text-[11px] text-slate-400">
+                                Vehicles planned
+                            </p>
                         </CardContent>
                     </Card>
 
@@ -347,6 +349,26 @@ export default function Dashboard({
                             <div className="text-2xl font-bold text-slate-900">
                                 {metrics?.dispatches ?? 0}
                             </div>
+                            <p className="mt-1 text-[11px] text-slate-400">
+                                Trip legs dispatched
+                            </p>
+                        </CardContent>
+                    </Card>
+
+                    <Card className="border border-slate-100 bg-white shadow-xs">
+                        <CardHeader className="flex flex-row items-center justify-between pb-2">
+                            <CardTitle className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
+                                Plan vs Dispatch
+                            </CardTitle>
+                            <Percent className="h-4 w-4 text-violet-500" />
+                        </CardHeader>
+                        <CardContent>
+                            <div className="text-2xl font-bold text-slate-900">
+                                {metrics?.planVsDispatchPercentage ?? 0}%
+                            </div>
+                            <p className="mt-1 text-[11px] text-slate-400">
+                                Fulfillment rate
+                            </p>
                         </CardContent>
                     </Card>
 
@@ -361,6 +383,9 @@ export default function Dashboard({
                             <div className="text-2xl font-bold text-slate-900">
                                 {metrics?.vendors ?? 0}
                             </div>
+                            <p className="mt-1 text-[11px] text-slate-400">
+                                Active vendors
+                            </p>
                         </CardContent>
                     </Card>
 
@@ -375,34 +400,9 @@ export default function Dashboard({
                             <div className="text-2xl font-bold text-slate-900">
                                 {metrics?.vehicles ?? 0}
                             </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card className="border border-slate-100 bg-white shadow-xs">
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
-                                Drivers
-                            </CardTitle>
-                            <UserCheck className="h-4 w-4 text-violet-500" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold text-slate-900">
-                                {metrics?.drivers ?? 0}
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    <Card className="border border-slate-100 bg-white shadow-xs">
-                        <CardHeader className="flex flex-row items-center justify-between pb-2">
-                            <CardTitle className="text-xs font-semibold tracking-wider text-slate-500 uppercase">
-                                Clients
-                            </CardTitle>
-                            <Users className="h-4 w-4 text-amber-500" />
-                        </CardHeader>
-                        <CardContent>
-                            <div className="text-2xl font-bold text-slate-900">
-                                {metrics?.clients ?? 0}
-                            </div>
+                            <p className="mt-1 text-[11px] text-slate-400">
+                                Total vehicles
+                            </p>
                         </CardContent>
                     </Card>
                 </div>

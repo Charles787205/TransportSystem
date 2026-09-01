@@ -2,10 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
+use Aws\SecretsManager\SecretsManagerClient;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\DB;
-use Aws\SecretsManager\SecretsManagerClient;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,11 +37,12 @@ class AppServiceProvider extends ServiceProvider
                 }
             } catch (\Exception $e) {
                 logger()->error(
-                    'Failed to load AWS Secrets: ' . $e->getMessage()
+                    'Failed to load AWS Secrets: '.$e->getMessage()
                 );
             }
         }
     }
+
     /**
      * Bootstrap any application services.
      */
@@ -58,7 +59,7 @@ class AppServiceProvider extends ServiceProvider
             }
 
             // Default fallback for standard App\Models
-            return 'Database\\Factories\\' . class_basename($modelName) . 'Factory';
+            return 'Database\\Factories\\'.class_basename($modelName).'Factory';
         });
     }
 }

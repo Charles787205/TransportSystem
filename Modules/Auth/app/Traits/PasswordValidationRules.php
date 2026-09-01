@@ -2,7 +2,6 @@
 
 namespace Modules\Auth\Traits;
 
-
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Validation\Rules\Password;
 

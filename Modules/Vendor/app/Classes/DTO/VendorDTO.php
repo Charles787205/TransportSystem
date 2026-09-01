@@ -9,8 +9,7 @@ class VendorDTO
         public readonly string $email,
         public readonly string $phoneNumber,
 
-    ) {
-    }
+    ) {}
 
     public static function fromArray(array $request): self
     {

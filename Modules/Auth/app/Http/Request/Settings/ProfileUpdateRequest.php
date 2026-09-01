@@ -2,9 +2,9 @@
 
 namespace Modules\Auth\Http\Request\Settings;
 
-use Modules\Auth\Traits\ProfileValidationRules;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Modules\Auth\Traits\ProfileValidationRules;
 
 class ProfileUpdateRequest extends FormRequest
 {
