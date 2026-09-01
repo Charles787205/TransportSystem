@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('registrations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("vehicle_id")->constrained()->cascadeOnDelete();
-            $table->string("cr_number");
-            $table->date("cr_date");
-            $table->string("or_number");
+            $table->foreignId('vehicle_id')->constrained()->cascadeOnDelete();
+            $table->string('cr_number');
+            $table->date('cr_date');
+            $table->string('or_number');
             $table->date('or_date');
-            $table->date("ltfrb_date");
-            $table->string("case_number");
+            $table->date('ltfrb_date');
+            $table->string('case_number');
             $table->timestamps();
         });
     }

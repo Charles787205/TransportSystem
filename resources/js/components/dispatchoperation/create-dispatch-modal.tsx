@@ -64,6 +64,17 @@ const CreateDispatchModal = ({
             ? String(defaultValues.destinationLocationId)
             : '',
     );
+    const [selectedTouchpoint, setSelectedTouchpoint] = useState<string>('');
+
+    const handleOriginChange = (originId: string) => {
+        setSelectedOriginId(originId);
+        const loc = availableLocations.find(
+            (l: any) => String(l.id) === String(originId),
+        );
+        if (loc?.touchpoint) {
+            setSelectedTouchpoint(loc.touchpoint);
+        }
+    };
 
     const handleOpenChange = (isOpen: boolean) => {
         setOpen(isOpen);
@@ -71,6 +82,7 @@ const CreateDispatchModal = ({
         if (isOpen) {
             setSelectedVehicleId('');
             setSelectedDriverId('');
+            setSelectedTouchpoint('');
 
             if (defaultValues?.clientId) {
                 setSelectedClientId(String(defaultValues.clientId));
@@ -182,6 +194,7 @@ const CreateDispatchModal = ({
                             setSelectedClientId('');
                             setSelectedOriginId('');
                             setSelectedDestinationId('');
+                            setSelectedTouchpoint('');
                         }}
                         onError={(e) => {
                             console.log(e);
@@ -302,7 +315,7 @@ const CreateDispatchModal = ({
                                         <Select
                                             name="origin_location_id"
                                             value={selectedOriginId}
-                                            onValueChange={setSelectedOriginId}
+                                            onValueChange={handleOriginChange}
                                             disabled={
                                                 lockFields || !selectedClientId
                                             }
@@ -328,7 +341,7 @@ const CreateDispatchModal = ({
                                                         key={l.id}
                                                         value={String(l.id)}
                                                     >
-                                                        {l.label}
+                                                        {l.label}{l.touchpoint ? ` (${l.touchpoint})` : ''}
                                                     </SelectItem>
                                                 ))}
                                             </SelectContent>
@@ -386,7 +399,7 @@ const CreateDispatchModal = ({
                                                             key={l.id}
                                                             value={String(l.id)}
                                                         >
-                                                            {l.label}
+                                                            {l.label}{l.touchpoint ? ` (${l.touchpoint})` : ''}
                                                         </SelectItem>
                                                     ),
                                                 )}
@@ -400,30 +413,61 @@ const CreateDispatchModal = ({
                                     </div>
                                 </div>
 
-                                <div
-                                    className="space-y-1.5"
-                                    data-invalid={!!errors.service_type}
-                                >
-                                    <Label htmlFor="service_type">
-                                        Service Type
-                                    </Label>
-                                    <Select name="service_type">
-                                        <SelectTrigger
-                                            id="service_type"
-                                            aria-invalid={!!errors.service_type}
-                                            className="w-full"
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div
+                                        className="space-y-1.5"
+                                        data-invalid={!!errors.service_type}
+                                    >
+                                        <Label htmlFor="service_type">
+                                            Service Type
+                                        </Label>
+                                        <Select name="service_type">
+                                            <SelectTrigger
+                                                id="service_type"
+                                                aria-invalid={!!errors.service_type}
+                                                className="w-full"
+                                            >
+                                                <SelectValue placeholder="Select service type" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="oncall">
+                                                    On Call
+                                                </SelectItem>
+                                                <SelectItem value="wetlease">
+                                                    Wet Lease
+                                                </SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <InputError message={errors.service_type} />
+                                    </div>
+
+                                    <div
+                                        className="space-y-1.5"
+                                        data-invalid={!!errors.touchpoint}
+                                    >
+                                        <Label htmlFor="touchpoint">
+                                            Touchpoint
+                                        </Label>
+                                        <Select
+                                            name="touchpoint"
+                                            value={selectedTouchpoint}
+                                            onValueChange={setSelectedTouchpoint}
                                         >
-                                            <SelectValue placeholder="Select service type" />
-                                        </SelectTrigger>
-                                        <SelectContent>
-                                            <SelectItem value="oncall">
-                                                On Call
-                                            </SelectItem>
-                                            <SelectItem value="wetlease">
-                                                Wet Lease
-                                            </SelectItem>
-                                        </SelectContent>
-                                    </Select>
+                                            <SelectTrigger
+                                                id="touchpoint"
+                                                aria-invalid={!!errors.touchpoint}
+                                                className="w-full"
+                                            >
+                                                <SelectValue placeholder="Select touchpoint" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value="FM">FM (First Mile)</SelectItem>
+                                                <SelectItem value="MFM">MFM (Mid-First Mile)</SelectItem>
+                                                <SelectItem value="MM">MM (Middle Mile)</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                        <InputError message={errors.touchpoint} />
+                                    </div>
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-4">

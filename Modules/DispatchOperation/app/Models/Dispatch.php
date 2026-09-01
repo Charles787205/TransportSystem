@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Modules\Client\Enums\TouchpointType;
 use Modules\Client\Models\Client;
 use Modules\DispatchOperation\Enums\ServiceType;
 use Modules\DispatchOperation\Enums\TripStatus;
@@ -18,6 +19,7 @@ use Modules\Vendor\Models\Vehicle;
     'vehicle_id',
     'driver_id',
     'service_type',
+    'touchpoint',
     'dispatch_date',
     'assigned_call_time',
     'odometer_start',
@@ -32,6 +34,7 @@ class Dispatch extends Model
      */
     protected $casts = [
         'service_type' => ServiceType::class,
+        'touchpoint' => TouchpointType::class,
     ];
 
     public function client(): BelongsTo

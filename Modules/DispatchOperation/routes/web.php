@@ -14,6 +14,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('dispatchoperations', DispatchOperationController::class)->names('dispatchoperation');
     Route::resource('triplegs', TripLegController::class);
     Route::post('return-trips', [ReturnTripController::class, 'store'])->name('return-trips.store');
+    Route::delete('return-trips/{returnTrip}', [ReturnTripController::class, 'destroy'])->name('return-trips.destroy');
     Route::post('drops', [DropController::class, 'store'])->name('drops.store');
     Route::put('drops/{drop}', [DropController::class, 'update'])->name('drops.update');
     Route::delete('drops/{drop}', [DropController::class, 'destroy'])->name('drops.destroy');

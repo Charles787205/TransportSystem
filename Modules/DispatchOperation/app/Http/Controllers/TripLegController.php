@@ -31,5 +31,10 @@ class TripLegController extends Controller
 
     }
 
-    public function destroy($id) {}
+    public function destroy($id)
+    {
+        $this->tripLegService->deleteTripLeg((int) $id);
+
+        return back()->with('success', 'Trip leg deleted');
+    }
 }

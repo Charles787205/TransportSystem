@@ -3,14 +3,14 @@
 namespace Modules\Auth\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
-use Modules\Auth\Http\Request\Settings\ProfileDeleteRequest;
-use Modules\Auth\Http\Request\Settings\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Inertia\Response;
+use Modules\Auth\Http\Request\Settings\ProfileDeleteRequest;
+use Modules\Auth\Http\Request\Settings\ProfileUpdateRequest;
 
 class ProfileController extends Controller
 {

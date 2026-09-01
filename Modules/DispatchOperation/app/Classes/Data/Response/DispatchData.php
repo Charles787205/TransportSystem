@@ -21,6 +21,7 @@ class DispatchData extends Data
         public int $vehicleId,
         public int $driverId,
         public ServiceType $serviceType,
+        public ?TouchpointType $touchpoint,
         public string $dispatchDate,
         public string $assignedCallTime,
 

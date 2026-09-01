@@ -15,6 +15,11 @@ class DriverRepository
         return $driver;
     }
 
+    public function find(int $id): ?Driver
+    {
+        return Driver::find($id);
+    }
+
     public function getDriverFromVendor(int $vendorId)
     {
         $drivers = Driver::where('vendor_id', $vendorId)
@@ -41,5 +46,12 @@ class DriverRepository
         return Driver::whereIn('id', $ids)
             ->get()
             ->keyBy('id');
+    }
+
+    public function getDriversWithLatestDispatch()
+    {
+        return Driver::with(['dispatches.tripLegs' => function ($q) {
+            $q->latest();
+        }])->get(['id', 'full_name as label', 'vendor_id', 'status']);
     }
 }

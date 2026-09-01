@@ -4,9 +4,6 @@ namespace Modules\User\Console;
 
 use Illuminate\Console\Command;
 use Modules\User\Models\Permission;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputArgument;
-use Laravel\Prompts\multiselect;
 use Modules\User\Models\Role;
 
 use function Laravel\Prompts\multiselect;
@@ -34,23 +31,24 @@ class CreateRole extends Command
     /**
      * Execute the console command.
      */
-    public function handle() {
+    public function handle()
+    {
         $name = $this->ask('Role name');
         $slug = $this->ask('Slug');
         $description = $this->ask('Role Description');
         $role = Role::create([
             'name' => $name,
             'slug' => $slug,
-            'description' => $description
+            'description' => $description,
         ]);
-        foreach (Permission::all() as $permission){
+        foreach (Permission::all() as $permission) {
             $actions = multiselect(
                 label: "{$permission->name} permissions",
                 options: [
                     'view' => 'View',
                     'create' => 'Create',
                     'edit' => 'Edit',
-                    'delete' => 'Delete'
+                    'delete' => 'Delete',
                 ]
             );
             $role->permissions()->attach($permission->id, [
@@ -61,6 +59,7 @@ class CreateRole extends Command
             ]);
         }
         $this->info("Role '{$role->name}' created successfully.");
+
         return self::SUCCESS;
     }
 }

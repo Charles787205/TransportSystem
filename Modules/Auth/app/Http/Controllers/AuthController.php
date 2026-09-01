@@ -15,7 +15,8 @@ class AuthController extends Controller
         return view('auth::index');
     }
 
-    public function login(){}
+    public function login() {}
+
     public function create()
     {
         return view('auth::create');

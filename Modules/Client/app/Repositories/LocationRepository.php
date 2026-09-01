@@ -24,4 +24,9 @@ class LocationRepository
     {
         return Location::where($where)->get();
     }
+
+    public function getLocationOptions(): Collection
+    {
+        return Location::query()->get(['id', 'name as label', 'client_id', 'touchpoint']);
+    }
 }

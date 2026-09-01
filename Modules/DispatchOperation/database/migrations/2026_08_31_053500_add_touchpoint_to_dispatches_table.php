@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', 25)->unique();
-            $table->string('description', 50);
-            $table->string('slug', 25);
-            $table->timestamps();
+        Schema::table('dispatches', function (Blueprint $table) {
+            $table->string('touchpoint')->nullable()->after('service_type');
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::table('dispatches', function (Blueprint $table) {
+            $table->dropColumn('touchpoint');
+        });
     }
 };

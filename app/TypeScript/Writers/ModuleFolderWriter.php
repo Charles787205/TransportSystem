@@ -144,7 +144,7 @@ class ModuleFolderWriter implements Writer
 
         return $this->path === null || $this->path === ''
             ? $module
-            : $this->path . DIRECTORY_SEPARATOR . $module;
+            : $this->path.DIRECTORY_SEPARATOR.$module;
     }
 
     public function resolveReference(

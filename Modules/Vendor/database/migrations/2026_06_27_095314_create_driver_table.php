@@ -15,17 +15,17 @@ return new class extends Migration
             $table->id();
             $table->foreignId('vendor_id')->constrained()->cascadeOnDelete();
             $table->string('driver_id_number')->nullable();
-            $table->string("full_name")->unique();
-            $table->date("birthday")->nullable();
-            $table->enum('gender', ["Male", "Female"]);
-            $table->string("phone_number", 13);
-            $table->string("address");
-            $table->string("license_number", 50)->unique();
+            $table->string('full_name')->unique();
+            $table->date('birthday')->nullable();
+            $table->enum('gender', ['Male', 'Female']);
+            $table->string('phone_number', 13);
+            $table->string('address');
+            $table->string('license_number', 50)->unique();
             $table->date('license_expiry_date');
             $table->string('status')->default('active');
             $table->timestamps();
         });
-    } 
+    }
 
     /**
      * Reverse the migrations.

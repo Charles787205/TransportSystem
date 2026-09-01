@@ -15,7 +15,6 @@ use Modules\Dashboard\Classes\Data\Response\StatusBreakdownItemData;
 use Modules\Dashboard\Classes\Data\Response\TopDestinationItemData;
 use Modules\DispatchOperation\Models\Dispatch;
 use Modules\Planning\Models\Plan;
-use Modules\Vendor\Models\Driver;
 use Modules\Vendor\Models\Vehicle;
 use Modules\Vendor\Models\Vendor;
 use Spatie\LaravelData\DataCollection;
@@ -24,13 +23,16 @@ class DashboardRepository
 {
     public function getMetrics(DashboardFilterData $filters): DashboardMetricsData
     {
+        $plansCount = (int) $this->applyPlanFilters(Plan::query(), $filters)->sum('number_of_vehicles');
+        $dispatchesCount = $this->getTripLegsCount($filters);
+        $percentage = $plansCount > 0 ? round(($dispatchesCount / $plansCount) * 100, 1) : 0.0;
+
         return new DashboardMetricsData(
-            plans: Plan::count(),
-            dispatches: $this->applyFilters(Dispatch::query(), $filters)->count(),
+            plans: $plansCount,
+            dispatches: $dispatchesCount,
             vendors: Vendor::count(),
-            drivers: Driver::count(),
             vehicles: Vehicle::count(),
-            clients: Client::count(),
+            planVsDispatchPercentage: $percentage,
         );
     }
 
@@ -207,5 +209,50 @@ class DashboardRepository
                     ->where('tl.destination_location_id', $filters->destinationLocationId);
             });
         }
+    }
+
+    protected function applyPlanFilters($query, DashboardFilterData $filters)
+    {
+        if (! empty($filters->dateFrom)) {
+            $query->whereDate('dispatch_date', '>=', $filters->dateFrom);
+        }
+        if (! empty($filters->dateTo)) {
+            $query->whereDate('dispatch_date', '<=', $filters->dateTo);
+        }
+        if (! empty($filters->clientId)) {
+            $query->where('client_id', $filters->clientId);
+        }
+        if (! empty($filters->originLocationId)) {
+            $query->where('origin_id', $filters->originLocationId);
+        }
+        if (! empty($filters->destinationLocationId)) {
+            $query->where('destination_id', $filters->destinationLocationId);
+        }
+
+        return $query;
+    }
+
+    protected function getTripLegsCount(DashboardFilterData $filters): int
+    {
+        $query = DB::table('trip_legs')
+            ->join('dispatches', 'trip_legs.dispatch_id', '=', 'dispatches.id');
+
+        if (! empty($filters->dateFrom)) {
+            $query->whereDate('dispatches.dispatch_date', '>=', $filters->dateFrom);
+        }
+        if (! empty($filters->dateTo)) {
+            $query->whereDate('dispatches.dispatch_date', '<=', $filters->dateTo);
+        }
+        if (! empty($filters->clientId)) {
+            $query->where('dispatches.client_id', $filters->clientId);
+        }
+        if (! empty($filters->originLocationId)) {
+            $query->where('trip_legs.origin_location_id', $filters->originLocationId);
+        }
+        if (! empty($filters->destinationLocationId)) {
+            $query->where('trip_legs.destination_location_id', $filters->destinationLocationId);
+        }
+
+        return (int) $query->count();
     }
 }

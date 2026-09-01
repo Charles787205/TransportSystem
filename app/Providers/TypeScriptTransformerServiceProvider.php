@@ -20,7 +20,7 @@ class TypeScriptTransformerServiceProvider extends BaseTypeScriptTransformerServ
             ->transformDirectories(app_path());
 
         foreach (File::directories(base_path('Modules')) as $module) {
-            $appPath = $module . '/app';
+            $appPath = $module.'/app';
 
             if (is_dir($appPath)) {
                 $config->transformDirectories($appPath);
@@ -28,7 +28,7 @@ class TypeScriptTransformerServiceProvider extends BaseTypeScriptTransformerServ
         }
 
         $config
-            ->writer(new ModuleFolderWriter(""))
+            ->writer(new ModuleFolderWriter(''))
             ->formatter(PrettierFormatter::class);
     }
 }
