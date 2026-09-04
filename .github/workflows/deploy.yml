@@ -10,7 +10,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # MUST COME BEFORE COMPOSER INSTALL
       - name: Setup PHP Environment
@@ -42,7 +42,7 @@ jobs:
         run: php artisan wayfinder:generate --with-form
 
       - name: Install Node & Build Assets
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '22'
       - run: |
@@ -50,7 +50,7 @@ jobs:
           npm run build
 
       - name: Ensure Target Build Directory Exists on EC2
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ubuntu
@@ -58,7 +58,7 @@ jobs:
           script: mkdir -p /var/www/TransportSystem/public/build
 
       - name: Deploy Build Artifact to EC2
-        uses: appleboy/scp-action@v0.1.7
+        uses: appleboy/scp-action@v1.0.0
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ubuntu
@@ -68,7 +68,7 @@ jobs:
           strip_components: 2
 
       - name: Clear View Cache on EC2
-        uses: appleboy/ssh-action@v1.0.3
+        uses: appleboy/ssh-action@v1.2.5
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ubuntu
