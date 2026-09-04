@@ -2,6 +2,7 @@
 
 namespace Modules\DispatchOperation\Services;
 
+use Illuminate\Support\Facades\DB;
 use Modules\Client\Repositories\ClientRepository;
 use Modules\Client\Repositories\LocationRepository;
 use Modules\Core\Classes\Data\Response\PaginatedData;

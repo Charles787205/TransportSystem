@@ -3,6 +3,7 @@
 namespace Modules\DispatchOperation\Classes\Data\Response;
 
 use Modules\Client\Classes\Data\Response\ClientData;
+use Modules\Client\Enums\TouchpointType;
 use Modules\DispatchOperation\Enums\ServiceType;
 use Modules\Vendor\Classes\Data\Response\DriverData;
 use Modules\Vendor\Classes\Data\Response\VehicleData;
