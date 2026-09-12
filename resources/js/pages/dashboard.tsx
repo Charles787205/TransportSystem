@@ -9,18 +9,6 @@ import {
     Percent,
 } from 'lucide-react';
 import { useState } from 'react';
-import {
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    CartesianGrid,
-    Tooltip as RechartsTooltip,
-    ResponsiveContainer,
-    PieChart,
-    Pie,
-    Cell,
-} from 'recharts';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -50,19 +38,10 @@ import {
 import type { DashboardResponseData } from '@/generated/Dashboard';
 import { dashboard } from '@/routes';
 
-const COLORS = [
-    '#6366f1',
-    '#3b82f6',
-    '#10b981',
-    '#f43f5e',
-    '#a855f7',
-    '#f59e0b',
-];
-
 export default function Dashboard({
     metrics,
-    topDestinations = [],
-    dispatchesByClient = [],
+    plannedVsDispatchedPerTouchPoint = [],
+    dispatchesByServiceType = [],
     recentDispatches = [],
     filters = {
         datePreset: 'today',
@@ -407,147 +386,97 @@ export default function Dashboard({
                     </Card>
                 </div>
 
-                {/* Charts section */}
-                <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                    {/* Top Destinations Chart */}
-                    <Card className="border border-slate-100 bg-white shadow-xs lg:col-span-2">
+                {/* Tables section */}
+                <div className="grid gap-6 md:grid-cols-2">
+                    {/* Planned vs Dispatched per Touch Point */}
+                    <Card className="border border-slate-100 bg-white shadow-xs">
                         <CardHeader>
                             <CardTitle className="text-sm font-semibold text-slate-900">
-                                Top Destinations
+                                Planned vs Dispatched per Touch Point
                             </CardTitle>
                             <CardDescription className="text-xs">
-                                Trips scheduled by destination location
+                                Overview by origin touch point
                             </CardDescription>
                         </CardHeader>
-                        <CardContent className="h-[280px]">
-                            {topDestinations && topDestinations.length > 0 ? (
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <BarChart
-                                        data={topDestinations}
-                                        margin={{
-                                            top: 10,
-                                            right: 10,
-                                            left: -20,
-                                            bottom: 0,
-                                        }}
-                                    >
-                                        <CartesianGrid
-                                            strokeDasharray="3 3"
-                                            vertical={false}
-                                            stroke="#f1f5f9"
-                                        />
-                                        <XAxis
-                                            dataKey="destination"
-                                            tickLine={false}
-                                            axisLine={false}
-                                            tick={{
-                                                fill: '#64748b',
-                                                fontSize: 12,
-                                            }}
-                                        />
-                                        <YAxis
-                                            tickLine={false}
-                                            axisLine={false}
-                                            tick={{
-                                                fill: '#64748b',
-                                                fontSize: 12,
-                                            }}
-                                        />
-                                        <RechartsTooltip
-                                            cursor={{ fill: '#f8fafc' }}
-                                        />
-                                        <Bar
-                                            dataKey="count"
-                                            fill="#1e40af"
-                                            radius={[4, 4, 0, 0]}
-                                            barSize={35}
-                                        />
-                                    </BarChart>
-                                </ResponsiveContainer>
+                        <CardContent className="p-0">
+                            {plannedVsDispatchedPerTouchPoint && plannedVsDispatchedPerTouchPoint.length > 0 ? (
+                                <Table>
+                                    <TableHeader className="bg-slate-50">
+                                        <TableRow>
+                                            <TableHead className="pl-6 text-xs font-semibold text-slate-500 uppercase">
+                                                Touch Point
+                                            </TableHead>
+                                            <TableHead className="text-xs font-semibold text-slate-500 uppercase">
+                                                Planned
+                                            </TableHead>
+                                            <TableHead className="text-xs font-semibold text-slate-500 uppercase text-right pr-6">
+                                                Dispatched
+                                            </TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {plannedVsDispatchedPerTouchPoint.map((item) => (
+                                            <TableRow key={item.touchpoint}>
+                                                <TableCell className="pl-6 font-medium text-slate-900">
+                                                    {item.touchpoint}
+                                                </TableCell>
+                                                <TableCell className="text-slate-600">
+                                                    {item.planned}
+                                                </TableCell>
+                                                <TableCell className="text-right pr-6 text-slate-600">
+                                                    {item.dispatched}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
                             ) : (
-                                <div className="flex h-full items-center justify-center text-sm text-slate-400">
-                                    No destination data available.
+                                <div className="flex h-32 items-center justify-center text-sm text-slate-400">
+                                    No touch point data available.
                                 </div>
                             )}
                         </CardContent>
                     </Card>
 
-                    {/* Dispatches by Client */}
+                    {/* Dispatches per Service Type */}
                     <Card className="border border-slate-100 bg-white shadow-xs">
                         <CardHeader>
                             <CardTitle className="text-sm font-semibold text-slate-900">
-                                Dispatches by Client
+                                Dispatches per Service Type
                             </CardTitle>
                             <CardDescription className="text-xs">
-                                Distribution across clients
+                                Overview by service type
                             </CardDescription>
                         </CardHeader>
-                        <CardContent className="flex h-[280px] flex-col justify-between">
-                            {dispatchesByClient &&
-                            dispatchesByClient.length > 0 ? (
-                                <>
-                                    <div className="h-[180px] w-full">
-                                        <ResponsiveContainer
-                                            width="100%"
-                                            height="100%"
-                                        >
-                                            <PieChart>
-                                                <Pie
-                                                    data={dispatchesByClient}
-                                                    cx="50%"
-                                                    cy="50%"
-                                                    innerRadius={45}
-                                                    outerRadius={70}
-                                                    paddingAngle={3}
-                                                    dataKey="value"
-                                                >
-                                                    {dispatchesByClient.map(
-                                                        (entry, index) => (
-                                                            <Cell
-                                                                key={`cell-${index}`}
-                                                                fill={
-                                                                    COLORS[
-                                                                        index %
-                                                                            COLORS.length
-                                                                    ]
-                                                                }
-                                                            />
-                                                        ),
-                                                    )}
-                                                </Pie>
-                                                <RechartsTooltip />
-                                            </PieChart>
-                                        </ResponsiveContainer>
-                                    </div>
-                                    <div className="grid grid-cols-2 gap-2 text-xs">
-                                        {dispatchesByClient.map(
-                                            (entry, index) => (
-                                                <div
-                                                    key={entry.name}
-                                                    className="flex items-center gap-1.5"
-                                                >
-                                                    <span
-                                                        className="h-2 w-2 rounded-full"
-                                                        style={{
-                                                            backgroundColor:
-                                                                COLORS[
-                                                                    index %
-                                                                        COLORS.length
-                                                                ],
-                                                        }}
-                                                    />
-                                                    <span className="truncate font-medium text-slate-600">
-                                                        {entry.name} (
-                                                        {entry.value})
-                                                    </span>
-                                                </div>
-                                            ),
-                                        )}
-                                    </div>
-                                </>
+                        <CardContent className="p-0">
+                            {dispatchesByServiceType && dispatchesByServiceType.length > 0 ? (
+                                <Table>
+                                    <TableHeader className="bg-slate-50">
+                                        <TableRow>
+                                            <TableHead className="pl-6 text-xs font-semibold text-slate-500 uppercase">
+                                                Service Type
+                                            </TableHead>
+                                            <TableHead className="text-xs font-semibold text-slate-500 uppercase text-right pr-6">
+                                                Dispatched
+                                            </TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {dispatchesByServiceType.map((item) => (
+                                            <TableRow key={item.serviceType}>
+                                                <TableCell className="pl-6 font-medium text-slate-900">
+                                                    {item.serviceType}
+                                                </TableCell>
+                                                <TableCell className="text-right pr-6 text-slate-600">
+                                                    {item.dispatched}
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
                             ) : (
-                                <div className="flex h-full items-center justify-center text-sm text-slate-400">
-                                    No client breakdown data available.
+                                <div className="flex h-32 items-center justify-center text-sm text-slate-400">
+                                    No service type data available.
                                 </div>
                             )}
                         </CardContent>

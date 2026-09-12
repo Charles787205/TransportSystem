@@ -21,13 +21,13 @@ class DashboardResponseData extends Data
         #[DataCollectionOf(StatusBreakdownItemData::class)]
         public DataCollection $statusBreakdown,
 
-        #[TypeScriptType('TopDestinationItemData[]')]
-        #[DataCollectionOf(TopDestinationItemData::class)]
-        public DataCollection $topDestinations,
+        #[TypeScriptType('PlannedVsDispatchedTouchpointItemData[]')]
+        #[DataCollectionOf(PlannedVsDispatchedTouchpointItemData::class)]
+        public DataCollection $plannedVsDispatchedPerTouchPoint,
 
-        #[TypeScriptType('ClientDispatchItemData[]')]
-        #[DataCollectionOf(ClientDispatchItemData::class)]
-        public DataCollection $dispatchesByClient,
+        #[TypeScriptType('DispatchesByServiceTypeItemData[]')]
+        #[DataCollectionOf(DispatchesByServiceTypeItemData::class)]
+        public DataCollection $dispatchesByServiceType,
 
         #[TypeScriptType('RecentDispatchItemData[]')]
         #[DataCollectionOf(RecentDispatchItemData::class)]
