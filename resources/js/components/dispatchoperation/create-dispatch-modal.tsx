@@ -71,6 +71,7 @@ const CreateDispatchModal = ({
         const loc = availableLocations.find(
             (l: any) => String(l.id) === String(originId),
         );
+
         if (loc?.touchpoint) {
             setSelectedTouchpoint(loc.touchpoint);
         }
@@ -209,9 +210,16 @@ const CreateDispatchModal = ({
                                         className="space-y-1.5"
                                         data-invalid={!!errors.vehicle_id}
                                     >
-                                        <Label htmlFor="vehicle_id">
-                                            Vehicle
-                                        </Label>
+                                        <div className="flex items-center justify-between">
+                                            <Label htmlFor="vehicle_id">
+                                                Vehicle
+                                            </Label>
+                                            {selectedVehicleObj?.type && (
+                                                <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border">
+                                                    {selectedVehicleObj.type}
+                                                </span>
+                                            )}
+                                        </div>
                                         <SearchableSelect
                                             id="vehicle_id"
                                             name="vehicle_id"
@@ -518,22 +526,7 @@ const CreateDispatchModal = ({
                                     </div>
                                 </div>
 
-                                <div
-                                    className="space-y-1.5"
-                                    data-invalid={!!errors.linehaul_trip_no}
-                                >
-                                    <Label htmlFor="linehaul_trip_no">
-                                        Linehaul Trip No.
-                                    </Label>
-                                    <Input
-                                        id="linehaul_trip_no"
-                                        name="linehaul_trip_no"
-                                        aria-invalid={!!errors.linehaul_trip_no}
-                                    />
-                                    <InputError
-                                        message={errors.linehaul_trip_no}
-                                    />
-                                </div>
+
 
                                 <DialogFooter className="mt-5">
                                     <Button

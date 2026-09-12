@@ -16,8 +16,9 @@ use Modules\DispatchOperation\Repositories\DispatchRepository;
 use Modules\DispatchOperation\Repositories\TripLegRepository;
 use Modules\Vendor\Repositories\DriverRepository;
 use Modules\Vendor\Repositories\VehicleRepository;
+use Modules\DispatchOperation\Contracts\DispatchServiceInterface;
 
-class DispatchService
+class DispatchService implements DispatchServiceInterface
 {
     public function __construct(
         private DispatchRepository $dispatchRepo,
@@ -33,6 +34,11 @@ class DispatchService
         $dispatch = $this->dispatchRepo->getDispatch($id);
 
         return DispatchData::from($dispatch);
+    }
+
+    public function getDispatchesForPlan(int $clientId, string $dispatchDate, int $originId, int $destinationId): \Illuminate\Support\Collection
+    {
+        return $this->dispatchRepo->getDispatchesForPlanRoute($clientId, $dispatchDate, $originId, $destinationId);
     }
 
     public function getDispatchDetails(int $id)
@@ -143,7 +149,8 @@ class DispatchService
                 isAvailable: $isAvailable,
                 activeStatus: $activeStatus,
                 vendorId: $v->vendor_id,
-                driverId: $v->driver_id
+                driverId: $v->driver_id,
+                type: $v->type,
             );
         });
 
