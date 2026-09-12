@@ -2,6 +2,8 @@ import { Form } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { CalendarIcon, Plus } from 'lucide-react';
 import { useState } from 'react';
+import { cn } from '@/lib/utils';
+import { store as storePlan } from '@/routes/planning';
 import InputError from '../input-error';
 import { Button } from '../ui/button';
 import { Calendar } from '../ui/calendar';
@@ -22,6 +24,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from '../ui/popover';
+import { SearchableSelect } from '../ui/searchable-select';
 import {
     Select,
     SelectContent,
@@ -29,8 +32,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from '../ui/select';
-import { cn } from '@/lib/utils';
-import { store as storePlan } from '@/routes/planning';
 
 type OptionItem = {
     id: number;
@@ -58,7 +59,10 @@ const CreatePlanModal = ({ clients = [], locations = [] }: CreatePlanModalProps)
     };
 
     const clientLocations = locations.filter((loc) => {
-        if (!selectedClientId) return true;
+        if (!selectedClientId) {
+return true;
+}
+
         return String(loc.client_id) === String(selectedClientId);
     });
 
@@ -123,60 +127,44 @@ const CreatePlanModal = ({ clients = [], locations = [] }: CreatePlanModalProps)
                             {/* Origin Location select */}
                             <div className="grid gap-1.5" data-invalid={!!errors.origin_id}>
                                 <Label htmlFor="origin_id">Origin Location *</Label>
-                                <Select
+                                <SearchableSelect
+                                    id="origin_id"
                                     name="origin_id"
+                                    options={originOptions}
                                     value={selectedOriginId}
                                     onValueChange={setSelectedOriginId}
                                     disabled={!selectedClientId}
-                                    required
-                                >
-                                    <SelectTrigger id="origin_id" className="w-full">
-                                        <SelectValue
-                                            placeholder={
-                                                selectedClientId
-                                                    ? 'Select origin location...'
-                                                    : 'Select client first'
-                                            }
-                                        />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {originOptions.map((l) => (
-                                            <SelectItem key={l.id} value={String(l.id)}>
-                                                {l.label}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                    placeholder={
+                                        selectedClientId
+                                            ? 'Select origin location...'
+                                            : 'Select client first'
+                                    }
+                                    searchPlaceholder="Search origin location..."
+                                    emptyText="No locations found."
+                                    aria-invalid={!!errors.origin_id}
+                                />
                                 <InputError message={errors.origin_id} />
                             </div>
 
                             {/* Destination Location select */}
                             <div className="grid gap-1.5" data-invalid={!!errors.destination_id}>
                                 <Label htmlFor="destination_id">Destination Location *</Label>
-                                <Select
+                                <SearchableSelect
+                                    id="destination_id"
                                     name="destination_id"
+                                    options={destinationOptions}
                                     value={selectedDestinationId}
                                     onValueChange={setSelectedDestinationId}
                                     disabled={!selectedClientId}
-                                    required
-                                >
-                                    <SelectTrigger id="destination_id" className="w-full">
-                                        <SelectValue
-                                            placeholder={
-                                                selectedClientId
-                                                    ? 'Select destination location...'
-                                                    : 'Select client first'
-                                            }
-                                        />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        {destinationOptions.map((l) => (
-                                            <SelectItem key={l.id} value={String(l.id)}>
-                                                {l.label}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectContent>
-                                </Select>
+                                    placeholder={
+                                        selectedClientId
+                                            ? 'Select destination location...'
+                                            : 'Select client first'
+                                    }
+                                    searchPlaceholder="Search destination location..."
+                                    emptyText="No locations found."
+                                    aria-invalid={!!errors.destination_id}
+                                />
                                 <InputError message={errors.destination_id} />
                             </div>
 
