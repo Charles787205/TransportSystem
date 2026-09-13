@@ -11,7 +11,7 @@ class CreateTripLegData extends Data
 {
     public function __construct(
         public int $dispatchId,
-        public string $linehaulTripNo,
+        public ?string $linehaulTripNo = null,
     ) {}
 
     public function toModelAttributes()

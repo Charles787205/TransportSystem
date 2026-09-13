@@ -71,6 +71,7 @@ const formatTime = (value: string | null | undefined) => {
 
     if (value.includes('T') || value.includes('-')) {
         const dateObj = new Date(value);
+
         if (!isNaN(dateObj.getTime())) {
             return dateObj.toLocaleString('en-PH', {
                 month: 'short',
@@ -648,8 +649,10 @@ const DispatchDetailsPages = ({
                                                             onClick={() => {
                                                                 if (tripLegs.length <= 1) {
                                                                     alert('Cannot delete this trip leg. A dispatch must contain at least one trip leg.');
+
                                                                     return;
                                                                 }
+
                                                                 if (
                                                                     confirm(
                                                                         `Are you sure you want to delete Trip Leg #${leg.tripSequence}?`,

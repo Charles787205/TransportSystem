@@ -38,10 +38,14 @@ type ViewTripLegModalProps = {
 };
 
 const formatTime = (value: string | null | undefined) => {
-    if (!value) return '—';
+    if (!value) {
+return '—';
+}
+
     const [hours, minutes] = value.split(':');
     const date = new Date();
     date.setHours(Number(hours), Number(minutes));
+
     return date.toLocaleTimeString('en-PH', {
         hour: 'numeric',
         minute: '2-digit',
@@ -49,7 +53,10 @@ const formatTime = (value: string | null | undefined) => {
 };
 
 const formatOdometer = (value: number | null | undefined) => {
-    if (value === null || value === undefined) return '—';
+    if (value === null || value === undefined) {
+return '—';
+}
+
     return `${value.toLocaleString()} km`;
 };
 
@@ -60,7 +67,9 @@ export default function ViewTripLegModal({
     clientAllowedCargoUnits,
     locations = [],
 }: ViewTripLegModalProps) {
-    if (!tripLeg) return null;
+    if (!tripLeg) {
+return null;
+}
 
     const drops = tripLeg.drops ?? [];
     const cargoes = tripLeg.cargoes ?? [];
@@ -191,6 +200,7 @@ export default function ViewTripLegModal({
                             <div className="space-y-1.5">
                                 {drops.map((drop, idx) => {
                                     const isFilled = Boolean(drop.arrivedTime && drop.departedTime);
+
                                     return (
                                         <div key={drop.id} className="flex items-center justify-between bg-white border p-2 rounded text-xs">
                                             <div>

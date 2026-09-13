@@ -2,6 +2,7 @@
 
 namespace Modules\DispatchOperation\Services;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Modules\Client\Repositories\ClientRepository;
 use Modules\Client\Repositories\LocationRepository;
@@ -12,11 +13,11 @@ use Modules\DispatchOperation\Classes\Data\Response\DispatchData;
 use Modules\DispatchOperation\Classes\Data\Response\DispatchFormOptionsData;
 use Modules\DispatchOperation\Classes\Data\Response\LocationOptionData;
 use Modules\DispatchOperation\Classes\Data\Response\ResourceStatusOptionData;
+use Modules\DispatchOperation\Contracts\DispatchServiceInterface;
 use Modules\DispatchOperation\Repositories\DispatchRepository;
 use Modules\DispatchOperation\Repositories\TripLegRepository;
 use Modules\Vendor\Repositories\DriverRepository;
 use Modules\Vendor\Repositories\VehicleRepository;
-use Modules\DispatchOperation\Contracts\DispatchServiceInterface;
 
 class DispatchService implements DispatchServiceInterface
 {
@@ -36,7 +37,7 @@ class DispatchService implements DispatchServiceInterface
         return DispatchData::from($dispatch);
     }
 
-    public function getDispatchesForPlan(int $clientId, string $dispatchDate, int $originId, int $destinationId): \Illuminate\Support\Collection
+    public function getDispatchesForPlan(int $clientId, string $dispatchDate, int $originId, int $destinationId): Collection
     {
         return $this->dispatchRepo->getDispatchesForPlanRoute($clientId, $dispatchDate, $originId, $destinationId);
     }

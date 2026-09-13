@@ -10,6 +10,8 @@ use Modules\Client\Models\Location;
 use Modules\Dashboard\Classes\Data\Request\DashboardFilterData;
 use Modules\Dashboard\Classes\Data\Response\ClientDispatchItemData;
 use Modules\Dashboard\Classes\Data\Response\DashboardMetricsData;
+use Modules\Dashboard\Classes\Data\Response\DispatchesByServiceTypeItemData;
+use Modules\Dashboard\Classes\Data\Response\PlannedVsDispatchedTouchpointItemData;
 use Modules\Dashboard\Classes\Data\Response\RecentDispatchItemData;
 use Modules\Dashboard\Classes\Data\Response\StatusBreakdownItemData;
 use Modules\Dashboard\Classes\Data\Response\TopDestinationItemData;
@@ -257,7 +259,7 @@ class DashboardRepository
     }
 
     /**
-     * @return DataCollection<int, \Modules\Dashboard\Classes\Data\Response\PlannedVsDispatchedTouchpointItemData>
+     * @return DataCollection<int, PlannedVsDispatchedTouchpointItemData>
      */
     public function getPlannedVsDispatchedPerTouchPoint(DashboardFilterData $filters): DataCollection
     {
@@ -310,18 +312,18 @@ class DashboardRepository
 
         $items = [];
         foreach ($touchpoints as $tp) {
-            $items[] = new \Modules\Dashboard\Classes\Data\Response\PlannedVsDispatchedTouchpointItemData(
+            $items[] = new PlannedVsDispatchedTouchpointItemData(
                 touchpoint: $tp,
                 planned: (int) ($plannedResults->get($tp)->planned_count ?? 0),
                 dispatched: (int) ($dispatchedResults->get($tp)->dispatched_count ?? 0)
             );
         }
 
-        return \Modules\Dashboard\Classes\Data\Response\PlannedVsDispatchedTouchpointItemData::collect($items, DataCollection::class);
+        return PlannedVsDispatchedTouchpointItemData::collect($items, DataCollection::class);
     }
 
     /**
-     * @return DataCollection<int, \Modules\Dashboard\Classes\Data\Response\DispatchesByServiceTypeItemData>
+     * @return DataCollection<int, DispatchesByServiceTypeItemData>
      */
     public function getDispatchesByServiceType(DashboardFilterData $filters): DataCollection
     {
@@ -332,11 +334,11 @@ class DashboardRepository
 
         $results = $query->groupBy('dispatches.service_type')
             ->get()
-            ->map(fn ($row) => new \Modules\Dashboard\Classes\Data\Response\DispatchesByServiceTypeItemData(
+            ->map(fn ($row) => new DispatchesByServiceTypeItemData(
                 serviceType: ucfirst($row->service_type ?: 'Unknown'),
                 dispatched: (int) $row->dispatched
             ));
 
-        return \Modules\Dashboard\Classes\Data\Response\DispatchesByServiceTypeItemData::collect($results, DataCollection::class);
+        return DispatchesByServiceTypeItemData::collect($results, DataCollection::class);
     }
 }

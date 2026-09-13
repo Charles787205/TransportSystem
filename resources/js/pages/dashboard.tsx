@@ -55,8 +55,12 @@ export default function Dashboard({
     clients = [],
 }: DashboardResponseData) {
     const todayStr = new Date().toISOString().split('T')[0];
-    const [datePreset, setDatePreset] = useState(filters.datePreset ?? 'today');
-    const [dateFrom, setDateFrom] = useState(filters.dateFrom ?? todayStr);
+    const monthAgo = new Date();
+    monthAgo.setMonth(monthAgo.getMonth() - 1);
+    const monthAgoStr = monthAgo.toISOString().split('T')[0];
+    
+    const [datePreset, setDatePreset] = useState(filters.datePreset ?? 'month');
+    const [dateFrom, setDateFrom] = useState(filters.dateFrom ?? monthAgoStr);
     const [dateTo, setDateTo] = useState(filters.dateTo ?? todayStr);
     const [originLocationId, setOriginLocationId] = useState(
         filters.originLocationId ?? 'all',

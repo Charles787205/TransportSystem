@@ -1,6 +1,6 @@
+import { Link } from '@inertiajs/react';
 import { format } from 'date-fns';
 import { Route, Truck, MapPin, Calendar, ArrowLeft, Plus } from 'lucide-react';
-import { Link } from '@inertiajs/react';
 import CreateDispatchModal from '@/components/dispatchoperation/create-dispatch-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

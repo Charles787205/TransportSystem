@@ -3,6 +3,8 @@
 namespace Modules\DispatchOperation\Providers;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Modules\DispatchOperation\Contracts\DispatchServiceInterface;
+use Modules\DispatchOperation\Services\DispatchService;
 use Nwidart\Modules\Support\ModuleServiceProvider;
 
 class DispatchOperationServiceProvider extends ModuleServiceProvider
@@ -43,4 +45,16 @@ class DispatchOperationServiceProvider extends ModuleServiceProvider
     // {
     //     $schedule->command('inspire')->hourly();
     // }
+    /**
+     * Register any application services.
+     */
+    public function register(): void
+    {
+        parent::register();
+
+        $this->app->bind(
+            DispatchServiceInterface::class,
+            DispatchService::class
+        );
+    }
 }

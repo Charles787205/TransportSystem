@@ -10,6 +10,8 @@ import {
     MapPin,
 } from 'lucide-react';
 import { ArrowLeft } from 'lucide-react';
+import ClientCargoConfig from '@/components/client/client-cargo-config';
+import CreateLocationModal from '@/components/client/create-location-modal';
 import {
     Avatar,
     AvatarFallback,
@@ -18,8 +20,6 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import ClientCargoConfig from '@/components/client/client-cargo-config';
-import CreateLocationModal from '@/components/client/create-location-modal';
 import type { ClientData, PaginatedLocationData } from '@/generated/Client';
 import type { DispatchData } from '@/generated/DispatchOperation';
 import type { PaginatedPlanData } from '@/generated/Planning';
@@ -219,8 +219,14 @@ const Show = ({
                                         <div className="flex flex-wrap gap-1">
                                             {locations.links.map((link, index) => {
                                                 let label = link.label;
-                                                if (label?.includes('&laquo;')) label = '« Prev';
-                                                if (label?.includes('&raquo;')) label = 'Next »';
+
+                                                if (label?.includes('&laquo;')) {
+label = '« Prev';
+}
+
+                                                if (label?.includes('&raquo;')) {
+label = 'Next »';
+}
 
                                                 return (
                                                     <Button

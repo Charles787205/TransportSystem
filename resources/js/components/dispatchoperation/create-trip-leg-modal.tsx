@@ -1,7 +1,7 @@
 import { Form } from '@inertiajs/react';
 import { useState } from 'react';
 import { store } from '@/routes/triplegs';
-import InputError from '../input-error';
+
 import { Button } from '../ui/button';
 import {
     Dialog,
@@ -11,10 +11,6 @@ import {
     DialogFooter,
     DialogTitle,
 } from '../ui/dialog';
-import { Field } from '../ui/field';
-import { Input } from '../ui/input';
-import { Label } from '../ui/label';
-
 
 interface CreateTripLegModalProps {
     dispatchId: number;
@@ -30,8 +26,12 @@ const CreateTripLegModal = ({ dispatchId }: CreateTripLegModalProps) => {
             </DialogTrigger>
             <DialogContent>
                 <DialogTitle>Add Trip Leg</DialogTitle>
-                <Form {...store.form()} resetOnSuccess onSuccess={() => setOpen(false)}>
-                    {({ errors, processing }) => (
+                <Form
+                    {...store.form()}
+                    resetOnSuccess
+                    onSuccess={() => setOpen(false)}
+                >
+                    {({ processing }) => (
                         <>
                             <input
                                 type="hidden"
@@ -39,18 +39,10 @@ const CreateTripLegModal = ({ dispatchId }: CreateTripLegModalProps) => {
                                 value={dispatchId}
                             />
 
-                            <Field>
-                                <Label htmlFor="linehaul_trip_no">
-                                    Linehaul Trip No.
-                                </Label>
-                                <Input
-                                    id="linehaul_trip_no"
-                                    name="linehaul_trip_no"
-                                    data-invalid={!!errors.linehaul_trip_no}
-                                    aria-invalid={!!errors.linehaul_trip_no}
-                                />
-                                <InputError message={errors.linehaul_trip_no} />
-                            </Field>
+                            <div className="py-4 text-slate-600">
+                                Are you sure you want to add a new trip leg to
+                                this dispatch?
+                            </div>
 
                             <DialogFooter className="mt-2">
                                 <DialogClose asChild>
@@ -59,7 +51,7 @@ const CreateTripLegModal = ({ dispatchId }: CreateTripLegModalProps) => {
                                     </Button>
                                 </DialogClose>
                                 <Button type="submit" disabled={processing}>
-                                    Save
+                                    Confirm
                                 </Button>
                             </DialogFooter>
                         </>

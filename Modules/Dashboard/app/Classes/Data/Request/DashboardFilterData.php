@@ -9,7 +9,7 @@ use Spatie\TypeScriptTransformer\Attributes\TypeScript;
 class DashboardFilterData extends Data
 {
     public function __construct(
-        public ?string $datePreset = 'today',
+        public ?string $datePreset = 'month',
         public ?string $dateFrom = null,
         public ?string $dateTo = null,
         public ?string $originLocationId = null,

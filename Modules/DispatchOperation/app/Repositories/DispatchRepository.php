@@ -45,6 +45,8 @@ class DispatchRepository
         if (isset($filters['date_filter'])) {
             if ($filters['date_filter'] === 'today') {
                 $planQuery->whereDate('dispatch_date', today());
+            } elseif ($filters['date_filter'] === 'month') {
+                $planQuery->whereBetween('dispatch_date', [today()->subMonth(), today()]);
             } elseif ($filters['date_filter'] === 'custom') {
                 if (! empty($filters['start_date'])) {
                     $planQuery->whereDate('dispatch_date', '>=', $filters['start_date']);
@@ -54,7 +56,7 @@ class DispatchRepository
                 }
             }
         } else {
-            $planQuery->whereDate('dispatch_date', today());
+            $planQuery->whereBetween('dispatch_date', [today()->subMonth(), today()]);
         }
 
         $plans = $planQuery->get();
@@ -108,6 +110,8 @@ class DispatchRepository
         if (isset($filters['date_filter'])) {
             if ($filters['date_filter'] === 'today') {
                 $query->whereDate('dispatch_date', today());
+            } elseif ($filters['date_filter'] === 'month') {
+                $query->whereBetween('dispatch_date', [today()->subMonth(), today()]);
             } elseif ($filters['date_filter'] === 'custom') {
                 if (! empty($filters['start_date'])) {
                     $query->whereDate('dispatch_date', '>=', $filters['start_date']);
@@ -124,5 +128,17 @@ class DispatchRepository
     public function attachTripLegs(Dispatch $dispatch, array $tripLegs = [])
     {
         $dispatch->tripLegs()->create($tripLegs);
+    }
+
+    public function getDispatchesForPlanRoute(int $clientId, string $dispatchDate, int $originId, int $destinationId)
+    {
+        return Dispatch::where('client_id', $clientId)
+            ->whereDate('dispatch_date', $dispatchDate)
+            ->whereHas('tripLegs', function ($q) use ($originId, $destinationId) {
+                $q->where('origin_location_id', $originId)
+                    ->where('destination_location_id', $destinationId);
+            })
+            ->with(['vehicle', 'driver', 'client', 'tripLegs.originLocation', 'tripLegs.destinationLocation'])
+            ->get();
     }
 }
