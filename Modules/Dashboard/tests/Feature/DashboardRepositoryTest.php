@@ -1,12 +1,13 @@
 <?php
 
-uses(TestCase::class, RefreshDatabase::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Modules\Dashboard\Classes\Data\Request\DashboardFilterData;
 use Modules\Dashboard\Repositories\DashboardRepository;
 use Tests\TestCase;
+
+
+uses(TestCase::class, RefreshDatabase::class);
 
 test('getMetrics computes correct dashboard statistics', function () {
     // Setup minimal required data using DB facade to avoid factory dependencies

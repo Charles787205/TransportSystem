@@ -1,7 +1,5 @@
 <?php
 
-uses(TestCase::class);
-
 use Mockery\MockInterface;
 use Modules\Client\Classes\Data\Response\ClientData;
 use Modules\Client\Classes\Data\Response\LocationData;
@@ -16,6 +14,9 @@ use Modules\Dashboard\Repositories\DashboardRepository;
 use Modules\Dashboard\Services\DashboardService;
 use Spatie\LaravelData\DataCollection;
 use Tests\TestCase;
+
+
+uses(TestCase::class);
 
 test('getDashboardData assembles response data from repository', function () {
     $filters = new DashboardFilterData(datePreset: 'today');

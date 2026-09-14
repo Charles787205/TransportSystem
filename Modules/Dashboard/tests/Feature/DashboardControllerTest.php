@@ -1,11 +1,12 @@
 <?php
 
-uses(TestCase::class, RefreshDatabase::class);
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Modules\User\Models\User;
 use Tests\TestCase;
+
+
+uses(TestCase::class, RefreshDatabase::class);
 
 use function Pest\Laravel\actingAs;
 use function Pest\Laravel\get;
