@@ -15,7 +15,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import type { VehicleData } from '@/generated/Vendor';
-import { destroy, show as vendorShow } from '@/routes/vendor';
+import { show as vendorShow } from '@/routes/vendor';
 import { show, create } from '@/routes/vendor/vehicle';
 
 interface PaginatedVehicles {

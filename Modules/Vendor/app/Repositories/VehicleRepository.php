@@ -66,6 +66,6 @@ class VehicleRepository
     {
         return Vehicle::with(['dispatches.tripLegs' => function ($q) {
             $q->latest();
-        }])->get(['id', 'plate_number as label', 'vendor_id', 'driver_id', 'is_active']);
+        }])->get(['id', 'plate_number as label', 'vendor_id', 'driver_id', 'is_active', 'type']);
     }
 }

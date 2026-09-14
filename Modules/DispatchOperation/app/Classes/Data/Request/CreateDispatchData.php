@@ -16,7 +16,7 @@ class CreateDispatchData extends Data
         public ?TouchpointType $touchpoint = null,
         public string $dispatchDate = '',
         public string $assignedCallTime = '',
-        public string $linehaulTripNo = '',
+        public ?string $linehaulTripNo = null,
         public ?int $originLocationId = null,
         public ?int $destinationLocationId = null,
     ) {}

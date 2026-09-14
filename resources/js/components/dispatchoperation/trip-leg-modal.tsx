@@ -42,11 +42,13 @@ const normalizeDateTimeValue = (value: string | null | undefined) => {
 
     if (value.includes(' ')) {
         const [date, time] = value.split(' ');
+
         return `${date}T${time.slice(0, 5)}`;
     }
 
     if (value.length <= 8) {
         const today = new Date().toISOString().slice(0, 10);
+
         return `${today}T${value.slice(0, 5)}`;
     }
 
@@ -60,6 +62,7 @@ const getCurrentDateTimeString = () => {
     const day = String(now.getDate()).padStart(2, '0');
     const hours = String(now.getHours()).padStart(2, '0');
     const minutes = String(now.getMinutes()).padStart(2, '0');
+
     return `${year}-${month}-${day}T${hours}:${minutes}`;
 };
 
@@ -107,6 +110,7 @@ const TripLegModal = ({
     );
     const [odometerStart, setOdometerStart] = useState<string | number>(tripLeg?.odometerStart ?? '');
     const [odometerEnd, setOdometerEnd] = useState<string | number>(tripLeg?.odometerEnd ?? '');
+    const [linehaulTripNo, setLinehaulTripNo] = useState<string>(tripLeg?.linehaulTripNo ?? '');
 
     const [originArrivedTime, setOriginArrivedTime] = useState(normalizeDateTimeValue(tripLeg?.originArrivedTime));
     const [originStartLoadingTime, setOriginStartLoadingTime] = useState(normalizeDateTimeValue(tripLeg?.originStartLoadingTime));
@@ -130,12 +134,14 @@ const TripLegModal = ({
 
     useEffect(() => {
         if (open && tripLeg) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setStatus(tripLeg.status ?? 'pending');
             setCargoParcel(
                 tripLeg.cargoes?.find((c: any) => c.cargoType === 'per_parcel')?.quantity ?? tripLeg.totalParcel ?? ''
             );
             setOdometerStart(tripLeg.odometerStart ?? '');
             setOdometerEnd(tripLeg.odometerEnd ?? '');
+            setLinehaulTripNo(tripLeg.linehaulTripNo ?? '');
             setOriginArrivedTime(normalizeDateTimeValue(tripLeg.originArrivedTime));
             setOriginStartLoadingTime(normalizeDateTimeValue(tripLeg.originStartLoadingTime));
             setOriginEndLoadingTime(normalizeDateTimeValue(tripLeg.originEndLoadingTime));
@@ -153,23 +159,50 @@ const TripLegModal = ({
 
     const getMissingDeliveredFields = () => {
         const missing: string[] = [];
+
         if (cargoParcel === '' || cargoParcel === null || cargoParcel === undefined || Number(cargoParcel) <= 0) {
             missing.push('parcels count');
         }
+
         if (odometerStart === '' || odometerStart === null || odometerStart === undefined) {
             missing.push('odometer start');
         }
+
         if (odometerEnd === '' || odometerEnd === null || odometerEnd === undefined) {
             missing.push('odometer end');
         }
-        if (!originArrivedTime) missing.push('origin arrival date/time');
-        if (!originStartLoadingTime) missing.push('origin start loading date/time');
-        if (!originEndLoadingTime) missing.push('origin end loading date/time');
-        if (!departureTime) missing.push('departure date/time');
-        if (!destinationArrivedTime) missing.push('destination arrival date/time');
-        if (!destinationStartUnloadingTime) missing.push('destination start unloading date/time');
-        if (!destinationEndUnloadingTime) missing.push('destination end unloading date/time');
-        if (!destinationDepartedTime) missing.push('destination departure date/time');
+
+        if (!originArrivedTime) {
+missing.push('origin arrival date/time');
+}
+
+        if (!originStartLoadingTime) {
+missing.push('origin start loading date/time');
+}
+
+        if (!originEndLoadingTime) {
+missing.push('origin end loading date/time');
+}
+
+        if (!departureTime) {
+missing.push('departure date/time');
+}
+
+        if (!destinationArrivedTime) {
+missing.push('destination arrival date/time');
+}
+
+        if (!destinationStartUnloadingTime) {
+missing.push('destination start unloading date/time');
+}
+
+        if (!destinationEndUnloadingTime) {
+missing.push('destination end unloading date/time');
+}
+
+        if (!destinationDepartedTime) {
+missing.push('destination departure date/time');
+}
 
         return missing;
     };
@@ -191,6 +224,7 @@ const TripLegModal = ({
 
         if (newStatus === 'delivered') {
             const missing = getMissingDeliveredFields();
+
             if (missing.length > 0) {
                 setStatusValidationError(
                     `Cannot set status to Delivered. Missing required fields: ${missing.join(', ')}.`
@@ -204,6 +238,7 @@ const TripLegModal = ({
     const handleSubmit = (e: React.FormEvent) => {
         if (status === 'delivered') {
             const missing = getMissingDeliveredFields();
+
             if (missing.length > 0) {
                 e.preventDefault();
                 setStatusValidationError(
@@ -345,6 +380,21 @@ const TripLegModal = ({
                                             aria-invalid={!!errors.odometer_end}
                                         />
                                         <InputError message={errors.odometer_end} />
+                                    </div>
+
+                                    <div className="space-y-1.5">
+                                        <Label htmlFor="linehaul-trip-no">Linehaul Trip No.</Label>
+                                        <Input
+                                            id="linehaul-trip-no"
+                                            name="linehaul_trip_no"
+                                            type="text"
+                                            value={linehaulTripNo}
+                                            onChange={(e) => {
+                                                setLinehaulTripNo(e.target.value);
+                                            }}
+                                            aria-invalid={!!errors.linehaul_trip_no}
+                                        />
+                                        <InputError message={errors.linehaul_trip_no} />
                                     </div>
                                 </div>
                             </div>

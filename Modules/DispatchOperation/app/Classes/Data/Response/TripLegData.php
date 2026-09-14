@@ -32,7 +32,7 @@ class TripLegData extends Data
         public ?string $destinationEndUnloadingTime,
         public ?string $destinationDepartedTime,
         public ?string $endTime,
-        public string $linehaulTripNo,
+        public ?string $linehaulTripNo,
         #[TypeScriptType('TripStatus')]
         public ?TripStatus $status,
         public ?LocationData $originLocation = null,

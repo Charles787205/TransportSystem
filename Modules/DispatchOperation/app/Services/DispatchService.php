@@ -2,6 +2,7 @@
 
 namespace Modules\DispatchOperation\Services;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Modules\Client\Repositories\ClientRepository;
 use Modules\Client\Repositories\LocationRepository;
@@ -12,12 +13,13 @@ use Modules\DispatchOperation\Classes\Data\Response\DispatchData;
 use Modules\DispatchOperation\Classes\Data\Response\DispatchFormOptionsData;
 use Modules\DispatchOperation\Classes\Data\Response\LocationOptionData;
 use Modules\DispatchOperation\Classes\Data\Response\ResourceStatusOptionData;
+use Modules\DispatchOperation\Contracts\DispatchServiceInterface;
 use Modules\DispatchOperation\Repositories\DispatchRepository;
 use Modules\DispatchOperation\Repositories\TripLegRepository;
 use Modules\Vendor\Repositories\DriverRepository;
 use Modules\Vendor\Repositories\VehicleRepository;
 
-class DispatchService
+class DispatchService implements DispatchServiceInterface
 {
     public function __construct(
         private DispatchRepository $dispatchRepo,
@@ -33,6 +35,11 @@ class DispatchService
         $dispatch = $this->dispatchRepo->getDispatch($id);
 
         return DispatchData::from($dispatch);
+    }
+
+    public function getDispatchesForPlan(int $clientId, string $dispatchDate, int $originId, int $destinationId): Collection
+    {
+        return $this->dispatchRepo->getDispatchesForPlanRoute($clientId, $dispatchDate, $originId, $destinationId);
     }
 
     public function getDispatchDetails(int $id)
@@ -143,7 +150,8 @@ class DispatchService
                 isAvailable: $isAvailable,
                 activeStatus: $activeStatus,
                 vendorId: $v->vendor_id,
-                driverId: $v->driver_id
+                driverId: $v->driver_id,
+                type: $v->type,
             );
         });
 

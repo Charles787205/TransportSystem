@@ -1,5 +1,6 @@
 import { Link, router } from '@inertiajs/react';
 import { Eye, Plus, Search, ArrowLeft } from 'lucide-react';
+import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardHeader, CardContent, CardTitle } from '@/components/ui/card';
@@ -12,11 +13,10 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
+import VendorAddDriver from '@/components/vendor/vendor-add-driver';
 import type { DriverData } from '@/generated/Vendor';
 import { show as vendorShow } from '@/routes/vendor';
 import { show } from '@/routes/vendor/driver';
-import { useState } from 'react';
-import VendorAddDriver from '@/components/vendor/vendor-add-driver';
 
 interface PaginatedDrivers {
     data: DriverData[];

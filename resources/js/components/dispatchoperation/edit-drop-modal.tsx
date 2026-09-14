@@ -41,16 +41,26 @@ type EditDropModalProps = {
 };
 
 const normalizeDateTimeValue = (value: string | null | undefined) => {
-    if (!value) return '';
-    if (value.includes('T')) return value.slice(0, 16);
+    if (!value) {
+return '';
+}
+
+    if (value.includes('T')) {
+return value.slice(0, 16);
+}
+
     if (value.includes(' ')) {
         const [date, time] = value.split(' ');
+
         return `${date}T${time.slice(0, 5)}`;
     }
+
     if (value.length <= 8) {
         const today = new Date().toISOString().slice(0, 10);
+
         return `${today}T${value.slice(0, 5)}`;
     }
+
     return value;
 };
 

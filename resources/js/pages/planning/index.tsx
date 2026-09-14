@@ -1,24 +1,13 @@
-import { Link, router } from '@inertiajs/react';
+import { router } from '@inertiajs/react';
 import {
     Search,
     ClipboardList,
-    MapPin,
     X,
-    MoreHorizontal,
-    Eye,
-    Trash2,
 } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import CreatePlanModal from '@/components/client/create-plan-modal';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
 import {
     Select,
@@ -36,7 +25,8 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import type { PaginatedPlanData } from '@/generated/Planning';
-import { destroy, index, show } from '@/routes/planning';
+import { index } from '@/routes/planning';
+import PlanRow from './plan-row';
 
 const ALL = 'all';
 
@@ -286,104 +276,7 @@ export default function PlanningPage({
                             </TableRow>
                         ) : (
                             plans.map((plan) => (
-                                <TableRow key={plan.id}>
-                                    <TableCell className="font-medium">
-                                        {plan.client?.name ??
-                                            `Client #${plan.clientId}`}
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center gap-1.5">
-                                            <MapPin className="size-3.5 text-muted-foreground" />
-                                            <span>
-                                                {plan.origin?.name ??
-                                                    `Location #${plan.originId}`}
-                                            </span>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        <div className="flex items-center gap-1.5">
-                                            <MapPin className="size-3.5 text-muted-foreground" />
-                                            <span>
-                                                {plan.destination?.name ??
-                                                    `Location #${plan.destinationId}`}
-                                            </span>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell className="text-center font-semibold">
-                                        <div className="flex flex-col items-center gap-1">
-                                            <Badge
-                                                variant={
-                                                    (plan.dispatchedCount ?? 0) >= plan.numberOfVehicles
-                                                        ? 'default'
-                                                        : (plan.dispatchedCount ?? 0) > 0
-                                                          ? 'outline'
-                                                          : 'secondary'
-                                                }
-                                                className={
-                                                    (plan.dispatchedCount ?? 0) >= plan.numberOfVehicles
-                                                        ? 'bg-emerald-600 hover:bg-emerald-700 text-white'
-                                                        : (plan.dispatchedCount ?? 0) > 0
-                                                          ? 'border-amber-500 text-amber-700 bg-amber-50'
-                                                          : ''
-                                                }
-                                            >
-                                                {plan.dispatchedCount ?? 0}/{plan.numberOfVehicles} fulfilled
-                                            </Badge>
-                                        </div>
-                                    </TableCell>
-                                    <TableCell>
-                                        {new Date(
-                                            plan.dispatchDate,
-                                        ).toLocaleDateString('en-US', {
-                                            month: 'short',
-                                            day: 'numeric',
-                                            year: 'numeric',
-                                        })}
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                        <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    className="size-8"
-                                                >
-                                                    <MoreHorizontal className="size-4" />
-                                                </Button>
-                                            </DropdownMenuTrigger>
-                                            <DropdownMenuContent align="end">
-                                                <DropdownMenuItem asChild>
-                                                    <Link
-                                                        href={
-                                                            show({
-                                                                planning:
-                                                                    plan.id,
-                                                            }).url
-                                                        }
-                                                        className="cursor-pointer"
-                                                    >
-                                                        <Eye className="mr-2 size-4" />{' '}
-                                                        View Details
-                                                    </Link>
-                                                </DropdownMenuItem>
-                                                <DropdownMenuItem
-                                                    className="cursor-pointer text-destructive focus:text-destructive"
-                                                    onClick={() =>
-                                                        router.delete(
-                                                            destroy({
-                                                                planning:
-                                                                    plan.id,
-                                                            }).url,
-                                                        )
-                                                    }
-                                                >
-                                                    <Trash2 className="mr-2 size-4" />{' '}
-                                                    Delete Plan
-                                                </DropdownMenuItem>
-                                            </DropdownMenuContent>
-                                        </DropdownMenu>
-                                    </TableCell>
-                                </TableRow>
+                                <PlanRow key={plan.id} plan={plan} />
                             ))
                         )}
                     </TableBody>

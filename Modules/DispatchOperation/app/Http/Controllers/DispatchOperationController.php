@@ -28,7 +28,7 @@ class DispatchOperationController extends Controller
         $filters = $request->only(['search', 'date_filter', 'start_date', 'end_date']);
 
         if (! isset($filters['date_filter'])) {
-            $filters['date_filter'] = 'today';
+            $filters['date_filter'] = 'month';
         }
 
         $dispatchData = $this->dispatchService->getPaginatedDispatches($filters);

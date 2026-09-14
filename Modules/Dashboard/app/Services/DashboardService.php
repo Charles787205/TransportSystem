@@ -17,8 +17,8 @@ class DashboardService
         return new DashboardResponseData(
             metrics: $this->dashboardRepo->getMetrics($filters),
             statusBreakdown: $this->dashboardRepo->getStatusBreakdown($filters),
-            topDestinations: $this->dashboardRepo->getTopDestinations($filters),
-            dispatchesByClient: $this->dashboardRepo->getDispatchesByClient($filters),
+            plannedVsDispatchedPerTouchPoint: $this->dashboardRepo->getPlannedVsDispatchedPerTouchPoint($filters),
+            dispatchesByServiceType: $this->dashboardRepo->getDispatchesByServiceType($filters),
             recentDispatches: $this->dashboardRepo->getRecentDispatches($filters),
             filters: $filters,
             locations: $this->dashboardRepo->getLocations(),

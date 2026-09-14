@@ -10,11 +10,7 @@ import {
     Repeat,
 } from 'lucide-react';
 import { useState } from 'react';
-import AddInsuranceModal from '@/components/vehicle/add-insurance-modal';
-import AddRegistrationModal from '@/components/vehicle/add-registration-modal';
-import EditVehicleModal from '@/components/vehicle/edit-vehicle-modal';
-import VehicleAttachDriverDialog from '@/components/vehicle/vehicle-attach-driver-dialog';
-import { VehicleDriverHistoryItem } from '@/components/vehicle/vehicle-driver-history-item';
+import { updateStatus } from '@/actions/Modules/Vendor/Http/Controllers/VendorVehicleController';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -27,10 +23,14 @@ import {
     CardFooter,
 } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Separator } from '@/components/ui/separator';
-import type { VehicleData, VehicleDriverHistory } from '@/generated/Vendor';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { updateStatus } from '@/actions/Modules/Vendor/Http/Controllers/VendorVehicleController';
+import { Separator } from '@/components/ui/separator';
+import AddInsuranceModal from '@/components/vehicle/add-insurance-modal';
+import AddRegistrationModal from '@/components/vehicle/add-registration-modal';
+import EditVehicleModal from '@/components/vehicle/edit-vehicle-modal';
+import VehicleAttachDriverDialog from '@/components/vehicle/vehicle-attach-driver-dialog';
+import { VehicleDriverHistoryItem } from '@/components/vehicle/vehicle-driver-history-item';
+import type { VehicleData, VehicleDriverHistory } from '@/generated/Vendor';
 import { index } from '@/routes/vendor/vehicle';
 
 type ShowProps = {

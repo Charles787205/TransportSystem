@@ -5,6 +5,7 @@ namespace Modules\DispatchOperation\Classes\Data\Response;
 use Modules\Client\Classes\Data\Response\ClientData;
 use Modules\Client\Enums\TouchpointType;
 use Modules\DispatchOperation\Enums\ServiceType;
+use Modules\DispatchOperation\Enums\TripStatus;
 use Modules\Vendor\Classes\Data\Response\DriverData;
 use Modules\Vendor\Classes\Data\Response\VehicleData;
 use Spatie\LaravelData\Attributes\DataCollectionOf;
@@ -41,5 +42,8 @@ class DispatchData extends Data
         #[TypeScriptType('ReturnTripData[]')]
         #[DataCollectionOf(ReturnTripData::class)]
         public ?DataCollection $returnTrips = null,
+
+        #[TypeScriptType('TripStatus | null')]
+        public ?TripStatus $currentStatus = null,
     ) {}
 }

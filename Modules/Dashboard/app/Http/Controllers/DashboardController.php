@@ -28,9 +28,10 @@ class DashboardController extends Controller
 
         if (! $hasQueryParams) {
             $today = now()->format('Y-m-d');
+            $monthAgo = now()->subMonth()->format('Y-m-d');
             $filterData = new DashboardFilterData(
-                datePreset: 'today',
-                dateFrom: $today,
+                datePreset: 'month',
+                dateFrom: $monthAgo,
                 dateTo: $today,
             );
         } else {

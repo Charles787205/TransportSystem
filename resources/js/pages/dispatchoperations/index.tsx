@@ -42,7 +42,7 @@ const DispatchOperation = ({
 }) => {
     const { data, from, to, total, links } = dispatches;
     const [searchQuery, setSearchQuery] = useState(filters?.search || '');
-    const [dateFilter, setDateFilter] = useState(filters?.date_filter || 'today');
+    const [dateFilter, setDateFilter] = useState(filters?.date_filter || 'month');
     const [startDate, setStartDate] = useState(filters?.start_date || '');
     const [endDate, setEndDate] = useState(filters?.end_date || '');
 
@@ -50,7 +50,7 @@ const DispatchOperation = ({
         const delayDebounceFn = setTimeout(() => {
             if (
                 searchQuery !== (filters?.search || '') ||
-                dateFilter !== (filters?.date_filter || 'today') ||
+                dateFilter !== (filters?.date_filter || 'month') ||
                 startDate !== (filters?.start_date || '') ||
                 endDate !== (filters?.end_date || '')
             ) {
@@ -91,6 +91,7 @@ const DispatchOperation = ({
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="today">Today</SelectItem>
+                                <SelectItem value="month">This Month</SelectItem>
                                 <SelectItem value="custom">Custom Date</SelectItem>
                                 <SelectItem value="all">All Dates</SelectItem>
                             </SelectContent>

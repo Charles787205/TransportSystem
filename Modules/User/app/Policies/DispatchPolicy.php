@@ -12,7 +12,7 @@ class DispatchPolicy
         return $user->hasPermission('dispatch-operations', 'view');
     }
 
-    public function view(User $user, Dispatch $dispatch): bool
+    public function view(User $user, ?Dispatch $dispatch = null): bool
     {
         return $user->hasPermission('dispatch-operations', 'view');
     }
@@ -22,12 +22,12 @@ class DispatchPolicy
         return $user->hasPermission('dispatch-operations', 'create');
     }
 
-    public function update(User $user, Dispatch $dispatch): bool
+    public function update(User $user, ?Dispatch $dispatch = null): bool
     {
         return $user->hasPermission('dispatch-operations', 'edit');
     }
 
-    public function delete(User $user, Dispatch $dispatch): bool
+    public function delete(User $user, ?Dispatch $dispatch = null): bool
     {
         return $user->hasPermission('dispatch-operations', 'delete');
     }

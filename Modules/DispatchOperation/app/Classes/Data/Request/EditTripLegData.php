@@ -2,10 +2,13 @@
 
 namespace Modules\DispatchOperation\Classes\Data\Request;
 
+use Spatie\LaravelData\Attributes\MapInputName;
 use Spatie\LaravelData\Data;
+use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 use Spatie\LaravelData\Optional;
 use Spatie\TypeScriptTransformer\Attributes\Optional as AttributesOptional;
 
+#[MapInputName(SnakeCaseMapper::class)]
 class EditTripLegData extends Data
 {
     public function __construct(
@@ -41,6 +44,8 @@ class EditTripLegData extends Data
         public string|Optional|null $cancellationDetail,
         #[AttributesOptional]
         public string|Optional|null $cancellationRemark,
+        #[AttributesOptional]
+        public string|Optional|null $linehaulTripNo,
         #[AttributesOptional]
         public float|Optional|null $cargoParcel,
         #[AttributesOptional]
@@ -78,6 +83,7 @@ class EditTripLegData extends Data
             'status' => $this->status,
             'cancellation_detail' => $this->cancellationDetail,
             'cancellation_remark' => $this->cancellationRemark,
+            'linehaul_trip_no' => $this->linehaulTripNo,
             'cargo_parcel' => $this->cargoParcel,
             'cargo_box' => $this->cargoBox,
             'cargo_loose' => $this->cargoLoose,

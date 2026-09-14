@@ -4,9 +4,8 @@ namespace Modules\Planning\Services;
 
 use Modules\Client\Repositories\ClientRepository;
 use Modules\Client\Repositories\LocationRepository;
-use Modules\DispatchOperation\Models\Dispatch;
-use Modules\DispatchOperation\Repositories\DispatchRepository;
-use Modules\DispatchOperation\Repositories\TripLegRepository;
+use Modules\DispatchOperation\Classes\Data\Response\DispatchData;
+use Modules\DispatchOperation\Contracts\DispatchServiceInterface;
 use Modules\Planning\Classes\Data\Request\CreatePlanData;
 use Modules\Planning\Classes\Data\Request\PlanIndexFilterData;
 use Modules\Planning\Classes\Data\Response\PaginatedPlanData;
@@ -20,8 +19,7 @@ class PlanService
         private PlanRepository $planRepo,
         private ClientRepository $clientRepo,
         private LocationRepository $locationRepo,
-        private DispatchRepository $dispatchRepo,
-        private TripLegRepository $tripLegRepo,
+        private DispatchServiceInterface $dispatchService,
     ) {}
 
     public function createPlan(CreatePlanData $data): PlanData
@@ -52,16 +50,21 @@ class PlanService
 
         // Calculate dispatched vehicles per plan route and date
         $plansPaginator = $plans->through(function ($plan) {
-            $dispatchedCount = Dispatch::where('client_id', $plan->client_id)
-                ->whereDate('dispatch_date', $plan->dispatch_date)
-                ->whereHas('tripLegs', function ($q) use ($plan) {
-                    $q->where('origin_location_id', $plan->origin_id)
-                        ->where('destination_location_id', $plan->destination_id);
-                })
-                ->count();
+            $dispatches = $this->dispatchService->getDispatchesForPlan(
+                $plan->client_id,
+                $plan->dispatch_date,
+                $plan->origin_id,
+                $plan->destination_id
+            );
 
             $planData = PlanData::from($plan);
-            $planData->dispatchedCount = $dispatchedCount;
+            $planData->dispatchedCount = $dispatches->count();
+            $planData->dispatches = $dispatches->map(function ($dispatch) {
+                $dispatchData = DispatchData::from($dispatch);
+                $dispatchData->currentStatus = method_exists($dispatch, 'currentStatus') && $dispatch->currentStatus() ? $dispatch->currentStatus() : null;
+
+                return $dispatchData;
+            })->all();
 
             return $planData;
         });
@@ -79,14 +82,12 @@ class PlanService
         $plan = $this->planRepo->getPlan($id, with: ['client', 'origin', 'destination']);
 
         // Fetch dispatches matching client, date, and route (origin -> destination)
-        $dispatches = Dispatch::where('client_id', $plan->client_id)
-            ->whereDate('dispatch_date', $plan->dispatch_date)
-            ->whereHas('tripLegs', function ($q) use ($plan) {
-                $q->where('origin_location_id', $plan->origin_id)
-                    ->where('destination_location_id', $plan->destination_id);
-            })
-            ->with(['vehicle', 'driver', 'client', 'tripLegs.originLocation', 'tripLegs.destinationLocation'])
-            ->get();
+        $dispatches = $this->dispatchService->getDispatchesForPlan(
+            $plan->client_id,
+            $plan->dispatch_date,
+            $plan->origin_id,
+            $plan->destination_id
+        );
 
         $tripLegs = $dispatches->pluck('tripLegs')->flatten();
 

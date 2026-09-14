@@ -10,6 +10,8 @@ use Modules\Client\Models\Location;
 use Modules\Dashboard\Classes\Data\Request\DashboardFilterData;
 use Modules\Dashboard\Classes\Data\Response\ClientDispatchItemData;
 use Modules\Dashboard\Classes\Data\Response\DashboardMetricsData;
+use Modules\Dashboard\Classes\Data\Response\DispatchesByServiceTypeItemData;
+use Modules\Dashboard\Classes\Data\Response\PlannedVsDispatchedTouchpointItemData;
 use Modules\Dashboard\Classes\Data\Response\RecentDispatchItemData;
 use Modules\Dashboard\Classes\Data\Response\StatusBreakdownItemData;
 use Modules\Dashboard\Classes\Data\Response\TopDestinationItemData;
@@ -254,5 +256,89 @@ class DashboardRepository
         }
 
         return (int) $query->count();
+    }
+
+    /**
+     * @return DataCollection<int, PlannedVsDispatchedTouchpointItemData>
+     */
+    public function getPlannedVsDispatchedPerTouchPoint(DashboardFilterData $filters): DataCollection
+    {
+        $plannedQuery = DB::table('plans')
+            ->join('locations', 'plans.origin_id', '=', 'locations.id')
+            ->select('locations.touchpoint', DB::raw('sum(plans.number_of_vehicles) as planned_count'));
+
+        if (! empty($filters->dateFrom)) {
+            $plannedQuery->whereDate('plans.dispatch_date', '>=', $filters->dateFrom);
+        }
+        if (! empty($filters->dateTo)) {
+            $plannedQuery->whereDate('plans.dispatch_date', '<=', $filters->dateTo);
+        }
+        if (! empty($filters->clientId)) {
+            $plannedQuery->where('plans.client_id', $filters->clientId);
+        }
+        if (! empty($filters->originLocationId)) {
+            $plannedQuery->where('plans.origin_id', $filters->originLocationId);
+        }
+        if (! empty($filters->destinationLocationId)) {
+            $plannedQuery->where('plans.destination_id', $filters->destinationLocationId);
+        }
+
+        $plannedResults = $plannedQuery->groupBy('locations.touchpoint')->get()->keyBy('touchpoint');
+
+        $dispatchedQuery = DB::table('trip_legs')
+            ->join('dispatches', 'trip_legs.dispatch_id', '=', 'dispatches.id')
+            ->join('locations', 'trip_legs.origin_location_id', '=', 'locations.id')
+            ->select('locations.touchpoint', DB::raw('count(trip_legs.id) as dispatched_count'));
+
+        if (! empty($filters->dateFrom)) {
+            $dispatchedQuery->whereDate('dispatches.dispatch_date', '>=', $filters->dateFrom);
+        }
+        if (! empty($filters->dateTo)) {
+            $dispatchedQuery->whereDate('dispatches.dispatch_date', '<=', $filters->dateTo);
+        }
+        if (! empty($filters->clientId)) {
+            $dispatchedQuery->where('dispatches.client_id', $filters->clientId);
+        }
+        if (! empty($filters->originLocationId)) {
+            $dispatchedQuery->where('trip_legs.origin_location_id', $filters->originLocationId);
+        }
+        if (! empty($filters->destinationLocationId)) {
+            $dispatchedQuery->where('trip_legs.destination_location_id', $filters->destinationLocationId);
+        }
+
+        $dispatchedResults = $dispatchedQuery->groupBy('locations.touchpoint')->get()->keyBy('touchpoint');
+
+        $touchpoints = collect(array_keys(array_merge($plannedResults->toArray(), $dispatchedResults->toArray())))->unique()->filter();
+
+        $items = [];
+        foreach ($touchpoints as $tp) {
+            $items[] = new PlannedVsDispatchedTouchpointItemData(
+                touchpoint: $tp,
+                planned: (int) ($plannedResults->get($tp)->planned_count ?? 0),
+                dispatched: (int) ($dispatchedResults->get($tp)->dispatched_count ?? 0)
+            );
+        }
+
+        return PlannedVsDispatchedTouchpointItemData::collect($items, DataCollection::class);
+    }
+
+    /**
+     * @return DataCollection<int, DispatchesByServiceTypeItemData>
+     */
+    public function getDispatchesByServiceType(DashboardFilterData $filters): DataCollection
+    {
+        $query = DB::table('dispatches')
+            ->select('dispatches.service_type', DB::raw('count(dispatches.id) as dispatched'));
+
+        $this->applyQueryFilters($query, $filters);
+
+        $results = $query->groupBy('dispatches.service_type')
+            ->get()
+            ->map(fn ($row) => new DispatchesByServiceTypeItemData(
+                serviceType: ucfirst($row->service_type ?: 'Unknown'),
+                dispatched: (int) $row->dispatched
+            ));
+
+        return DispatchesByServiceTypeItemData::collect($results, DataCollection::class);
     }
 }

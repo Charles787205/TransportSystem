@@ -1,5 +1,9 @@
 # Architecture Best Practices
 
+## Modular Layered Architecture
+
+This application follows a modular layered architecture. If a different module needs to use a service, it must access it via dependency injection using a contract (interface), rather than relying on a concrete implementation.
+
 ## Single-Purpose Action Classes
 
 Extract discrete business operations into invokable Action classes.
