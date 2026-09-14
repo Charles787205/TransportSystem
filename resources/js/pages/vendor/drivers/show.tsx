@@ -80,7 +80,7 @@ export const getDriverStatusBadgeStyle = (status: string) => {
 };
 
 const ShowDriver = ({ vendorId, driver, statuses }: ShowDriverProps) => {
-    const { data, setData, patch, processing } = useForm({
+    const { data, setData, processing } = useForm({
         status: driver.status,
     });
 

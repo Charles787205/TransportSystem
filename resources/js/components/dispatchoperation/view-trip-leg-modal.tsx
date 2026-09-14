@@ -1,11 +1,7 @@
 import {
     Gauge,
     MapPin,
-    Calendar,
-    Clock,
     Package,
-    RotateCcw,
-    FileText,
 } from 'lucide-react';
 import TripRemarkSection from '@/components/dispatchoperation/trip-remark-section';
 import { Badge } from '@/components/ui/badge';
@@ -19,7 +15,6 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
-import { Separator } from '@/components/ui/separator';
 import type { TripLegData } from '@/generated/DispatchOperation';
 
 type LocationOption = {
@@ -33,7 +28,6 @@ type ViewTripLegModalProps = {
     tripLeg: (TripLegData & { remarks?: any[] }) | null;
     open: boolean;
     onOpenChange: (open: boolean) => void;
-    clientAllowedCargoUnits?: string[] | null;
     locations?: LocationOption[];
 };
 
@@ -64,7 +58,6 @@ export default function ViewTripLegModal({
     tripLeg,
     open,
     onOpenChange,
-    clientAllowedCargoUnits,
     locations = [],
 }: ViewTripLegModalProps) {
     if (!tripLeg) {

@@ -1,6 +1,5 @@
 import { Link } from '@inertiajs/react';
-import { format } from 'date-fns';
-import { Route, Truck, MapPin, Calendar, ArrowLeft, Plus } from 'lucide-react';
+import { Truck, MapPin, ArrowLeft, Plus } from 'lucide-react';
 import CreateDispatchModal from '@/components/dispatchoperation/create-dispatch-modal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -11,7 +10,6 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { Separator } from '@/components/ui/separator';
 import {
     Table,
     TableBody,
@@ -21,18 +19,16 @@ import {
     TableRow,
 } from '@/components/ui/table';
 
-import type { DispatchData, TripLegData } from '@/generated/DispatchOperation';
+import type { DispatchData } from '@/generated/DispatchOperation';
 import type { PlanData } from '@/generated/Planning';
 import { index } from '@/routes/planning';
 
 const PlanningDetailPage = ({
     plan,
     dispatches = [],
-    tripLegs = [],
 }: {
     plan: PlanData;
     dispatches?: DispatchData[];
-    tripLegs?: TripLegData[];
 }) => {
     const requiredCount = plan.numberOfVehicles;
     const dispatchedCount = dispatches.length;

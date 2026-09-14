@@ -134,6 +134,7 @@ const TripLegModal = ({
 
     useEffect(() => {
         if (open && tripLeg) {
+            // eslint-disable-next-line react-hooks/set-state-in-effect
             setStatus(tripLeg.status ?? 'pending');
             setCargoParcel(
                 tripLeg.cargoes?.find((c: any) => c.cargoType === 'per_parcel')?.quantity ?? tripLeg.totalParcel ?? ''
