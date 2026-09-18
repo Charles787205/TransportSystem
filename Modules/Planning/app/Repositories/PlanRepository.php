@@ -59,7 +59,7 @@ class PlanRepository
             });
         }
 
-        return $query->latest()->paginate($pageSize);
+        return $query->latest()->paginate($pageSize)->withQueryString();
     }
 
     public function getPlan(int $id, array $with = []): Plan

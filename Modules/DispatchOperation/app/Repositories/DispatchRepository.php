@@ -36,7 +36,7 @@ class DispatchRepository
 
         $query = $this->applyFilters($query, $filters);
 
-        return $query->latest()->paginate($pageSize);
+        return $query->latest()->paginate($pageSize)->withQueryString();
     }
 
     public function getDispatchMetrics(array $filters = [])
