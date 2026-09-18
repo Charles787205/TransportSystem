@@ -122,6 +122,18 @@ class DispatchRepository
             }
         }
 
+        if (! empty($filters['status'])) {
+            $status = $filters['status'];
+            $query->whereHas('tripLegs', function ($q) use ($status) {
+                $q->where('status', $status)
+                    ->whereIn('id', function ($sub) {
+                        $sub->selectRaw('MAX(id)')
+                            ->from('trip_legs')
+                            ->whereColumn('dispatch_id', 'dispatches.id');
+                    });
+            });
+        }
+
         return $query;
     }
 

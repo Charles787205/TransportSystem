@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        if ($this->app->isProduction() || $this->app->environment('staging')) {
+        if ($this->app->environment(['production', 'staging'])) {
             try {
                 $client = new SecretsManagerClient([
                     'version' => 'latest',

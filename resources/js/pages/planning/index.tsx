@@ -64,6 +64,9 @@ export default function PlanningPage({
     const [dispatchDate, setDispatchDate] = useState(
         filters?.dispatch_date ?? '',
     );
+    const [statusFilter, setStatusFilter] = useState(
+        filters?.status ?? ALL,
+    );
     const isFirstRender = useRef(true);
 
     const applyFilters = (next: {
@@ -72,6 +75,7 @@ export default function PlanningPage({
         origin_id?: string;
         destination_id?: string;
         dispatch_date?: string;
+        status?: string;
     }) => {
         router.get(
             index().url,
@@ -90,6 +94,10 @@ export default function PlanningPage({
                         ? next.destination_id
                         : undefined,
                 dispatch_date: next.dispatch_date || undefined,
+                status:
+                    next.status && next.status !== ALL
+                        ? next.status
+                        : undefined,
             },
             { preserveState: true, replace: true },
         );
@@ -109,11 +117,12 @@ export default function PlanningPage({
                 origin_id: originId,
                 destination_id: destinationId,
                 dispatch_date: dispatchDate,
+                status: statusFilter,
             });
         }, 300);
 
         return () => clearTimeout(timer);
-    }, [search, clientId, originId, destinationId, dispatchDate]);
+    }, [search, clientId, originId, destinationId, dispatchDate, statusFilter]);
 
     const clearFilters = () => {
         setSearch('');
@@ -121,6 +130,7 @@ export default function PlanningPage({
         setOriginId(ALL);
         setDestinationId(ALL);
         setDispatchDate('');
+        setStatusFilter(ALL);
         router.get(index().url, {}, { preserveState: true, replace: true });
     };
 
@@ -129,7 +139,8 @@ export default function PlanningPage({
         clientId !== ALL ||
         originId !== ALL ||
         destinationId !== ALL ||
-        Boolean(dispatchDate);
+        Boolean(dispatchDate) ||
+        statusFilter !== ALL;
 
     const filteredLocations = locations.filter((loc) => {
         if (clientId === ALL) {
@@ -229,6 +240,26 @@ export default function PlanningPage({
                             onChange={(e) => setDispatchDate(e.target.value)}
                             className="w-[160px]"
                         />
+
+                        <Select value={statusFilter} onValueChange={setStatusFilter}>
+                            <SelectTrigger className="w-[180px]">
+                                <SelectValue placeholder="All Statuses" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value={ALL}>All Statuses</SelectItem>
+                                <SelectItem value="pending">Pending</SelectItem>
+                                <SelectItem value="intransit to origin">In Transit to Origin</SelectItem>
+                                <SelectItem value="waiting at parking">Waiting at Parking</SelectItem>
+                                <SelectItem value="ongoing loading">Ongoing Loading</SelectItem>
+                                <SelectItem value="in transit to destination">In Transit to Destination</SelectItem>
+                                <SelectItem value="waiting for unloading">Waiting for Unloading</SelectItem>
+                                <SelectItem value="waiting for soc">Waiting for SOC</SelectItem>
+                                <SelectItem value="ongoing unloading">Ongoing Unloading</SelectItem>
+                                <SelectItem value="delivered">Delivered</SelectItem>
+                                <SelectItem value="foul trip">Foul Trip</SelectItem>
+                                <SelectItem value="cancelled">Cancelled</SelectItem>
+                            </SelectContent>
+                        </Select>
 
                         {hasActiveFilters && (
                             <Button
