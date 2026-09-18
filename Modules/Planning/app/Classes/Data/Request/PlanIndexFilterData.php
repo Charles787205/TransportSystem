@@ -12,6 +12,7 @@ class PlanIndexFilterData extends Data
         public ?int $destinationId = null,
         public ?string $dispatchDate = null,
         public ?string $search = null,
+        public ?string $status = null,
     ) {}
 
     public function filterAttributes(): array
@@ -21,6 +22,7 @@ class PlanIndexFilterData extends Data
             'origin_id' => $this->originId,
             'destination_id' => $this->destinationId,
             'dispatch_date' => $this->dispatchDate,
+            'status' => $this->status,
         ], fn ($value) => $value !== null);
     }
 }

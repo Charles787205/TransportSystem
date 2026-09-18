@@ -25,7 +25,7 @@ class DispatchOperationController extends Controller
     {
         Gate::authorize('viewAny', Dispatch::class);
 
-        $filters = $request->only(['search', 'date_filter', 'start_date', 'end_date']);
+        $filters = $request->only(['search', 'date_filter', 'start_date', 'end_date', 'status']);
 
         if (! isset($filters['date_filter'])) {
             $filters['date_filter'] = 'month';

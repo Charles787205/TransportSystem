@@ -45,6 +45,7 @@ const DispatchOperation = ({
     const [dateFilter, setDateFilter] = useState(filters?.date_filter || 'month');
     const [startDate, setStartDate] = useState(filters?.start_date || '');
     const [endDate, setEndDate] = useState(filters?.end_date || '');
+    const [statusFilter, setStatusFilter] = useState(filters?.status || 'all');
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
@@ -52,18 +53,19 @@ const DispatchOperation = ({
                 searchQuery !== (filters?.search || '') ||
                 dateFilter !== (filters?.date_filter || 'month') ||
                 startDate !== (filters?.start_date || '') ||
-                endDate !== (filters?.end_date || '')
+                endDate !== (filters?.end_date || '') ||
+                statusFilter !== (filters?.status || 'all')
             ) {
                 router.get(
                     '/dispatchoperations',
-                    { search: searchQuery, date_filter: dateFilter, start_date: startDate, end_date: endDate },
+                    { search: searchQuery, date_filter: dateFilter, start_date: startDate, end_date: endDate, status: statusFilter === 'all' ? undefined : statusFilter },
                     { preserveState: true, preserveScroll: true, replace: true }
                 );
             }
         }, 300);
 
         return () => clearTimeout(delayDebounceFn);
-    }, [searchQuery, dateFilter, startDate, endDate, filters]);
+    }, [searchQuery, dateFilter, startDate, endDate, statusFilter, filters]);
 
     function getDispatchStatus(tripLegs: TripLegData[]): TripStatus {
         return tripLegs && tripLegs.length > 0
@@ -114,6 +116,26 @@ const DispatchOperation = ({
                                 />
                             </div>
                         )}
+
+                        <Select value={statusFilter} onValueChange={setStatusFilter}>
+                            <SelectTrigger className="w-[160px]">
+                                <SelectValue placeholder="All Statuses" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">All Statuses</SelectItem>
+                                <SelectItem value="pending">Pending</SelectItem>
+                                <SelectItem value="intransit to origin">In Transit to Origin</SelectItem>
+                                <SelectItem value="waiting at parking">Waiting at Parking</SelectItem>
+                                <SelectItem value="ongoing loading">Ongoing Loading</SelectItem>
+                                <SelectItem value="in transit to destination">In Transit to Destination</SelectItem>
+                                <SelectItem value="waiting for unloading">Waiting for Unloading</SelectItem>
+                                <SelectItem value="waiting for soc">Waiting for SOC</SelectItem>
+                                <SelectItem value="ongoing unloading">Ongoing Unloading</SelectItem>
+                                <SelectItem value="delivered">Delivered</SelectItem>
+                                <SelectItem value="foul trip">Foul Trip</SelectItem>
+                                <SelectItem value="cancelled">Cancelled</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
                     <CreateDispatchModal />
                 </div>
