@@ -10,6 +10,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
+import { formatTime } from '@/lib/utils';
 
 type LocationOption = {
     id: number;
@@ -108,14 +109,7 @@ export default function TripRemarkSection({
                 <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                     {remarks.map((r) => {
                         const dateStr = r.created_at || r.createdAt;
-                        const formattedTime = dateStr
-                            ? new Date(dateStr).toLocaleString('en-PH', {
-                                  hour: 'numeric',
-                                  minute: '2-digit',
-                                  month: 'short',
-                                  day: 'numeric',
-                              })
-                            : '';
+                        const formattedTime = formatTime(dateStr, '');
 
                         return (
                             <div key={r.id} className="text-xs border-l-2 border-blue-500 pl-3 py-1 bg-slate-50/50 rounded-r">
