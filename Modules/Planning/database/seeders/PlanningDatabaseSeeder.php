@@ -17,11 +17,10 @@ class PlanningDatabaseSeeder extends Seeder
         $client = Client::first();
         $locations = Location::limit(2)->get();
 
-        if ($client && $locations->count() >= 2) {
+        if ($client && $locations->count() >= 1) {
             Plan::create([
                 'client_id' => $client->id,
                 'origin_id' => $locations[0]->id,
-                'destination_id' => $locations[1]->id,
                 'number_of_vehicles' => 3,
                 'dispatch_date' => '2026-08-10',
             ]);
@@ -29,7 +28,6 @@ class PlanningDatabaseSeeder extends Seeder
             Plan::create([
                 'client_id' => $client->id,
                 'origin_id' => $locations[0]->id,
-                'destination_id' => $locations[1]->id,
                 'number_of_vehicles' => 5,
                 'dispatch_date' => '2026-08-11',
             ]);

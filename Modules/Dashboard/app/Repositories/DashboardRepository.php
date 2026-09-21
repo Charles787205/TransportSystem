@@ -227,9 +227,6 @@ class DashboardRepository
         if (! empty($filters->originLocationId)) {
             $query->where('origin_id', $filters->originLocationId);
         }
-        if (! empty($filters->destinationLocationId)) {
-            $query->where('destination_id', $filters->destinationLocationId);
-        }
 
         return $query;
     }
@@ -278,9 +275,6 @@ class DashboardRepository
         }
         if (! empty($filters->originLocationId)) {
             $plannedQuery->where('plans.origin_id', $filters->originLocationId);
-        }
-        if (! empty($filters->destinationLocationId)) {
-            $plannedQuery->where('plans.destination_id', $filters->destinationLocationId);
         }
 
         $plannedResults = $plannedQuery->groupBy('locations.touchpoint')->get()->keyBy('touchpoint');

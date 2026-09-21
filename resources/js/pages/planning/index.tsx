@@ -49,7 +49,6 @@ export default function PlanningPage({
         search?: string;
         client_id?: string;
         origin_id?: string;
-        destination_id?: string;
         dispatch_date?: string;
     };
 }) {
@@ -58,9 +57,6 @@ export default function PlanningPage({
     const [search, setSearch] = useState(filters?.search ?? '');
     const [clientId, setClientId] = useState(filters?.client_id ?? ALL);
     const [originId, setOriginId] = useState(filters?.origin_id ?? ALL);
-    const [destinationId, setDestinationId] = useState(
-        filters?.destination_id ?? ALL,
-    );
     const [dispatchDate, setDispatchDate] = useState(
         filters?.dispatch_date ?? '',
     );
@@ -73,7 +69,6 @@ export default function PlanningPage({
         search?: string;
         client_id?: string;
         origin_id?: string;
-        destination_id?: string;
         dispatch_date?: string;
         status?: string;
     }) => {
@@ -88,10 +83,6 @@ export default function PlanningPage({
                 origin_id:
                     next.origin_id && next.origin_id !== ALL
                         ? next.origin_id
-                        : undefined,
-                destination_id:
-                    next.destination_id && next.destination_id !== ALL
-                        ? next.destination_id
                         : undefined,
                 dispatch_date: next.dispatch_date || undefined,
                 status:
@@ -115,20 +106,18 @@ export default function PlanningPage({
                 search,
                 client_id: clientId,
                 origin_id: originId,
-                destination_id: destinationId,
                 dispatch_date: dispatchDate,
                 status: statusFilter,
             });
         }, 300);
 
         return () => clearTimeout(timer);
-    }, [search, clientId, originId, destinationId, dispatchDate, statusFilter]);
+    }, [search, clientId, originId, dispatchDate, statusFilter]);
 
     const clearFilters = () => {
         setSearch('');
         setClientId(ALL);
         setOriginId(ALL);
-        setDestinationId(ALL);
         setDispatchDate('');
         setStatusFilter(ALL);
         router.get(index().url, {}, { preserveState: true, replace: true });
@@ -138,7 +127,6 @@ export default function PlanningPage({
         Boolean(search) ||
         clientId !== ALL ||
         originId !== ALL ||
-        destinationId !== ALL ||
         Boolean(dispatchDate) ||
         statusFilter !== ALL;
 
@@ -215,25 +203,6 @@ export default function PlanningPage({
                             </SelectContent>
                         </Select>
 
-                        <Select
-                            value={destinationId}
-                            onValueChange={setDestinationId}
-                        >
-                            <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="All Destinations" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value={ALL}>
-                                    All Destinations
-                                </SelectItem>
-                                {filteredLocations.map((l) => (
-                                    <SelectItem key={l.id} value={String(l.id)}>
-                                        {l.label}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-
                         <Input
                             type="date"
                             value={dispatchDate}
@@ -282,7 +251,6 @@ export default function PlanningPage({
                         <TableRow>
                             <TableHead>Client</TableHead>
                             <TableHead>Origin Location</TableHead>
-                            <TableHead>Destination Location</TableHead>
                             <TableHead className="text-center">
                                 Vehicles / Fulfillment
                             </TableHead>
@@ -296,7 +264,7 @@ export default function PlanningPage({
                         {plans.length === 0 ? (
                             <TableRow>
                                 <TableCell
-                                    colSpan={6}
+                                    colSpan={5}
                                     className="h-32 text-center text-muted-foreground"
                                 >
                                     <div className="flex flex-col items-center justify-center gap-1">

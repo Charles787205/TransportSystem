@@ -28,7 +28,6 @@ test('getDispatchMetrics computes correct dispatch statistics', function () {
         'id' => 1,
         'client_id' => 1,
         'origin_id' => 1,
-        'destination_id' => 2,
         'dispatch_date' => $today,
         'number_of_vehicles' => 5,
         'created_at' => now(),

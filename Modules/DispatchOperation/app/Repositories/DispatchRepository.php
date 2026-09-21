@@ -142,13 +142,15 @@ class DispatchRepository
         $dispatch->tripLegs()->create($tripLegs);
     }
 
-    public function getDispatchesForPlanRoute(int $clientId, string $dispatchDate, int $originId, int $destinationId)
+    public function getDispatchesForPlanRoute(int $clientId, string $dispatchDate, int $originId, ?int $destinationId = null)
     {
         return Dispatch::where('client_id', $clientId)
             ->whereDate('dispatch_date', $dispatchDate)
             ->whereHas('tripLegs', function ($q) use ($originId, $destinationId) {
-                $q->where('origin_location_id', $originId)
-                    ->where('destination_location_id', $destinationId);
+                $q->where('origin_location_id', $originId);
+                if ($destinationId !== null) {
+                    $q->where('destination_location_id', $destinationId);
+                }
             })
             ->with(['vehicle', 'driver', 'client', 'tripLegs.originLocation', 'tripLegs.destinationLocation'])
             ->get();

@@ -93,7 +93,7 @@ const PlanningDetailPage = ({
             </Card>
 
             {/* Route Info */}
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div>
                 <Card>
                     <CardHeader>
                         <CardTitle className="flex items-center gap-2 text-sm font-medium">
@@ -105,21 +105,6 @@ const PlanningDetailPage = ({
                         <p className="text-base font-semibold">{plan.origin?.name ?? `Location #${plan.originId}`}</p>
                         <p className="text-xs text-muted-foreground mt-1">
                             {[plan.origin?.touchpoint, plan.origin?.type, plan.origin?.address].filter(Boolean).join(' • ') || 'No extra address details'}
-                        </p>
-                    </CardContent>
-                </Card>
-
-                <Card>
-                    <CardHeader>
-                        <CardTitle className="flex items-center gap-2 text-sm font-medium">
-                            <MapPin className="size-4 text-muted-foreground" />
-                            Destination Location
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-base font-semibold">{plan.destination?.name ?? `Location #${plan.destinationId}`}</p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                            {[plan.destination?.touchpoint, plan.destination?.type, plan.destination?.address].filter(Boolean).join(' • ') || 'No extra address details'}
                         </p>
                     </CardContent>
                 </Card>
@@ -136,7 +121,6 @@ const PlanningDetailPage = ({
                         defaultValues={{
                             clientId: plan.clientId,
                             originLocationId: plan.originId,
-                            destinationLocationId: plan.destinationId,
                             dispatchDate: plan.dispatchDate,
                         }}
                         lockFields={true}

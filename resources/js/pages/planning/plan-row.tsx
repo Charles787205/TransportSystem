@@ -69,15 +69,6 @@ export default function PlanRow({ plan }: { plan: PlanData }) {
                         </span>
                     </div>
                 </TableCell>
-                <TableCell>
-                    <div className="flex items-center gap-1.5">
-                        <MapPin className="size-3.5 text-muted-foreground" />
-                        <span>
-                            {plan.destination?.name ??
-                                `Location #${plan.destinationId}`}
-                        </span>
-                    </div>
-                </TableCell>
                 <TableCell className="text-center font-semibold">
                     <div className="flex flex-col items-center gap-1">
                         <Badge
@@ -164,8 +155,6 @@ export default function PlanRow({ plan }: { plan: PlanData }) {
                                         defaultValues={{
                                             clientId: plan.clientId,
                                             originLocationId: plan.originId,
-                                            destinationLocationId:
-                                                plan.destinationId,
                                             dispatchDate: plan.dispatchDate,
                                         }}
                                         lockFields={true}
@@ -377,8 +366,6 @@ export default function PlanRow({ plan }: { plan: PlanData }) {
                                             defaultValues={{
                                                 clientId: plan.clientId,
                                                 originLocationId: plan.originId,
-                                                destinationLocationId:
-                                                    plan.destinationId,
                                                 dispatchDate: plan.dispatchDate,
                                             }}
                                             lockFields={true}
