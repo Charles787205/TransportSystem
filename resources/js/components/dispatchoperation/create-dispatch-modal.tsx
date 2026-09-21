@@ -368,22 +368,13 @@ const CreateDispatchModal = ({
                                         <Label htmlFor="destination_location_id">
                                             Destination Location
                                         </Label>
-                                        {lockFields && (
-                                            <input
-                                                type="hidden"
-                                                name="destination_location_id"
-                                                value={selectedDestinationId}
-                                            />
-                                        )}
                                         <Select
                                             name="destination_location_id"
                                             value={selectedDestinationId}
                                             onValueChange={
                                                 setSelectedDestinationId
                                             }
-                                            disabled={
-                                                lockFields || !selectedClientId
-                                            }
+                                            disabled={!selectedClientId}
                                         >
                                             <SelectTrigger
                                                 id="destination_location_id"
