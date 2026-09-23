@@ -25,10 +25,14 @@ class DispatchOperationController extends Controller
     {
         Gate::authorize('viewAny', Dispatch::class);
 
-        $filters = $request->only(['search', 'date_filter', 'start_date', 'end_date', 'status']);
+        $filters = $request->only(['search', 'date_filter', 'start_date', 'end_date', 'status', 'sort_direction']);
 
         if (! isset($filters['date_filter'])) {
             $filters['date_filter'] = 'month';
+        }
+
+        if (! isset($filters['sort_direction'])) {
+            $filters['sort_direction'] = 'desc';
         }
 
         $dispatchData = $this->dispatchService->getPaginatedDispatches($filters);

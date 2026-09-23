@@ -1,6 +1,5 @@
 import { Link, router } from '@inertiajs/react';
-import { ChevronLeft, ChevronRight, PackageSearch, Search } from 'lucide-react';
-import { Eye } from 'lucide-react';
+import { ArrowDown, ArrowUp, ChevronLeft, ChevronRight, Eye, PackageSearch, Search } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import CreateDispatchModal from '@/components/dispatchoperation/create-dispatch-modal';
 import PlannedDispatchMetrics from '@/components/dispatchoperation/planned-disptatch-metrics';
@@ -38,7 +37,14 @@ const DispatchOperation = ({
 }: {
     dispatches: PaginatedDispatchData;
     metrics: DispatchMetrics;
-    filters?: { search?: string; date_filter?: string; start_date?: string; end_date?: string };
+    filters?: {
+        search?: string;
+        date_filter?: string;
+        start_date?: string;
+        end_date?: string;
+        status?: string;
+        sort_direction?: 'asc' | 'desc';
+    };
 }) => {
     const { data, from, to, total, links } = dispatches;
     const [searchQuery, setSearchQuery] = useState(filters?.search || '');
@@ -46,6 +52,9 @@ const DispatchOperation = ({
     const [startDate, setStartDate] = useState(filters?.start_date || '');
     const [endDate, setEndDate] = useState(filters?.end_date || '');
     const [statusFilter, setStatusFilter] = useState(filters?.status || 'all');
+    const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>(
+        filters?.sort_direction === 'asc' ? 'asc' : 'desc'
+    );
 
     useEffect(() => {
         const delayDebounceFn = setTimeout(() => {
@@ -54,18 +63,26 @@ const DispatchOperation = ({
                 dateFilter !== (filters?.date_filter || 'month') ||
                 startDate !== (filters?.start_date || '') ||
                 endDate !== (filters?.end_date || '') ||
-                statusFilter !== (filters?.status || 'all')
+                statusFilter !== (filters?.status || 'all') ||
+                sortDirection !== (filters?.sort_direction || 'desc')
             ) {
                 router.get(
                     '/dispatchoperations',
-                    { search: searchQuery, date_filter: dateFilter, start_date: startDate, end_date: endDate, status: statusFilter === 'all' ? undefined : statusFilter },
+                    {
+                        search: searchQuery,
+                        date_filter: dateFilter,
+                        start_date: startDate,
+                        end_date: endDate,
+                        status: statusFilter === 'all' ? undefined : statusFilter,
+                        sort_direction: sortDirection,
+                    },
                     { preserveState: true, preserveScroll: true, replace: true }
                 );
             }
         }, 300);
 
         return () => clearTimeout(delayDebounceFn);
-    }, [searchQuery, dateFilter, startDate, endDate, statusFilter, filters]);
+    }, [searchQuery, dateFilter, startDate, endDate, statusFilter, sortDirection, filters]);
 
     function getDispatchStatus(tripLegs: TripLegData[]): TripStatus {
         return tripLegs && tripLegs.length > 0
@@ -173,7 +190,20 @@ const DispatchOperation = ({
                                     <TableRow className="bg-slate-50 hover:bg-slate-50">
                                         <TableHead>Vehicle</TableHead>
                                         <TableHead>Service Type</TableHead>
-                                        <TableHead>Dispatch Date</TableHead>
+                                        <TableHead
+                                            className="cursor-pointer select-none transition-colors hover:text-slate-900"
+                                            onClick={() => setSortDirection((prev) => (prev === 'desc' ? 'asc' : 'desc'))}
+                                            title="Click to toggle sorting by dispatch date"
+                                        >
+                                            <div className="flex items-center gap-1.5">
+                                                <span>Dispatch Date</span>
+                                                {sortDirection === 'desc' ? (
+                                                    <ArrowDown className="h-3.5 w-3.5 text-slate-700" />
+                                                ) : (
+                                                    <ArrowUp className="h-3.5 w-3.5 text-slate-700" />
+                                                )}
+                                            </div>
+                                        </TableHead>
                                         <TableHead>Call Time</TableHead>
                                         <TableHead>Driver</TableHead>
                                         <TableHead>Origin Location</TableHead>

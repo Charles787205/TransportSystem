@@ -27,7 +27,7 @@ class DispatchRepository
 
     public function getDispatches(array $where = [], array $with = [])
     {
-        return Dispatch::with($with)->where($where)->get();
+        return Dispatch::with($with)->where($where)->orderBy('dispatch_date', 'desc')->get();
     }
 
     public function getPaginatedDispatches(int $pageSize = 20, array $where = [], array $with = [], array $filters = [])
@@ -36,7 +36,15 @@ class DispatchRepository
 
         $query = $this->applyFilters($query, $filters);
 
-        return $query->latest()->paginate($pageSize)->withQueryString();
+        $sortDirection = in_array(strtolower($filters['sort_direction'] ?? 'desc'), ['asc', 'desc'], true)
+            ? strtolower($filters['sort_direction'] ?? 'desc')
+            : 'desc';
+
+        return $query->orderBy('dispatch_date', $sortDirection)
+            ->orderBy('assigned_call_time', $sortDirection)
+            ->latest('id')
+            ->paginate($pageSize)
+            ->withQueryString();
     }
 
     public function getDispatchMetrics(array $filters = [])
