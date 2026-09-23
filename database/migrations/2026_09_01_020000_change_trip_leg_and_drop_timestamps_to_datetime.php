@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
@@ -35,6 +36,15 @@ return new class extends Migration
      */
     public function down(): void
     {
+        $tripColumns = [
+            'departure_time', 'end_time', 'arrived_time', 'origin_arrived_time',
+            'origin_start_loading_time', 'origin_end_loading_time', 'destination_arrived_time',
+            'destination_start_unloading_time', 'destination_end_unloading_time', 'destination_departed_time',
+        ];
+        foreach ($tripColumns as $col) {
+            DB::table('trip_legs')->whereNotNull($col)->update([$col => null]);
+        }
+
         Schema::table('trip_legs', function (Blueprint $table) {
             $table->time('departure_time')->nullable()->change();
             $table->time('end_time')->nullable()->change();
@@ -47,6 +57,11 @@ return new class extends Migration
             $table->time('destination_end_unloading_time')->nullable()->change();
             $table->time('destination_departed_time')->nullable()->change();
         });
+
+        $dropColumns = ['arrived_time', 'departed_time'];
+        foreach ($dropColumns as $col) {
+            DB::table('drops')->whereNotNull($col)->update([$col => null]);
+        }
 
         Schema::table('drops', function (Blueprint $table) {
             $table->time('arrived_time')->nullable()->change();
