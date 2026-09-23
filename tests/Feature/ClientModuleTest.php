@@ -55,3 +55,20 @@ it('allows authorized users to view clients via HTTP', function () {
     $response = $this->actingAs($user)->get(route('client.index'));
     $response->assertStatus(200);
 });
+
+it('allows authorized users to view a client show page via HTTP', function () {
+    $user = createClientAdminUser();
+    $service = app(ClientService::class);
+
+    $clientData = CreateClientData::from([
+        'name' => 'Logistics Corp',
+        'email' => 'contact@logistics.com',
+        'phone_number' => '123-456-7890',
+        'touchpoint' => 'Main Office',
+        'active' => true,
+    ]);
+    $client = $service->createClient($clientData);
+
+    $response = $this->actingAs($user)->get(route('client.show', $client->id));
+    $response->assertStatus(200);
+});
