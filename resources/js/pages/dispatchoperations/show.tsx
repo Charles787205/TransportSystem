@@ -36,6 +36,7 @@ import {
     TableRow,
 } from '@/components/ui/table';
 import type { DispatchData, TripLegData } from '@/generated/DispatchOperation';
+import { formatDate, formatTime, formatDateTime } from '@/lib/utils';
 import { index } from '@/routes/dispatchoperation';
 
 type LocationOption = {
@@ -50,46 +51,6 @@ type DispatchDetailsPagesProps = {
     locations?: LocationOption[];
     /** Wire this up to open the edit trip leg modal (separate file), pre-filled with the given leg. */
     onEditTripLeg?: (tripLeg: TripLegData) => void;
-};
-
-const formatDate = (value: string | null | undefined) => {
-    if (!value) {
-        return '—';
-    }
-
-    return new Date(value).toLocaleDateString('en-PH', {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
-    });
-};
-
-const formatTime = (value: string | null | undefined) => {
-    if (!value) {
-        return '—';
-    }
-
-    if (value.includes('T') || value.includes('-')) {
-        const dateObj = new Date(value);
-
-        if (!isNaN(dateObj.getTime())) {
-            return dateObj.toLocaleString('en-PH', {
-                month: 'short',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: '2-digit',
-            });
-        }
-    }
-
-    const [hours, minutes] = value.split(':');
-    const date = new Date();
-    date.setHours(Number(hours), Number(minutes));
-
-    return date.toLocaleTimeString('en-PH', {
-        hour: 'numeric',
-        minute: '2-digit',
-    });
 };
 
 const formatOdometer = (value: number | null | undefined) => {
@@ -812,23 +773,9 @@ const DispatchDetailsPages = ({
                                                 {formatOdometer(rt.odometerEnd)}
                                             </TableCell>
                                             <TableCell className="text-xs text-slate-600">
-                                                {rt.departedAt
-                                                    ? new Date(
-                                                          rt.departedAt,
-                                                      ).toLocaleString([], {
-                                                          dateStyle: 'short',
-                                                          timeStyle: 'short',
-                                                      })
-                                                    : '—'}
+                                                {formatDateTime(rt.departedAt)}
                                                 {' → '}
-                                                {rt.arrivedAt
-                                                    ? new Date(
-                                                          rt.arrivedAt,
-                                                      ).toLocaleString([], {
-                                                          dateStyle: 'short',
-                                                          timeStyle: 'short',
-                                                      })
-                                                    : '—'}
+                                                {formatDateTime(rt.arrivedAt)}
                                             </TableCell>
                                             <TableCell className="text-right">
                                                 <Button

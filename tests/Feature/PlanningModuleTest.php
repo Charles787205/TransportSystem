@@ -49,7 +49,6 @@ it('creates plan via PlanService and lists paginated plans', function () {
     $planData = CreatePlanData::from([
         'client_id' => $client->id,
         'origin_id' => $originLoc->id,
-        'destination_id' => $destLoc->id,
         'number_of_vehicles' => 10,
         'dispatch_date' => '2026-08-01',
     ]);
@@ -58,8 +57,7 @@ it('creates plan via PlanService and lists paginated plans', function () {
 
     expect($plan)->toBeInstanceOf(PlanData::class)
         ->and($plan->clientId)->toBe($client->id)
-        ->and($plan->originId)->toBe($originLoc->id)
-        ->and($plan->destinationId)->toBe($destLoc->id);
+        ->and($plan->originId)->toBe($originLoc->id);
 });
 
 it('allows authorized users to view planning index via HTTP', function () {

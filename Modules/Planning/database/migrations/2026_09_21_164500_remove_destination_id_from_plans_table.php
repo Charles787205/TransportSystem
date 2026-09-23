@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('permissions', function (Blueprint $table) {
-            $table->id();
-            $table->string('name', 25)->unique();
-            $table->string('slug', 25);
-            $table->timestamps();
+        Schema::table('plans', function (Blueprint $table) {
+            $table->dropConstrainedForeignId('destination_id');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('permissions');
+        Schema::table('plans', function (Blueprint $table) {
+            $table->foreignId('destination_id')->nullable()->constrained('locations')->cascadeOnDelete();
+        });
     }
 };

@@ -9,5 +9,5 @@ interface DispatchServiceInterface
     /**
      * Get dispatches that match the specific plan criteria.
      */
-    public function getDispatchesForPlan(int $clientId, string $dispatchDate, int $originId, int $destinationId): Collection;
+    public function getDispatchesForPlan(int $clientId, string $dispatchDate, int $originId, ?int $destinationId = null): Collection;
 }

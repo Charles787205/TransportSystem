@@ -6,7 +6,6 @@ use Modules\Dashboard\Classes\Data\Request\DashboardFilterData;
 use Modules\Dashboard\Repositories\DashboardRepository;
 use Tests\TestCase;
 
-
 uses(TestCase::class, RefreshDatabase::class);
 
 test('getMetrics computes correct dashboard statistics', function () {
@@ -33,7 +32,6 @@ test('getMetrics computes correct dashboard statistics', function () {
         'id' => 1,
         'client_id' => 1,
         'origin_id' => 1,
-        'destination_id' => 2,
         'dispatch_date' => $today,
         'number_of_vehicles' => 10,
         'created_at' => now(),

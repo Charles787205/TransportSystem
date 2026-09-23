@@ -26,12 +26,12 @@ class PlanService
     {
         $plan = $this->planRepo->createPlan($data->planAttributes());
 
-        return PlanData::from($plan->fresh(['client', 'origin', 'destination']));
+        return PlanData::from($plan->fresh(['client', 'origin']));
     }
 
     public function getPaginatedPlan(): PaginatedPlanData
     {
-        $plans = $this->planRepo->getPaginatedPlans(pageSize: 20, with: ['client', 'origin', 'destination']);
+        $plans = $this->planRepo->getPaginatedPlans(pageSize: 20, with: ['client', 'origin']);
 
         return PaginatedPlanData::from($plans);
     }
@@ -41,7 +41,7 @@ class PlanService
         $plans = $this->planRepo->getPaginatedPlans(
             where: $filters->filterAttributes(),
             pageSize: 15,
-            with: ['client', 'origin', 'destination'],
+            with: ['client', 'origin'],
             search: $filters->search
         );
 
@@ -53,8 +53,7 @@ class PlanService
             $dispatches = $this->dispatchService->getDispatchesForPlan(
                 $plan->client_id,
                 $plan->dispatch_date,
-                $plan->origin_id,
-                $plan->destination_id
+                $plan->origin_id
             );
 
             $planData = PlanData::from($plan);
@@ -79,14 +78,13 @@ class PlanService
 
     public function getPlanDetails(int $id): PlanDetailPageData
     {
-        $plan = $this->planRepo->getPlan($id, with: ['client', 'origin', 'destination']);
+        $plan = $this->planRepo->getPlan($id, with: ['client', 'origin']);
 
-        // Fetch dispatches matching client, date, and route (origin -> destination)
+        // Fetch dispatches matching client, date, and origin route
         $dispatches = $this->dispatchService->getDispatchesForPlan(
             $plan->client_id,
             $plan->dispatch_date,
-            $plan->origin_id,
-            $plan->destination_id
+            $plan->origin_id
         );
 
         $tripLegs = $dispatches->pluck('tripLegs')->flatten();

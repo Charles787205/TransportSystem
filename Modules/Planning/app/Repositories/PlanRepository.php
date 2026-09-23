@@ -34,7 +34,6 @@ class PlanRepository
                             ->from('trip_legs')
                             ->whereColumn('trip_legs.dispatch_id', 'dispatches.id')
                             ->whereColumn('trip_legs.origin_location_id', 'plans.origin_id')
-                            ->whereColumn('trip_legs.destination_location_id', 'plans.destination_id')
                             ->where('trip_legs.status', $status)
                             ->whereIn('trip_legs.id', function ($sub) {
                                 $sub->selectRaw('MAX(id)')
@@ -51,9 +50,6 @@ class PlanRepository
                     $q2->where('name', 'like', "%{$search}%");
                 })
                     ->orWhereHas('origin', function ($q2) use ($search) {
-                        $q2->where('name', 'like', "%{$search}%");
-                    })
-                    ->orWhereHas('destination', function ($q2) use ($search) {
                         $q2->where('name', 'like', "%{$search}%");
                     });
             });

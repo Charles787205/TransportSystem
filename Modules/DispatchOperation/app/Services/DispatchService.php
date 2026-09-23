@@ -37,7 +37,7 @@ class DispatchService implements DispatchServiceInterface
         return DispatchData::from($dispatch);
     }
 
-    public function getDispatchesForPlan(int $clientId, string $dispatchDate, int $originId, int $destinationId): Collection
+    public function getDispatchesForPlan(int $clientId, string $dispatchDate, int $originId, ?int $destinationId = null): Collection
     {
         return $this->dispatchRepo->getDispatchesForPlanRoute($clientId, $dispatchDate, $originId, $destinationId);
     }

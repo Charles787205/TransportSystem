@@ -16,6 +16,7 @@ import {
     DialogTitle,
 } from '@/components/ui/dialog';
 import type { TripLegData } from '@/generated/DispatchOperation';
+import { formatTime } from '@/lib/utils';
 
 type LocationOption = {
     id: number;
@@ -29,21 +30,6 @@ type ViewTripLegModalProps = {
     open: boolean;
     onOpenChange: (open: boolean) => void;
     locations?: LocationOption[];
-};
-
-const formatTime = (value: string | null | undefined) => {
-    if (!value) {
-return '—';
-}
-
-    const [hours, minutes] = value.split(':');
-    const date = new Date();
-    date.setHours(Number(hours), Number(minutes));
-
-    return date.toLocaleTimeString('en-PH', {
-        hour: 'numeric',
-        minute: '2-digit',
-    });
 };
 
 const formatOdometer = (value: number | null | undefined) => {
@@ -98,15 +84,15 @@ return null;
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-slate-700 bg-white p-2.5 rounded border">
                             <div>
                                 <div className="text-[11px] text-muted-foreground">Arrival Time</div>
-                                <div className="font-medium">{formatTime((tripLeg as any).originArrivedTime)}</div>
+                                <div className="font-medium">{formatTime(tripLeg.originArrivedTime)}</div>
                             </div>
                             <div>
                                 <div className="text-[11px] text-muted-foreground">Start Loading</div>
-                                <div className="font-medium">{formatTime((tripLeg as any).originStartLoadingTime)}</div>
+                                <div className="font-medium">{formatTime(tripLeg.originStartLoadingTime)}</div>
                             </div>
                             <div>
                                 <div className="text-[11px] text-muted-foreground">End Loading</div>
-                                <div className="font-medium">{formatTime((tripLeg as any).originEndLoadingTime)}</div>
+                                <div className="font-medium">{formatTime(tripLeg.originEndLoadingTime)}</div>
                             </div>
                             <div>
                                 <div className="text-[11px] text-muted-foreground">Departure Time</div>
@@ -124,19 +110,19 @@ return null;
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs text-slate-700 bg-white p-2.5 rounded border">
                             <div>
                                 <div className="text-[11px] text-muted-foreground">Arrival Time</div>
-                                <div className="font-medium">{formatTime((tripLeg as any).destinationArrivedTime ?? tripLeg.arrivedTime)}</div>
+                                <div className="font-medium">{formatTime(tripLeg.destinationArrivedTime ?? tripLeg.arrivedTime)}</div>
                             </div>
                             <div>
                                 <div className="text-[11px] text-muted-foreground">Start Unloading</div>
-                                <div className="font-medium">{formatTime((tripLeg as any).destinationStartUnloadingTime)}</div>
+                                <div className="font-medium">{formatTime(tripLeg.destinationStartUnloadingTime)}</div>
                             </div>
                             <div>
                                 <div className="text-[11px] text-muted-foreground">End Unloading</div>
-                                <div className="font-medium">{formatTime((tripLeg as any).destinationEndUnloadingTime)}</div>
+                                <div className="font-medium">{formatTime(tripLeg.destinationEndUnloadingTime)}</div>
                             </div>
                             <div>
                                 <div className="text-[11px] text-muted-foreground">Completion / Departed</div>
-                                <div className="font-medium">{formatTime((tripLeg as any).destinationDepartedTime ?? tripLeg.endTime)}</div>
+                                <div className="font-medium">{formatTime(tripLeg.destinationDepartedTime ?? tripLeg.endTime)}</div>
                             </div>
                         </div>
                     </div>

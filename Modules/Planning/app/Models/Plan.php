@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Modules\Client\Models\Client;
 use Modules\Client\Models\Location;
 
-#[Fillable(['client_id', 'origin_id', 'destination_id', 'number_of_vehicles', 'dispatch_date'])]
+#[Fillable(['client_id', 'origin_id', 'number_of_vehicles', 'dispatch_date'])]
 class Plan extends Model
 {
     use HasFactory;
@@ -22,10 +22,5 @@ class Plan extends Model
     public function origin(): BelongsTo
     {
         return $this->belongsTo(Location::class, 'origin_id');
-    }
-
-    public function destination(): BelongsTo
-    {
-        return $this->belongsTo(Location::class, 'destination_id');
     }
 }

@@ -67,7 +67,7 @@ class ClientService
         $plans = $this->planRepo->getPaginatedPlans(
             where: ['client_id' => $clientId],
             pageSize: $pageSize,
-            with: ['client', 'origin', 'destination']
+            with: ['client', 'origin']
         );
 
         return PaginatedPlanData::from($plans);

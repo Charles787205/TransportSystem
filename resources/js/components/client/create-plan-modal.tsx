@@ -48,32 +48,28 @@ const CreatePlanModal = ({ clients = [], locations = [] }: CreatePlanModalProps)
     const [open, setOpen] = useState(false);
     const [selectedClientId, setSelectedClientId] = useState<string>('');
     const [selectedOriginId, setSelectedOriginId] = useState<string>('');
-    const [selectedDestinationId, setSelectedDestinationId] = useState<string>('');
     const [dispatchDate, setDispatchDate] = useState<Date | undefined>();
     const [dateOpen, setDateOpen] = useState(false);
 
     const handleClientChange = (clientId: string) => {
         setSelectedClientId(clientId);
         setSelectedOriginId('');
-        setSelectedDestinationId('');
     };
 
     const clientLocations = locations.filter((loc) => {
         if (!selectedClientId) {
-return true;
-}
+            return true;
+        }
 
         return String(loc.client_id) === String(selectedClientId);
     });
 
-    const originOptions = clientLocations.filter((loc) => String(loc.id) !== selectedDestinationId);
-    const destinationOptions = clientLocations.filter((loc) => String(loc.id) !== selectedOriginId);
+    const originOptions = clientLocations;
 
     const resetForm = () => {
         setOpen(false);
         setSelectedClientId('');
         setSelectedOriginId('');
-        setSelectedDestinationId('');
         setDispatchDate(undefined);
     };
 
@@ -144,28 +140,6 @@ return true;
                                     aria-invalid={!!errors.origin_id}
                                 />
                                 <InputError message={errors.origin_id} />
-                            </div>
-
-                            {/* Destination Location select */}
-                            <div className="grid gap-1.5" data-invalid={!!errors.destination_id}>
-                                <Label htmlFor="destination_id">Destination Location *</Label>
-                                <SearchableSelect
-                                    id="destination_id"
-                                    name="destination_id"
-                                    options={destinationOptions}
-                                    value={selectedDestinationId}
-                                    onValueChange={setSelectedDestinationId}
-                                    disabled={!selectedClientId}
-                                    placeholder={
-                                        selectedClientId
-                                            ? 'Select destination location...'
-                                            : 'Select client first'
-                                    }
-                                    searchPlaceholder="Search destination location..."
-                                    emptyText="No locations found."
-                                    aria-invalid={!!errors.destination_id}
-                                />
-                                <InputError message={errors.destination_id} />
                             </div>
 
                             {/* Number of vehicles */}

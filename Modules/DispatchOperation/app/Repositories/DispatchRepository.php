@@ -27,7 +27,7 @@ class DispatchRepository
 
     public function getDispatches(array $where = [], array $with = [])
     {
-        return Dispatch::with($with)->where($where)->get();
+        return Dispatch::with($with)->where($where)->orderBy('dispatch_date', 'desc')->get();
     }
 
     public function getPaginatedDispatches(int $pageSize = 20, array $where = [], array $with = [], array $filters = [])
@@ -36,7 +36,15 @@ class DispatchRepository
 
         $query = $this->applyFilters($query, $filters);
 
-        return $query->latest()->paginate($pageSize)->withQueryString();
+        $sortDirection = in_array(strtolower($filters['sort_direction'] ?? 'desc'), ['asc', 'desc'], true)
+            ? strtolower($filters['sort_direction'] ?? 'desc')
+            : 'desc';
+
+        return $query->orderBy('dispatch_date', $sortDirection)
+            ->orderBy('assigned_call_time', $sortDirection)
+            ->latest('id')
+            ->paginate($pageSize)
+            ->withQueryString();
     }
 
     public function getDispatchMetrics(array $filters = [])
@@ -142,13 +150,15 @@ class DispatchRepository
         $dispatch->tripLegs()->create($tripLegs);
     }
 
-    public function getDispatchesForPlanRoute(int $clientId, string $dispatchDate, int $originId, int $destinationId)
+    public function getDispatchesForPlanRoute(int $clientId, string $dispatchDate, int $originId, ?int $destinationId = null)
     {
         return Dispatch::where('client_id', $clientId)
             ->whereDate('dispatch_date', $dispatchDate)
             ->whereHas('tripLegs', function ($q) use ($originId, $destinationId) {
-                $q->where('origin_location_id', $originId)
-                    ->where('destination_location_id', $destinationId);
+                $q->where('origin_location_id', $originId);
+                if ($destinationId !== null) {
+                    $q->where('destination_location_id', $destinationId);
+                }
             })
             ->with(['vehicle', 'driver', 'client', 'tripLegs.originLocation', 'tripLegs.destinationLocation'])
             ->get();

@@ -15,7 +15,6 @@ use Modules\Dashboard\Services\DashboardService;
 use Spatie\LaravelData\DataCollection;
 use Tests\TestCase;
 
-
 uses(TestCase::class);
 
 test('getDashboardData assembles response data from repository', function () {
