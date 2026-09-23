@@ -55,7 +55,7 @@ class PlanRepository
             });
         }
 
-        return $query->latest()->paginate($pageSize)->withQueryString();
+        return $query->orderBy('dispatch_date', 'desc')->latest('id')->paginate($pageSize)->withQueryString();
     }
 
     public function getPlan(int $id, array $with = []): Plan
