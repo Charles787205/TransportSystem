@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Check, ChevronsUpDown } from 'lucide-react';
+import { Check, ChevronsUpDown, Loader2 } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -26,6 +26,7 @@ export type SearchableSelectOption = {
     driverId?: number | null;
     isRecommended?: boolean;
     recommendedBadge?: string;
+    badge?: string;
 };
 
 type SearchableSelectProps = {
@@ -37,6 +38,8 @@ type SearchableSelectProps = {
     searchPlaceholder?: string;
     emptyText?: string;
     disabled?: boolean;
+    loading?: boolean;
+    loadingText?: string;
     className?: string;
     id?: string;
     'aria-invalid'?: boolean;
@@ -51,6 +54,8 @@ export function SearchableSelect({
     searchPlaceholder = 'Search...',
     emptyText = 'No results found.',
     disabled = false,
+    loading = false,
+    loadingText = 'Loading...',
     className,
     id,
     'aria-invalid': ariaInvalid,
@@ -85,7 +90,7 @@ export function SearchableSelect({
                         role="combobox"
                         aria-expanded={open}
                         aria-invalid={ariaInvalid}
-                        disabled={disabled}
+                        disabled={disabled || loading}
                         className={cn(
                             'w-full justify-between font-normal border-input hover:bg-accent/50',
                             !selectedOption && 'text-muted-foreground',
@@ -93,68 +98,94 @@ export function SearchableSelect({
                             className
                         )}
                     >
-                        <span className="truncate">
+                        <span className="truncate" title={selectedOption?.label}>
                             {selectedOption ? selectedOption.label : placeholder}
                         </span>
-                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        {loading ? (
+                            <Loader2 className="ml-2 h-4 w-4 shrink-0 animate-spin opacity-50" />
+                        ) : (
+                            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                        )}
                     </Button>
                 </PopoverTrigger>
-                <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                <PopoverContent
+                    className="w-[--radix-popover-trigger-width] min-w-[200px] p-0 z-[60]"
+                    align="start"
+                >
                     <Command>
                         <CommandInput placeholder={searchPlaceholder} />
                         <CommandList>
-                            <CommandEmpty>{emptyText}</CommandEmpty>
-                            <CommandGroup>
-                                {sortedOptions.map((option) => {
-                                    const isDisabled = option.isAvailable === false;
-                                    const isSelected = String(option.id) === String(value);
+                            {loading ? (
+                                <div className="flex items-center justify-center py-6 text-sm text-muted-foreground gap-2">
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                    <span>{loadingText}</span>
+                                </div>
+                            ) : (
+                                <>
+                                    <CommandEmpty>{emptyText}</CommandEmpty>
+                                    <CommandGroup>
+                                        {sortedOptions.map((option) => {
+                                            const isDisabled = option.isAvailable === false;
+                                            const isSelected = String(option.id) === String(value);
 
-                                    return (
-                                        <CommandItem
-                                            key={option.id}
-                                            value={`${option.label} ${option.id}`}
-                                            disabled={isDisabled}
-                                            onSelect={() => {
-                                                if (isDisabled) return;
-                                                onValueChange(String(option.id));
-                                                setOpen(false);
-                                            }}
-                                            className={cn(
-                                                'flex items-center justify-between gap-2 cursor-pointer',
-                                                isDisabled && 'opacity-60 cursor-not-allowed bg-muted/30'
-                                            )}
-                                        >
-                                            <div className="flex items-center gap-2 truncate">
-                                                <Check
+                                            return (
+                                                <CommandItem
+                                                    key={option.id}
+                                                    value={`${option.label} ${option.id}`}
+                                                    disabled={isDisabled}
+                                                    onSelect={() => {
+                                                        if (isDisabled) return;
+                                                        onValueChange(String(option.id));
+                                                        setOpen(false);
+                                                    }}
                                                     className={cn(
-                                                        'h-4 w-4 shrink-0',
-                                                        isSelected ? 'opacity-100' : 'opacity-0'
+                                                        'flex items-center justify-between gap-2 cursor-pointer',
+                                                        isDisabled && 'opacity-60 cursor-not-allowed bg-muted/30'
                                                     )}
-                                                />
-                                                <span className="truncate">{option.label}</span>
-                                            </div>
-                                            <div className="flex items-center gap-2 shrink-0">
-                                                {option.isRecommended && option.recommendedBadge && (
-                                                    <Badge
-                                                        variant="outline"
-                                                        className="text-[10px] py-0 px-1.5 bg-blue-50 text-blue-700 border-blue-300 font-medium shrink-0"
-                                                    >
-                                                        {option.recommendedBadge}
-                                                    </Badge>
-                                                )}
-                                                {option.activeStatus && (
-                                                    <Badge
-                                                        variant="outline"
-                                                        className="text-[10px] py-0 px-1.5 bg-amber-50 text-amber-700 border-amber-300 capitalize shrink-0"
-                                                    >
-                                                        {option.activeStatus}
-                                                    </Badge>
-                                                )}
-                                            </div>
-                                        </CommandItem>
-                                    );
-                                })}
-                            </CommandGroup>
+                                                >
+                                                    <div className="flex items-center gap-2 truncate">
+                                                        <Check
+                                                            className={cn(
+                                                                'h-4 w-4 shrink-0',
+                                                                isSelected ? 'opacity-100' : 'opacity-0'
+                                                            )}
+                                                        />
+                                                        <span className="truncate" title={option.label}>
+                                                            {option.label}
+                                                        </span>
+                                                    </div>
+                                                    <div className="flex items-center gap-2 shrink-0">
+                                                        {option.badge && (
+                                                            <Badge
+                                                                variant="outline"
+                                                                className="text-[10px] py-0 px-1.5 bg-slate-50 text-slate-700 border-slate-300 font-medium shrink-0"
+                                                            >
+                                                                {option.badge}
+                                                            </Badge>
+                                                        )}
+                                                        {option.isRecommended && option.recommendedBadge && (
+                                                            <Badge
+                                                                variant="outline"
+                                                                className="text-[10px] py-0 px-1.5 bg-blue-50 text-blue-700 border-blue-300 font-medium shrink-0"
+                                                            >
+                                                                {option.recommendedBadge}
+                                                            </Badge>
+                                                        )}
+                                                        {option.activeStatus && (
+                                                            <Badge
+                                                                variant="outline"
+                                                                className="text-[10px] py-0 px-1.5 bg-amber-50 text-amber-700 border-amber-300 capitalize shrink-0"
+                                                            >
+                                                                {option.activeStatus}
+                                                            </Badge>
+                                                        )}
+                                                    </div>
+                                                </CommandItem>
+                                            );
+                                        })}
+                                    </CommandGroup>
+                                </>
+                            )}
                         </CommandList>
                     </Command>
                 </PopoverContent>
