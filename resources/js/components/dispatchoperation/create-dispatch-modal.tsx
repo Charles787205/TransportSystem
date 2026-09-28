@@ -103,8 +103,31 @@ const CreateDispatchModal = ({
                 setLoadingOptions(true);
                 axios
                     .get<DispatchFormOptionsData>(index.url())
-                    .then((res) => setOptions(res.data))
+                    .then((res) => {
+                        setOptions(res.data);
+
+                        if (defaultValues?.originLocationId) {
+                            const loc = res.data.locations?.find(
+                                (l: any) =>
+                                    String(l.id) ===
+                                    String(defaultValues.originLocationId),
+                            );
+
+                            if (loc?.touchpoint) {
+                                setSelectedTouchpoint(loc.touchpoint);
+                            }
+                        }
+                    })
                     .finally(() => setLoadingOptions(false));
+            } else if (defaultValues?.originLocationId) {
+                const loc = options.locations?.find(
+                    (l: any) =>
+                        String(l.id) === String(defaultValues.originLocationId),
+                );
+
+                if (loc?.touchpoint) {
+                    setSelectedTouchpoint(loc.touchpoint);
+                }
             }
         }
     };
@@ -113,6 +136,7 @@ const CreateDispatchModal = ({
         setSelectedClientId(clientId);
         setSelectedOriginId('');
         setSelectedDestinationId('');
+        setSelectedTouchpoint('');
     };
 
     const selectedVehicleObj = options?.vehicles?.find(
@@ -156,13 +180,27 @@ const CreateDispatchModal = ({
             );
         }) || [];
 
-    const originOptions = availableLocations.filter((loc: any) => {
-        return String(loc.id) !== selectedDestinationId;
-    });
+    const originOptions = availableLocations
+        .filter((loc: any) => {
+            return String(loc.id) !== selectedDestinationId;
+        })
+        .map((loc: any) => ({
+            id: loc.id,
+            label: loc.touchpoint
+                ? `${loc.label} (${loc.touchpoint})`
+                : loc.label,
+        }));
 
-    const destinationOptions = availableLocations.filter((loc: any) => {
-        return String(loc.id) !== selectedOriginId;
-    });
+    const destinationOptions = availableLocations
+        .filter((loc: any) => {
+            return String(loc.id) !== selectedOriginId;
+        })
+        .map((loc: any) => ({
+            id: loc.id,
+            label: loc.touchpoint
+                ? `${loc.label} (${loc.touchpoint})`
+                : loc.label,
+        }));
 
     return (
         <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -215,7 +253,7 @@ const CreateDispatchModal = ({
                                                 Vehicle
                                             </Label>
                                             {selectedVehicleObj?.type && (
-                                                <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border">
+                                                <span className="rounded-full border bg-slate-100 px-2 py-0.5 text-xs font-medium text-slate-500">
                                                     {selectedVehicleObj.type}
                                                 </span>
                                             )}
@@ -313,47 +351,28 @@ const CreateDispatchModal = ({
                                         <Label htmlFor="origin_location_id">
                                             Origin Location
                                         </Label>
-                                        {lockFields && (
-                                            <input
-                                                type="hidden"
-                                                name="origin_location_id"
-                                                value={selectedOriginId}
-                                            />
-                                        )}
-                                        <Select
+                                        <SearchableSelect
+                                            id="origin_location_id"
                                             name="origin_location_id"
+                                            options={originOptions}
                                             value={selectedOriginId}
                                             onValueChange={handleOriginChange}
                                             disabled={
                                                 lockFields || !selectedClientId
                                             }
-                                        >
-                                            <SelectTrigger
-                                                id="origin_location_id"
-                                                aria-invalid={
-                                                    !!errors.origin_location_id
-                                                }
-                                                className="w-full"
-                                            >
-                                                <SelectValue
-                                                    placeholder={
-                                                        selectedClientId
-                                                            ? 'Select origin'
-                                                            : 'Select client first'
-                                                    }
-                                                />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {originOptions.map((l: any) => (
-                                                    <SelectItem
-                                                        key={l.id}
-                                                        value={String(l.id)}
-                                                    >
-                                                        {l.label}{l.touchpoint ? ` (${l.touchpoint})` : ''}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
+                                            loading={loadingOptions}
+                                            loadingText="Loading locations..."
+                                            placeholder={
+                                                selectedClientId
+                                                    ? 'Select origin'
+                                                    : 'Select client first'
+                                            }
+                                            searchPlaceholder="Search origin location..."
+                                            emptyText="No locations found."
+                                            aria-invalid={
+                                                !!errors.origin_location_id
+                                            }
+                                        />
                                         <InputError
                                             message={errors.origin_location_id}
                                         />
@@ -368,42 +387,28 @@ const CreateDispatchModal = ({
                                         <Label htmlFor="destination_location_id">
                                             Destination Location
                                         </Label>
-                                        <Select
+                                        <SearchableSelect
+                                            id="destination_location_id"
                                             name="destination_location_id"
+                                            options={destinationOptions}
                                             value={selectedDestinationId}
                                             onValueChange={
                                                 setSelectedDestinationId
                                             }
                                             disabled={!selectedClientId}
-                                        >
-                                            <SelectTrigger
-                                                id="destination_location_id"
-                                                aria-invalid={
-                                                    !!errors.destination_location_id
-                                                }
-                                                className="w-full"
-                                            >
-                                                <SelectValue
-                                                    placeholder={
-                                                        selectedClientId
-                                                            ? 'Select destination'
-                                                            : 'Select client first'
-                                                    }
-                                                />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {destinationOptions.map(
-                                                    (l: any) => (
-                                                        <SelectItem
-                                                            key={l.id}
-                                                            value={String(l.id)}
-                                                        >
-                                                            {l.label}{l.touchpoint ? ` (${l.touchpoint})` : ''}
-                                                        </SelectItem>
-                                                    ),
-                                                )}
-                                            </SelectContent>
-                                        </Select>
+                                            loading={loadingOptions}
+                                            loadingText="Loading locations..."
+                                            placeholder={
+                                                selectedClientId
+                                                    ? 'Select destination'
+                                                    : 'Select client first'
+                                            }
+                                            searchPlaceholder="Search destination location..."
+                                            emptyText="No locations found."
+                                            aria-invalid={
+                                                !!errors.destination_location_id
+                                            }
+                                        />
                                         <InputError
                                             message={
                                                 errors.destination_location_id
@@ -423,7 +428,9 @@ const CreateDispatchModal = ({
                                         <Select name="service_type">
                                             <SelectTrigger
                                                 id="service_type"
-                                                aria-invalid={!!errors.service_type}
+                                                aria-invalid={
+                                                    !!errors.service_type
+                                                }
                                                 className="w-full"
                                             >
                                                 <SelectValue placeholder="Select service type" />
@@ -437,7 +444,9 @@ const CreateDispatchModal = ({
                                                 </SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        <InputError message={errors.service_type} />
+                                        <InputError
+                                            message={errors.service_type}
+                                        />
                                     </div>
 
                                     <div
@@ -450,22 +459,34 @@ const CreateDispatchModal = ({
                                         <Select
                                             name="touchpoint"
                                             value={selectedTouchpoint}
-                                            onValueChange={setSelectedTouchpoint}
+                                            onValueChange={
+                                                setSelectedTouchpoint
+                                            }
                                         >
                                             <SelectTrigger
                                                 id="touchpoint"
-                                                aria-invalid={!!errors.touchpoint}
+                                                aria-invalid={
+                                                    !!errors.touchpoint
+                                                }
                                                 className="w-full"
                                             >
                                                 <SelectValue placeholder="Select touchpoint" />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value="FM">FM (First Mile)</SelectItem>
-                                                <SelectItem value="MFM">MFM (Mid-First Mile)</SelectItem>
-                                                <SelectItem value="MM">MM (Middle Mile)</SelectItem>
+                                                <SelectItem value="FM">
+                                                    FM (First Mile)
+                                                </SelectItem>
+                                                <SelectItem value="MFM">
+                                                    MFM (Mid-First Mile)
+                                                </SelectItem>
+                                                <SelectItem value="MM">
+                                                    MM (Middle Mile)
+                                                </SelectItem>
                                             </SelectContent>
                                         </Select>
-                                        <InputError message={errors.touchpoint} />
+                                        <InputError
+                                            message={errors.touchpoint}
+                                        />
                                     </div>
                                 </div>
 
@@ -516,8 +537,6 @@ const CreateDispatchModal = ({
                                         />
                                     </div>
                                 </div>
-
-
 
                                 <DialogFooter className="mt-5">
                                     <Button
